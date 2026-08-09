@@ -1,30 +1,90 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-07-15T00:26:19.428Z",
-  "project_id": "sarb",
+  "updated_at": "2026-08-09T01:06:29.171Z",
+  "project_id": "auto-bench",
   "workspace_ids": [
-    "sarb"
+    "nuveris-v1"
   ],
   "artifacts": [
     {
-      "id": "c20fa5da-ea46-46c0-8b78-1e19dae08630",
-      "name": "agentic control primitives for sarb",
-      "filename": "agentic-control-primitives-for-sarb.md",
+      "id": "0e36b234-a30d-4f8e-aa48-8b736835844e",
+      "name": "hle template for a generalized reality benchmark",
+      "filename": "hle-template-for-a-generalized-reality-benchmark.md",
       "kind": "note",
       "mime_type": "text/markdown",
-      "size_bytes": 8241,
+      "size_bytes": 20703,
       "tags": [],
-      "created_at": "2026-07-15T00:01:45.565Z",
-      "updated_at": "2026-07-15T00:26:14.957Z",
+      "created_at": "2026-07-15T22:06:59.204Z",
+      "updated_at": "2026-08-09T00:17:56.137Z",
       "related_changes": [
-        "establish-sarb-sans-io-core"
+        "adopt-auto-bench-name"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/establish-sarb-sans-io-core/proposal.md",
-        ".reffy/reffyspec/changes/establish-sarb-sans-io-core/tasks.md",
-        ".reffy/reffyspec/changes/establish-sarb-sans-io-core/design.md",
-        ".reffy/reffyspec/changes/establish-sarb-sans-io-core/specs/establish-sarb-sans-io-core/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/design.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md"
+      ]
+    },
+    {
+      "id": "f5cb8266-53dc-41e1-97e6-ce5372f19106",
+      "name": "naming the agentic control layer",
+      "filename": "naming-the-agentic-control-layer.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 6504,
+      "tags": [],
+      "created_at": "2026-07-16T07:10:39.423Z",
+      "updated_at": "2026-08-09T00:17:56.137Z",
+      "related_changes": [
+        "rename-sarb-core-to-nuveris",
+        "adopt-auto-bench-name"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/design.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/specs/establish-sarb-sans-io-core/spec.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/design.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md"
+      ]
+    },
+    {
+      "id": "c20fa5da-ea46-46c0-8b78-1e19dae08630",
+      "name": "agentic control primitives for auto bench",
+      "filename": "agentic-control-primitives-for-auto-bench.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 19464,
+      "tags": [],
+      "created_at": "2026-07-15T00:01:45.565Z",
+      "updated_at": "2026-08-09T01:06:29.171Z",
+      "related_changes": [
+        "establish-sarb-sans-io-core",
+        "rename-sarb-core-to-nuveris",
+        "adopt-auto-bench-name",
+        "center-reality-validation-stack"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/archive/2026-07-16-establish-sarb-sans-io-core/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-establish-sarb-sans-io-core/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-establish-sarb-sans-io-core/design.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-establish-sarb-sans-io-core/specs/establish-sarb-sans-io-core/spec.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/design.md",
+        ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/specs/establish-sarb-sans-io-core/spec.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/design.md",
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md",
+        ".reffy/reffyspec/changes/center-reality-validation-stack/proposal.md",
+        ".reffy/reffyspec/changes/center-reality-validation-stack/tasks.md",
+        ".reffy/reffyspec/changes/center-reality-validation-stack/design.md",
+        ".reffy/reffyspec/changes/center-reality-validation-stack/specs/center-reality-validation-stack/spec.md"
       ]
     }
   ]

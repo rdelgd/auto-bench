@@ -1,25 +1,42 @@
-# SArB
+# Nuveris Core
 
-SArB is the Servco Automotive Reality Benchmark.
+Nuveris is the agentic control plane through which intent becomes governed capability, action, and evidence. Nuveris Core is its TypeScript Sans I/O implementation: serializable domain models, pure validation, deterministic trace normalization, and structured evaluation without a dependency on storage, transport, runtime orchestration, or live integrations.
 
-The project is exploring how to model and evaluate agentic abstractions inside realistic automotive business contexts. Its initial focus is the portion of agentic work that can be codified, modeled, and evaluated through harnesses, skills, MCP surfaces, policies, traces, and benchmark scenarios.
+Harnesses, codified skills, MCP surfaces, policies, approvals, handoffs, and traces are modeled as agentic control primitives. Core functions accept already-materialized values and return materialized validation or evaluation results.
 
-The current implementation direction is a TypeScript Sans I/O core: pure domain models, validation, trace normalization, and evaluation logic before committing to a datastore, ingestion pipeline, runtime, UI, or analytics product.
+## Relationship to Auto Bench
+
+Auto Bench is Servco's automotive reference benchmark. It is the first reference benchmark built with Nuveris.
+
+The automotive service-scheduling fixture in `src/fixtures/` demonstrates how Auto Bench can model a realistic workflow with a harness, skill, MCP primitives, policy checks, customer confirmation, trace evidence, and evaluation output.
 
 ## Current Status
 
-This repository currently contains the Reffy and ReffySpec planning layer for the project:
+The repository contains the initial Nuveris Core implementation and its Reffy/ReffySpec planning layer:
 
-- `.reffy/artifacts/agentic-control-primitives-for-sarb.md` captures the early thesis.
-- `.reffy/reffyspec/project.md` defines the project context.
-- `.reffy/reffyspec/changes/establish-sarb-sans-io-core/` contains the active proposal for the initial TypeScript Sans I/O core.
+- `.reffy/artifacts/agentic-control-primitives-for-auto-bench.md` captures the Nuveris thesis and its relationship to Auto Bench.
+- `.reffy/artifacts/naming-the-agentic-control-layer.md` records the Nuveris naming decision.
+- `.reffy/reffyspec/specs/establish-auto-bench-sans-io-core/` defines the current core and benchmark contract.
+- `src/` contains serializable domain models, validators, trace normalization, and deterministic evaluators.
+- `src/fixtures/` contains the Auto Bench automotive service-scheduling reference fixture.
 
-## Development Direction
+## Development
 
-The first implementation should model:
+```sh
+npm install
+npm run typecheck
+npm test
+```
 
-- Harnesses that mediate agent operation, context, permissions, and approvals.
-- Skills as codified workflow surfaces.
-- MCP servers and primitives as agent-facing system surfaces.
-- Agentic traces that show how intent moves through the system.
-- Structured evaluations for intent fidelity, control surface quality, business realism, observability, and governance.
+The package exports the core API and reference fixtures separately:
+
+```ts
+import { evaluateBenchmark } from "@nuveris/core";
+import { routineMaintenanceBenchmark } from "@nuveris/core/fixtures";
+
+const evaluation = evaluateBenchmark(routineMaintenanceBenchmark);
+```
+
+## Core Boundary
+
+Filesystem, network, database, environment, clock, persistence, runtime orchestration, and live MCP behavior remain outside Nuveris Core. Future adapters may perform I/O, but they must pass materialized domain values into the core and consume materialized results.
