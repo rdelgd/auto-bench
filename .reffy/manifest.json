@@ -4,7 +4,8 @@
   "updated_at": "2026-08-18T01:52:16.130Z",
   "project_id": "auto-bench",
   "workspace_ids": [
-    "lasm-v1"
+    "lasm-v1",
+    "nuveris-v1"
   ],
   "artifacts": [
     {
