@@ -2,6 +2,18 @@ import type { EvidencePayload, ValidationFinding } from "./domain.js";
 
 export const agenticEventTypes = [
   "intent.submitted",
+  "lasm.version_selected",
+  "lasm.projection_loaded",
+  "lasm.entry_consulted",
+  "lasm.evaluation_requested",
+  "lasm.evaluation_passed",
+  "lasm.evaluation_failed",
+  "lasm.divergence_detected",
+  "lasm.failure_attributed",
+  "state.observed",
+  "state.transition_proposed",
+  "state.transition_committed",
+  "state.transition_rejected",
   "agent.role_selected",
   "harness.selected",
   "harness.configured",
@@ -24,9 +36,13 @@ export const agenticEventTypes = [
   "human.confirmation_requested",
   "human.confirmation_received",
   "handoff.created",
+  "outcome.observed",
+  "outcome.validated",
+  "evidence.linked",
   "task.completed",
   "task.failed",
   "intent.fidelity_assessed",
+  "reality.validation_assessed",
 ] as const;
 
 export type AgenticEventType = (typeof agenticEventTypes)[number];

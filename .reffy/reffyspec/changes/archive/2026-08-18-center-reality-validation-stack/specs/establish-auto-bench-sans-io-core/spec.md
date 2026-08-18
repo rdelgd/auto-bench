@@ -1,19 +1,14 @@
-# establish-auto-bench-sans-io-core Specification
-
-## Purpose
-Define Lasm as the deterministic TypeScript Sans I/O library for operational meaning, agent-facing projections, and conformance evidence, while preserving Auto Bench as the automotive workbench that evaluates the Lasm.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: TypeScript Sans I/O Core
-The system SHALL provide a reusable TypeScript library named **Lasm**, with package identity `@lasm/core`, whose LogicalAssembly modeling, agent-facing projection modeling, reality-validation domain modeling, evidence normalization, validation, and deterministic evaluation mechanics remain independent of filesystem, network, process, database, clock, live agent, and live MCP access. Active package metadata, documentation, specifications, workspace identifiers, and examples SHALL identify the library as Lasm; archived planning records MAY retain historical identities.
+The system SHALL provide a reusable TypeScript library named **Lasm**, with package identity `@lasm/core`, whose LogicalAssembly modeling, agent-facing projection modeling, reality-validation domain modeling, evidence normalization, validation, and deterministic evaluation mechanics remain independent of filesystem, network, process, database, clock, live agent, and live MCP access. Active package metadata, documentation, specifications, workspace identifiers, and examples SHALL identify the library as Lasm rather than Nuveris; archived planning records MAY retain historical Nuveris references.
 
 #### Scenario: Consume Lasm from materialized reality-validation inputs
 - **GIVEN** an episode-scoped LogicalAssembly slice, Auto Bench episode, operational state contract, agent-facing projections, and evidence events are materialized as TypeScript values
 - **WHEN** a consumer imports and invokes `@lasm/core`
 - **THEN** the library returns structured validation and evaluation values that Auto Bench can use to evaluate the Lasm
 - **AND** it does not resolve remote assembly entries, read files, call the network, access a database, inspect environment variables, execute an agent, or connect to a live MCP server
-- **AND** its active public identity does not introduce a separately named semantic-control middle layer
+- **AND** its active public identity does not introduce a separately named Nuveris middle layer
 
 ### Requirement: Scenario Model
 The system SHALL model an Auto Bench episode as a serializable fixture containing business context, expected user intent, an episode-scoped LogicalAssembly reference set, expected Lasm projections and control surfaces, initial operational state, actor-relevant observations, permitted or prohibited transitions, acceptable or prohibited outcomes, and evaluation expectations.
@@ -25,36 +20,6 @@ The system SHALL model an Auto Bench episode as a serializable fixture containin
 - **AND** it defines the initial state and the state transitions and outcomes needed to judge success or failure
 - **AND** it references the harness, skill, MCP, and authority projections through which the agent encounters or changes that reality
 - **AND** it can be validated without an external datastore or runtime integration
-
-### Requirement: Harness Model
-The system SHALL represent harnesses as first-class Lasm projection fixtures describing the runtime or product surface that hosts, frames, or mediates agent action against a LogicalAssembly.
-
-#### Scenario: Model a harness as a Lasm projection
-- **GIVEN** a coding, workflow, support, or internal harness relevant to an Auto Bench episode
-- **WHEN** the harness is represented with `@lasm/core`
-- **THEN** the fixture captures a stable id, name, purpose, interaction mode, context surfaces, affordances, permission model, approval flow, and handoff boundaries
-- **AND** those surfaces MAY reference the assembly entries and operational-state fields they project or enforce
-- **AND** Auto Bench can determine whether harness behavior preserved or distorted the relevant Lasm meaning and authority
-
-### Requirement: Codified Skill Model
-The system SHALL represent skills as first-class Lasm projection fixtures describing codified workflow surfaces available to an agent.
-
-#### Scenario: Model a skill as a Lasm projection
-- **GIVEN** a skill codified for organizational use
-- **WHEN** the skill is represented with `@lasm/core`
-- **THEN** the fixture captures a stable id, name, purpose, applicability, declared capabilities, and optional supporting references
-- **AND** it MAY reference the assembly entries and operational-state fields projected by the workflow
-- **AND** Auto Bench can determine whether the skill was activated and preserved the relevant Lasm meaning
-
-### Requirement: MCP Surface Model
-The system SHALL represent MCP servers and primitives as first-class Lasm projection fixtures describing tools, resources, and prompts exposed to an agent.
-
-#### Scenario: Model MCP primitives as Lasm projections
-- **GIVEN** an MCP surface relevant to an Auto Bench episode
-- **WHEN** the surface is represented with `@lasm/core`
-- **THEN** the fixture captures the server identity and exposed tool, resource, and prompt descriptors needed for evaluation
-- **AND** each surface or primitive MAY reference the assembly entries and operational-state fields it exposes or changes
-- **AND** Auto Bench can compare evidence against those descriptors without connecting to a live server
 
 ### Requirement: Agentic Trace Model
 The system SHALL normalize validation evidence for submitted intent, LogicalAssembly selection and consultation, Lasm projections, actor observations, harness behavior, skill usage, MCP usage, policy checks, permissions, human confirmations, handoffs, proposed or committed state transitions, runtime Lasm evaluations, observed outcomes, evidence links, and failure attribution.
@@ -85,6 +50,8 @@ The system SHALL keep source extraction and reconciliation, persistence, ingesti
 - **WHEN** the adapter invokes `@lasm/core`
 - **THEN** it passes materialized domain values and evidence into the library
 - **AND** the library returns materialized validation and evaluation values without taking ownership of sources, storage, transport, collection, orchestration, or analytics presentation
+
+## ADDED Requirements
 
 ### Requirement: LogicalAssembly Slice Model
 The system SHALL represent an immutable, serializable, episode-scoped LogicalAssembly slice with stable assembly identity, version, provenance, concepts, relations, constraints, events, policies, and runtime evaluation descriptors.

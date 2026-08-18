@@ -32,6 +32,16 @@ export interface ExpectedControlSurfaces {
   readonly mcpPrimitiveIds: readonly string[];
 }
 
+export interface RealityReferenceSet {
+  readonly assemblyId: string;
+  readonly assemblyVersion: string;
+  readonly assemblyEntryIds: readonly string[];
+  readonly initialStateId: string;
+  readonly observationIds: readonly string[];
+  readonly transitionIds: readonly string[];
+  readonly outcomeIds: readonly string[];
+}
+
 export interface EvaluationExpectations {
   readonly requiredTraceTypes: readonly AgenticEventType[];
   readonly requiresPolicyCheck: boolean;
@@ -43,7 +53,7 @@ export interface Scenario {
   readonly title: string;
   readonly businessContext: BusinessContext;
   readonly intent: UserIntent;
-  readonly expectedOutcomes: readonly string[];
+  readonly reality: RealityReferenceSet;
   readonly expectedControlSurfaces: ExpectedControlSurfaces;
   readonly evaluation: EvaluationExpectations;
 }

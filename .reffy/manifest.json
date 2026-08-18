@@ -1,10 +1,10 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-08-12T00:54:55.304Z",
+  "updated_at": "2026-08-18T01:52:16.130Z",
   "project_id": "auto-bench",
   "workspace_ids": [
-    "nuveris-v1"
+    "lasm-v1"
   ],
   "artifacts": [
     {
@@ -33,13 +33,14 @@
       "filename": "naming-the-agentic-control-layer.md",
       "kind": "note",
       "mime_type": "text/markdown",
-      "size_bytes": 6504,
+      "size_bytes": 10240,
       "tags": [],
       "created_at": "2026-07-16T07:10:39.423Z",
-      "updated_at": "2026-08-09T00:17:56.137Z",
+      "updated_at": "2026-08-18T01:52:16.047Z",
       "related_changes": [
         "rename-sarb-core-to-nuveris",
-        "adopt-auto-bench-name"
+        "adopt-auto-bench-name",
+        "finish-lasm-identity-migration"
       ],
       "derived_outputs": [
         ".reffy/reffyspec/changes/archive/2026-07-16-rename-sarb-core-to-nuveris/proposal.md",
@@ -49,7 +50,10 @@
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/proposal.md",
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/tasks.md",
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/design.md",
-        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-finish-lasm-identity-migration/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-finish-lasm-identity-migration/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-finish-lasm-identity-migration/design.md"
       ]
     },
     {
@@ -58,10 +62,10 @@
       "filename": "agentic-control-primitives-for-auto-bench.md",
       "kind": "note",
       "mime_type": "text/markdown",
-      "size_bytes": 19464,
+      "size_bytes": 19303,
       "tags": [],
       "created_at": "2026-07-15T00:01:45.565Z",
-      "updated_at": "2026-08-09T01:06:29.171Z",
+      "updated_at": "2026-08-18T01:50:44.580Z",
       "related_changes": [
         "establish-sarb-sans-io-core",
         "rename-sarb-core-to-nuveris",
@@ -81,10 +85,10 @@
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/tasks.md",
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/design.md",
         ".reffy/reffyspec/changes/archive/2026-08-09-adopt-auto-bench-name/specs/establish-sarb-sans-io-core/spec.md",
-        ".reffy/reffyspec/changes/center-reality-validation-stack/proposal.md",
-        ".reffy/reffyspec/changes/center-reality-validation-stack/tasks.md",
-        ".reffy/reffyspec/changes/center-reality-validation-stack/design.md",
-        ".reffy/reffyspec/changes/center-reality-validation-stack/specs/center-reality-validation-stack/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-08-18-center-reality-validation-stack/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-center-reality-validation-stack/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-center-reality-validation-stack/design.md",
+        ".reffy/reffyspec/changes/archive/2026-08-18-center-reality-validation-stack/specs/establish-auto-bench-sans-io-core/spec.md"
       ]
     },
     {
@@ -93,10 +97,19 @@
       "filename": "operational-conformance-first-benchmark-second.md",
       "kind": "note",
       "mime_type": "text/markdown",
-      "size_bytes": 27369,
+      "size_bytes": 27246,
       "tags": [],
       "created_at": "2026-08-12T00:54:55.304Z",
-      "updated_at": "2026-08-12T00:54:55.304Z"
+      "updated_at": "2026-08-18T01:49:57.247Z",
+      "related_changes": [
+        "adopt-conformance-api"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/archive/2026-08-14-adopt-conformance-api/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-08-14-adopt-conformance-api/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-08-14-adopt-conformance-api/design.md",
+        ".reffy/reffyspec/changes/archive/2026-08-14-adopt-conformance-api/specs/establish-auto-bench-sans-io-core/spec.md"
+      ]
     }
   ]
 }

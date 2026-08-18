@@ -10,4 +10,6 @@ export interface SkillDescriptor {
   readonly applicability: readonly string[];
   readonly capabilities: readonly string[];
   readonly references?: readonly SkillReference[];
+  readonly projection?: LasmProjectionReferences;
 }
+import type { LasmProjectionReferences } from "./lasm.js";

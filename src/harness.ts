@@ -5,6 +5,13 @@ export interface ContextSurface {
   readonly id: string;
   readonly description: string;
   readonly sensitivity: "public" | "internal" | "sensitive";
+  readonly projection?: LasmProjectionReferences;
+}
+
+export interface HandoffBoundary {
+  readonly id: string;
+  readonly description: string;
+  readonly projection?: LasmProjectionReferences;
 }
 
 export interface HarnessDescriptor {
@@ -17,10 +24,14 @@ export interface HarnessDescriptor {
   readonly permissionModel: {
     readonly defaultLevel: PermissionLevel;
     readonly scopedPermissions: readonly string[];
+    readonly projection?: LasmProjectionReferences;
   };
   readonly approvalFlow: {
     readonly requiredFor: readonly string[];
     readonly approverRoles: readonly string[];
+    readonly projection?: LasmProjectionReferences;
   };
-  readonly handoffBoundaries: readonly string[];
+  readonly handoffBoundaries: readonly HandoffBoundary[];
+  readonly projection?: LasmProjectionReferences;
 }
+import type { LasmProjectionReferences } from "./lasm.js";

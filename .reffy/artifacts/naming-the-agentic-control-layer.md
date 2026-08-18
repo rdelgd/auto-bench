@@ -1,127 +1,152 @@
-# Nuveris: Naming the Agentic Control Layer
+# Lasm: One Name for the Semantic and Agentic Control Layer
 
-Status: name selected
-Date: 2026-07-15
+Status: adopted
+Date: 2026-08-17
 Authors: Roberto Delgado, Codex
 
-## Scope Clarification
+## Prompt
 
-The idea that needs a standalone name is the thesis in `agentic-control-primitives-for-auto-bench.md`, not Auto Bench or the generalized reality-benchmark system.
+The project currently assigns three names to three layers:
 
-`Auto Bench` is Servco's automotive reference benchmark. Auto Bench can model and evaluate the idea, but the idea exists independently of that benchmark and should not be named “for Auto Bench.”
+- **LogicalAssembly (Lasm)** for the domain and semantic model;
+- **Nuveris** for the agentic control layer and reusable Sans I/O library;
+- **Auto Bench** for the automotive conformance workbench.
 
-The concept is the inspectable layer around an agent through which human intent is framed, procedural behavior is supplied, capabilities and context are exposed, authority is constrained, work is handed off, and resulting behavior is observed.
+This artifact explores removing the Nuveris name completely. The proposed collapse is to let **Lasm** name both the thesis and the reusable implementation grounded in that thesis. Auto Bench then evaluates the Lasm.
 
-Its major elements are:
+## Adopted Thesis
 
-- harnesses that frame the interaction loop, context, workspace, permissions, and approvals;
-- skills that encode discoverable procedural knowledge and workflow constraints;
-- MCP tools, resources, and prompts that expose system-facing capabilities and context;
-- policies, human confirmations, and handoffs that constrain or redirect action;
-- traces and analytics that reveal how intent became action and outcome.
+> Lasm makes an organization's operational meaning executable across agent-facing context, capability, authority, action, and evidence. Auto Bench evaluates whether that Lasm remains faithful to reality and produces conformant outcomes.
 
-## Selected Name: Nuveris
+A LogicalAssembly is not merely an ontology placed beneath a separate control plane. Its concepts, relations, constraints, events, policies, and evaluations become operational through projections into harness context, skills, MCP surfaces, permissions, approvals, and other agent-facing interfaces. Those surfaces are how an assembly participates in action.
 
-**Nuveris** is the selected proper name for this idea.
+Under this thesis, the former Nuveris layer is not an independent thing that needs its own proper name. It is the projected, enforced, and observable expression of a Lasm.
 
-Nuveris does not replace the underlying descriptive vocabulary. It gives the thesis and potential system a distinct identity:
+## Why Collapse the Names
 
-- **Nuveris** — the proper name.
-- **Agentic control plane** — the descriptive category.
-- **Agentic control primitives** — the composable harness, skill, MCP, governance, handoff, and trace elements.
+The Nuveris distinction helped separate the reusable core from Auto Bench, but it now creates an artificial boundary inside the reusable system:
 
-A concise formulation:
+- A semantic model without projections and enforcement risks becoming descriptive documentation.
+- Agentic control surfaces without maintained organizational meaning can govern the wrong behavior efficiently.
+- Evidence and attribution need to connect actions back to the exact assembly entries and projections that shaped them.
+- The active implementation direction already places LogicalAssembly slices, operational state, control-surface projections, runtime evaluations, and evidence in the same deterministic core.
 
-> Nuveris is the agentic control plane through which intent becomes governed capability, action, and evidence.
+Calling one half Lasm and the other half Nuveris makes users learn two identities for one dependency chain. Calling the whole thesis **Lasm** says that organizational meaning is the organizing abstraction, while agentic control is how that meaning becomes load-bearing.
 
-This keeps the name portable while preserving language that explains what it is.
+## The Simplified Stack
 
-## Descriptive Category: Agentic Control Plane
+| Layer | Responsibility |
+| --- | --- |
+| **Operational reality** | Supplies the living sources, practices, state, commitments, and accountable human judgment from which a Lasm is compiled and against which it must remain valid |
+| **Lasm** | Represents load-bearing meaning; projects it into agent-facing context and capabilities; constrains consequential action; records state, runtime evaluation, and attributable evidence |
+| **Agentic proxy** | Perceives, reasons, acts, clarifies, abstains, escalates, and hands off through the Lasm's projections and authority boundaries |
+| **Auto Bench** | Exercises and evaluates the Lasm across realistic automotive episodes, locating divergence among reality, representation, projection, conduct, transition, and outcome |
 
-In infrastructure, a control plane configures, constrains, and observes how work is carried out without being identical to the work itself. The analogy fits here: the model or agent performs reasoning and action, while harnesses, skills, MCP surfaces, permissions, policies, approvals, and trace semantics shape what agency is possible and legible.
+The headline relationship becomes:
 
-A concise definition:
+> **Auto Bench evaluates the Lasm.**
 
-> The agentic control plane is the externalized, inspectable layer through which intent is translated into governed agent capability, action, and evidence.
+Auto Bench may evaluate a Lasm with or without a live agent execution. It can inspect materialized assemblies, projections, evidence, transitions, and outcomes deterministically, while adapters supply any live runtime or external-system behavior.
 
-The term supports useful distinctions:
+## What “Lasm” Names
 
-- **Agent:** the reasoning and acting locus.
-- **Agentic control plane:** the surfaces that configure, enable, constrain, and observe that agency.
-- **Business environment:** the people, systems, policies, state, and consequences on which the agent acts.
-- **Benchmark:** the system that evaluates the agent and its control plane inside a modeled reality.
+The same name can operate at three related levels:
 
-Under this vocabulary, Auto Bench is a benchmark of Nuveris—the agentic control plane—operating inside Servco automotive reality.
+- **Lasm, the thesis:** operational meaning should be sourced, versioned, contestable, projected into the surfaces through which agents act, and continuously tested through evidence and evaluation.
+- **LogicalAssembly, the domain model:** the explicit concepts, relations, constraints, events, policies, evaluations, provenance, version, and relevant operational-state contracts for a scoped reality.
+- **Lasm, the library:** the reusable Sans I/O TypeScript implementation for materialized assemblies, projections, validation, evidence normalization, runtime-evaluation records, state transitions, and structured findings.
 
-## Alternative Names
+This is deliberate alignment rather than accidental overloading. The full term **LogicalAssembly** remains useful for the concrete domain object. **Lasm** names the broader thesis and software built around making that object operational.
 
-### Intent Mediation Layer
+## Agentic Control Still Exists as a Description
 
-Emphasizes the path from submitted intent through inference, controls, tools, handoffs, and outcomes.
+Removing Nuveris does not remove the agentic control-plane idea. “Agentic control plane” and “agentic control primitives” can remain descriptive vocabulary:
 
-Strength: closest to the original thesis that agentic systems increasingly mediate human intent.
+- harness context frames perception and interaction;
+- skills project procedural meaning;
+- MCP tools and resources project system-facing capability and context;
+- policies, permissions, approvals, and handoffs constrain authority;
+- traces and evidence reveal how intent and represented meaning became action and outcome.
 
-Risk: understates capability exposure, runtime configuration, and governance; “layer” may imply a clean technical boundary that does not exist.
+These are **Lasm projections and control surfaces**, not a separately branded Nuveris layer.
 
-### Agency Stack
+## Library Identity
 
-Treats harnesses, skills, MCP, policy, and observability as a composable stack that produces practical agency.
+The npm library that replaces the former core uses the Lasm identity:
 
-Strength: short, accessible, and broader than a single agent runtime.
+| Former | Selected |
+| --- | --- |
+| Nuveris Core | Lasm |
+| `@nuveris/core` | `@lasm/core` |
+| Nuveris fixture/model | Lasm fixture/model or the more precise domain term |
+| Nuveris projection | Lasm projection |
+| Lasm–Nuveris–Auto Bench stack | Lasm–Auto Bench stack |
 
-Risk: “stack” suggests a fixed vertical architecture, while these control surfaces may be distributed across products and organizations.
+The selected private package identity is `@lasm/core`. Registry availability and ownership should still be checked before any external publication, but those concerns do not change the Lasm identity.
 
-### Agentic Interface Plane
+The public API should continue to favor domain-driven names such as `LogicalAssembly`, `ConformanceCase`, `OperationalState`, `EvidenceEvent`, and `evaluateConformance`. Replacing Nuveris does not justify adding `Lasm` prefixes to every exported type.
 
-Emphasizes that these primitives form the interfaces between human intent, agents, and external systems.
+## Evaluation Boundary
 
-Strength: highlights the analogy to HTML, JavaScript, and other inspectable platform surfaces.
+The name collapse must not collapse two different evaluation loops:
 
-Risk: “interface” can sound limited to UI or API concerns and may not communicate governance strongly enough.
+- **Lasm runtime evaluations** check or gate behavior against maintained concepts, constraints, policies, and state contracts during operation.
+- **Auto Bench evaluation** judges the Lasm as a whole: whether its source model was fit, its projections preserved meaning, its runtime checks were adequate, the proxy acted conformantly, and the resulting state was acceptable.
 
-### Agentic Mediation Infrastructure
+A Lasm runtime check can pass against stale or incomplete meaning. Auto Bench therefore treats runtime results as evidence, not as proof that the Lasm conformed.
 
-Names the complete infrastructure through which agents represent people, use systems, and coordinate work.
+## Consequences for the Current Project
 
-Strength: captures the sociotechnical and organizational breadth of the thesis.
+If this direction is adopted in planning, it implies more than an npm rename:
 
-Risk: long, abstract, and difficult to use as a crisp category or project name.
+- remove Nuveris as a thesis, product, layer, package, and documentation identity;
+- replace `@nuveris/core` with the selected Lasm package identity;
+- replace active infrastructure labels such as the `nuveris-v1` Reffy workspace identity;
+- revise the active reality-validation change from a three-layer Lasm–Nuveris–Auto Bench model to a Lasm–Auto Bench model;
+- describe harnesses, skills, MCP surfaces, permissions, approvals, handoffs, and evidence as Lasm projections, control surfaces, or evaluation inputs;
+- retain archived ReffySpec changes as historical records rather than rewriting them;
+- update current specs, project context, README, source metadata, fixtures, tests, and examples through a new superseding ReffySpec change.
 
-### Intent Control Plane
+This artifact records the naming and conceptual direction only. It does not itself authorize or specify the migration.
 
-Centers the thing being preserved and governed rather than the agent.
+“Completely” should mean no Nuveris identity remains in current product, package, specification, workspace, or documentation surfaces. Archived ReffySpec changes should retain the word where it records what actually happened; those references are historical provenance, not an active identity.
 
-Strength: foregrounds intent fidelity and remains relevant if agents change form.
+## Risks and Tensions
 
-Risk: may imply control over human intent rather than control over its automated mediation.
+### Lasm may sound narrower than the implementation
 
-## Why “Agentic Control Primitives” Is Not Quite the Name
+Readers may interpret LogicalAssembly as only the six semantic entry kinds and wonder why the library also models projections, operational state, evidence, and conformance inputs. The thesis must consistently explain that projections and evaluations are what make an assembly operational; they are not unrelated platform features attached to it.
 
-“Agentic control primitives” remains useful for the individual elements: a harness permission gate, a skill activation rule, an MCP resource boundary, or a human-confirmation event can each be a primitive.
+### One name can blur object, system, and package
 
-The larger idea is about how those primitives compose into an operational and observable system. **Nuveris** names that whole, **agentic control plane** describes its category, and **agentic control primitives** names its constituent parts.
+The project should use precise grammar:
 
-## Relationship to Auto Bench
+- “a LogicalAssembly” or “an assembly” for a materialized domain object;
+- “Lasm” for the thesis, ecosystem, or library identity;
+- a code-formatted package specifier for the npm package;
+- “Auto Bench” for the evaluator and automotive conformance workbench.
 
-Auto Bench should use the concept without owning its name:
+### Auto Bench must not absorb Lasm responsibilities
 
-> Auto Bench evaluates whether Nuveris preserves intent and produces acceptable outcomes inside realistic automotive business processes.
+Auto Bench evaluates the Lasm but should not become the source of organizational meaning, the production enforcement runtime, or the universal owner of every Lasm evaluation. It consumes materialized evidence and may provide fixtures and adapters for exercising the system.
 
-This preserves a clean hierarchy:
+### Package availability remains external
 
-- Nuveris — the named idea and potential system.
-- Agentic control plane — its general category.
-- Agentic control primitives — harness, skill, MCP, policy, approval, handoff, and trace surfaces.
-- Auto Bench — Servco's automotive reference benchmark that evaluates them in context.
-- A generalized reality-benchmark method — a separate, still-unnamed system that could support Auto Bench and other benchmarks.
+The desired npm name or scope may be unavailable or unsuitable. That can change the import specifier without reviving the Nuveris concept.
 
-## Remaining Questions
+## Open Questions
 
-- Is this primarily a conceptual category, a reference architecture, or a product identity?
-- Should observability be understood as part of the control plane or as a separate data plane derived from it?
-- What visual identity or expansion, if any, should accompany the name Nuveris?
-- Should availability and collision research happen before Nuveris appears in package or repository names?
+- Should the repository eventually separate the reusable Lasm library from the Auto Bench evaluator, or can package exports preserve that boundary initially?
+- Which current “conformance” models belong generically to Lasm, and which are specifically Auto Bench evaluation models?
+- Should “agentic control plane” remain prominent explanatory vocabulary or recede behind “Lasm projections”?
+- Does the name need a formal expansion everywhere, or is defining **Lasm = LogicalAssembly** once per major surface sufficient?
 
-## Working Hypothesis
+## Adopted Direction
 
-Use **Nuveris** as the name for the overall idea, **agentic control plane** as its descriptive category, and **agentic control primitives** for its composable elements. Reserve Auto Bench for the benchmark that evaluates Nuveris inside automotive reality.
+Retire **Nuveris** completely.
+
+Use **Lasm** for the thesis and reusable library, **LogicalAssembly** for the concrete semantic/domain object, and **Auto Bench** for the automotive workbench that evaluates the Lasm. Treat harnesses, skills, MCP surfaces, permissions, approvals, handoffs, traces, and runtime evaluations as the projections, controls, and evidence through which a Lasm becomes operational.
+
+The resulting formulation is simpler and more faithful to the architecture:
+
+> Lasm makes operational meaning executable. Auto Bench evaluates the Lasm.

@@ -1,4 +1,4 @@
-# Nuveris: Agentic Control Primitives
+# Lasm: Agentic Control Primitives
 
 Status: exploratory
 Date: 2026-07-14
@@ -6,9 +6,9 @@ Authors: Roberto Delgado, Iden Watanabe, Codex
 
 ## Source Notes
 
-This artifact captures the emerging thesis now named **Nuveris**: agents are surrounded by an inspectable control plane composed of harnesses, skills, MCP surfaces, governance boundaries, and evidence. The control plane binds agent action to an organization's operational reality rather than merely recording agent activity. The artifact also explores how Nuveris may reshape the purpose of Auto Bench, Servco's automotive reference benchmark.
+This artifact captures the emerging **Lasm** thesis: agents are surrounded by an inspectable control plane composed of harnesses, skills, MCP surfaces, governance boundaries, and evidence. These surfaces are projections through which a LogicalAssembly binds agent action to an organization's operational reality rather than merely recording agent activity. The artifact also explores how this thesis may reshape the purpose of Auto Bench, Servco's automotive conformance workbench.
 
-“Agentic control plane” remains the descriptive category, and “agentic control primitives” names its composable elements. Nuveris is the proper name for the overall idea.
+“Agentic control plane” remains a descriptive category, and “agentic control primitives” names its composable elements. Lasm names the overall thesis, semantic model, and reusable library.
 
 Relevant external references:
 
@@ -28,7 +28,7 @@ The more durable focus is **reality validation**: testing the relationship betwe
 
 The subsequent Durable Forms work identifies what this stack must preserve: the organization's own distinctions, relationships, legal states, meaningful changes, commitments, and criteria for successful behavior. Agentic control without an explicit substrate of organizational meaning can make action governable while still allowing the wrong meaning to be governed efficiently.
 
-> The Auto Bench–Nuveris–Lasm stack validates whether agents perceive, preserve, and act within an organization's operational reality—and whether that represented reality remains fit for action.
+> The Lasm–Auto Bench stack validates whether agents perceive, preserve, and act within an organization's operational reality—and whether that represented reality remains fit for action.
 
 Here, **operational reality** does not mean an exhaustive digital twin or a claim to timeless objective truth. It means the smallest sourced, versioned, and contestable set of meanings, states, constraints, authorities, events, and expected outcomes needed to judge a consequential episode.
 
@@ -44,7 +44,7 @@ MCP similarly turns external systems into standardized agent-facing surfaces. It
 
 Together, harnesses, skills, and MCP begin to resemble platform primitives. HTML and JavaScript put web interaction and programmability into user-controllable artifacts. Harnesses, skills, and MCP may do something similar for agentic systems: they make parts of agent behavior inspectable, composable, portable, and governable outside the opaque model call.
 
-As adoption standardizes around these primitives, they become natural sources of telemetry. Large analytics and observability platforms are well positioned to capture generic agent activity by extending infrastructure already used for web, application, and system analytics. Nuveris and Auto Bench should not compete to become a universal agent-analytics layer.
+As adoption standardizes around these primitives, they become natural sources of telemetry. Large analytics and observability platforms are well positioned to capture generic agent activity by extending infrastructure already used for web, application, and system analytics. Lasm and Auto Bench should not compete to become a universal agent-analytics layer.
 
 Telemetry remains necessary, but as evidence rather than purpose. The stack should capture only enough to determine which reality and policy versions governed an episode, what the agent perceived and inferred, which capabilities and approvals were available, what action occurred, how state changed, and where any divergence can be attributed. Dashboards and aggregate analysis may be derived from that evidence or supplied by other platforms; they are not the organizing thesis.
 
@@ -70,19 +70,18 @@ A LogicalAssembly has four important properties for agentic systems:
 
 Agents make this substrate newly urgent and newly sustainable. A human reader often supplies an organization's tacit codebook between a message and an action. An agent can consume a representation and act without that interpretive step. Semantic drift therefore becomes an operational error with a cost, timestamp, trace, and owner. The same fact creates the maintenance loop: if an agent's action can be attributed to the assembly entry and projection it consulted, stale meaning produces a concrete failure signal rather than a quietly aging document.
 
-### Relationship Between The Three Layers
+### Relationship Between Lasm And Auto Bench
 
-Logical Assemblies, Nuveris, and Auto Bench should be treated as complementary layers rather than competing names for the same system:
+Lasm and Auto Bench should be treated as complementary responsibilities rather than competing names for the same system:
 
 | Layer | Primary responsibility | Representative surfaces |
 | --- | --- | --- |
-| LogicalAssembly | Define and continuously test the organization's load-bearing operational reality | Concepts, relations, constraints, events, policies, runtime evaluations |
-| Nuveris | Bind agent perception and action to that reality and produce attributable evidence | Harnesses, skills, MCP surfaces, permissions, approvals, handoffs, traces |
-| Auto Bench | Stress-test whether that binding holds across realistic automotive episodes | Scenarios, fixtures, perturbations, traces, evidence, findings |
+| Lasm | Define and continuously test the organization's load-bearing operational reality, then project it into agent-facing action | Concepts, relations, constraints, events, policies, runtime evaluations, harnesses, skills, MCP surfaces, permissions, approvals, handoffs, traces |
+| Auto Bench | Evaluate whether the Lasm remains faithful across realistic automotive episodes | Scenarios, fixtures, perturbations, evidence, findings |
 
-A LogicalAssembly can supply the semantic substrate from which Nuveris control surfaces are projected. A skill may encode a workflow over assembly concepts and policies; an MCP primitive may expose actions and resources typed by those concepts; a harness may enforce assembly-derived constraints and approvals; and a trace may record which assembly version, entries, projections, and evaluations shaped an action.
+A Lasm projects its LogicalAssembly through agent-facing control surfaces. A skill may encode a workflow over assembly concepts and policies; an MCP primitive may expose actions and resources typed by those concepts; a harness may enforce assembly-derived constraints and approvals; and a trace may record which assembly version, entries, projections, and evaluations shaped an action.
 
-The two uses of **evaluation** should remain distinct. A Lasm evaluation is part of the operational enforcement loop: it gates or checks behavior against maintained organizational meaning. An Auto Bench evaluation is metaevaluative: it judges whether the agent, its Nuveris control plane, its Lasm projections, and the resulting business episode preserved intent and meaning and produced an acceptable outcome. Auto Bench may reuse Lasm evaluations as evidence, but it should not reduce benchmark quality to whether runtime gates happened to pass.
+The two uses of **evaluation** should remain distinct. A Lasm evaluation is part of the operational enforcement loop: it gates or checks behavior against maintained organizational meaning. An Auto Bench evaluation judges whether the agent, the Lasm's projections, and the resulting business episode preserved intent and meaning and produced an acceptable outcome. Auto Bench may reuse Lasm evaluations as evidence, but it should not reduce conformance to whether runtime gates happened to pass.
 
 ## Implication For Auto Bench
 
@@ -92,7 +91,7 @@ The question becomes:
 
 > Can Auto Bench determine whether an agentic system perceived the right automotive reality, preserved its meaning and authority boundaries, changed it acceptably, and left enough evidence to locate divergence?
 
-This suggests that Auto Bench should model a scoped, versioned slice of dealership, service, parts, sales, finance, customer experience, compliance, and operational reality together with the Nuveris control surfaces through which an agent encounters and changes it.
+This suggests that Auto Bench should model a scoped, versioned slice of dealership, service, parts, sales, finance, customer experience, compliance, and operational reality together with the Lasm projections through which an agent encounters and changes it.
 
 ## Possible Auto Bench Role
 
@@ -236,7 +235,7 @@ These markers should exist only where they help Auto Bench establish reality, co
 <!-- I'm leaning toward a combination of all three. See ideas here for reference: .reffy/artifacts/hle-template-for-a-generalized-reality-benchmark.md -->
 - Should an Auto Bench fixture carry a complete LogicalAssembly slice, or only stable references to the entries and projections exercised by the episode?
 - What minimum evaluative reach makes a LogicalAssembly slice sufficiently load-bearing for benchmark use?
-- How should Auto Bench distinguish a stale assembly entry from a lossy projection, incorrect agent inference, or weak Nuveris control surface?
+- How should Auto Bench distinguish a stale assembly entry from a lossy projection, incorrect agent inference, or weak Lasm control surface?
 - Which Lasm evaluations should run as hard gates during an episode, and which should remain benchmark observations?
 - Can model, harness, skill, or application replacement serve as a practical test that organizational meaning is genuinely runtime-independent?
 - What is the minimum evidence Auto Bench must own, and what generic telemetry should it accept from external platforms?
@@ -248,8 +247,8 @@ These markers should exist only where they help Auto Bench establish reality, co
 
 ## Working Hypothesis
 
-The Auto Bench–Nuveris–Lasm stack is a reality-validation system.
+The Lasm–Auto Bench stack is a reality-validation system.
 
-A LogicalAssembly defines a scoped, versioned, and executable representation of the operational reality on which action depends. Nuveris binds agent perception and capability to that reality, governs consequential action, and produces attributable evidence. Auto Bench subjects the binding to realistic automotive episodes and determines whether the reality model remained fit, the agent remained faithful to it, and the resulting state was acceptable.
+A Lasm defines a scoped, versioned, and executable representation of the operational reality on which action depends, projects that meaning into agent perception and capability, governs consequential action, and produces attributable evidence. Auto Bench subjects the Lasm to realistic automotive episodes and determines whether the reality model remained fit, the agent remained faithful to it, and the resulting state was acceptable.
 
 Analytics is a derived use of the evidence, not the product thesis. The stack succeeds when it can say what reality governed an action, whether that reality and action were valid, what changed, and exactly where correction is needed.

@@ -15,7 +15,7 @@ FrontierCode offered a model for constructing trustworthy evaluations: practitio
 
 Harbor offered a model for portable execution: separable tasks, datasets, agents, models, container environments, trials, jobs, adapters, and verifier artifacts.
 
-Those ideas remain useful, but the initial synthesis put the benchmark before the source of truth. The more important realization is that Servco does not need an invented external benchmark to tell it what successful automotive operation looks like. Its century of continued operation is already the strongest empirical reference available. The immediate problem is whether the operational reality responsible for that success can be faithfully codified in a LogicalAssembly and expressed, enforced, and evolved through Nuveris.
+Those ideas remain useful, but the initial synthesis put the benchmark before the source of truth. The more important realization is that Servco does not need an invented external benchmark to tell it what successful automotive operation looks like. Its century of continued operation is already the strongest empirical reference available. The immediate problem is whether the operational reality responsible for that success can be faithfully codified, projected, enforced, and evolved as a Lasm.
 
 Any broadly useful benchmark should be a later distillation of that conformance work.
 
@@ -32,17 +32,17 @@ Servco already contains the relevant reality:
 - policies that encode commitments, authority, consent, escalation, and customer care;
 - evaluations, both formal and tacit, by which people determine whether work was actually done correctly.
 
-The primary task is not to simulate an automotive business well enough to benchmark an agent. It is to discover which parts of this living operational system are load-bearing, compile them into Lasm, project them through Nuveris, and test that those projections still govern agentic action faithfully.
+The primary task is not to simulate an automotive business well enough to benchmark an agent. It is to discover which parts of this living operational system are load-bearing, compile them into Lasm, project them through agent-facing surfaces, and test that those projections still govern agentic action faithfully.
 
 Auto Bench therefore becomes a **conformance bench** before it becomes a benchmark.
 
 ## Core Thesis
 
-> Servco's lived operational reality is the reference. Lasm codifies that reality. Nuveris steers agentic proxies within it. Auto Bench tests conformance among the three.
+> Servco's lived operational reality is the reference. Lasm codifies and projects that reality for agentic action. Auto Bench evaluates the Lasm.
 
 The first-order question is:
 
-> Does the Nuveris–Lasm system preserve the distinctions, authority, commitments, state transitions, and outcomes that make the real process valid?
+> Does the Lasm preserve the distinctions, authority, commitments, state transitions, and outcomes that make the real process valid?
 
 Only after that question can be answered should a second-order question be asked:
 
@@ -52,8 +52,8 @@ This reverses the dependency:
 
 1. Operational reality precedes the representation.
 2. Lasm is compiled from and reconciled against that reality.
-3. Nuveris projects and enforces Lasm for agentic action.
-4. Auto Bench tests the fidelity of the compilation, projection, enforcement, and resulting action.
+3. Lasm projects and enforces that meaning for agentic action.
+4. Auto Bench evaluates the fidelity of the compilation, projection, enforcement, and resulting action.
 5. A portable benchmark may be distilled from mature, repeatedly validated conformance cases.
 
 The benchmark is an export of the work, not the reason for doing it.
@@ -82,8 +82,7 @@ The layers now have clearer responsibilities:
 | Layer | Primary responsibility | Conformance question |
 | --- | --- | --- |
 | Servco operations | Supply the living source reality and accountable human judgment | What distinctions and outcomes actually make this process valid? |
-| LogicalAssembly | Compile load-bearing meaning into concepts, relations, constraints, events, policies, and evaluations | Does the assembly faithfully represent the relevant operational reality? |
-| Nuveris | Project that meaning into agent-facing context, capabilities, permissions, approvals, and evidence | Does the control plane expose and enforce the assembly without distortion? |
+| Lasm | Compile load-bearing meaning into concepts, relations, constraints, events, policies, and evaluations, then project it into agent-facing context, capabilities, permissions, approvals, and evidence | Does the Lasm faithfully represent, expose, and enforce the relevant operational reality? |
 | Agentic proxy | Perceive, reason, act, clarify, abstain, escalate, and hand off within those surfaces | Does conduct conform to the available meaning and authority? |
 | Auto Bench | Exercise the complete binding and locate divergence | Where did reality, representation, projection, conduct, or outcome cease to conform? |
 | Derived public benchmark | Package generalized conformance patterns for reuse | Can another company test its proxies against its own automotive reality using the distilled method? |
@@ -108,7 +107,7 @@ A model can reproduce familiar vocabulary while collapsing important states, rel
 
 ### 3. Projection conformance
 
-Do Nuveris surfaces faithfully express the governing Lasm slice?
+Do Lasm projections faithfully express the governing LogicalAssembly slice?
 
 Skills, prompts, MCP resources and tools, harness context, schemas, permissions, and approval flows are consumer-specific projections. Conformance requires that they neither omit load-bearing meaning nor introduce capabilities and interpretations unsupported by the assembly.
 
@@ -138,14 +137,14 @@ Conformance must be rerunnable. Drift detection and version comparison are core 
 
 ## Auto Bench as a Conformance Harness
 
-Auto Bench should exercise and diagnose this chain. A conformance case is not primarily a challenge question for a model. It is an executable claim about correspondence among reality, Lasm, Nuveris, agent conduct, and outcome.
+Auto Bench should exercise and diagnose this chain. A conformance case is not primarily a challenge question for a model. It is an executable claim about correspondence among reality, Lasm, agent conduct, and outcome.
 
 A case should contain:
 
 1. **Operational provenance:** the process, sources, owners, observations, incidents, and decisions from which the case was derived.
 2. **Lasm slice:** the exact concepts, relations, constraints, events, policies, and evaluations required by the case.
 3. **Initial state:** the materialized world state, time, actors, actor-specific observations, disagreements, and hidden facts.
-4. **Nuveris projection:** the harness configuration, skills, MCP surfaces, permissions, approvals, handoffs, and evidence contract exposed to the proxy.
+4. **Lasm projections:** the harness configuration, skills, MCP surfaces, permissions, approvals, handoffs, and evidence contract exposed to the proxy.
 5. **Intent:** the legitimate goal and explicit constraints presented to the proxy.
 6. **Conformance claims:** the semantic distinctions, permitted transitions, prohibited effects, required commitments, and acceptable outcome envelope being tested.
 7. **Perturbation:** a stale fact, missing input, conflicting source, tool failure, role boundary, changed policy, delayed effect, or other condition that reveals whether the binding is real.
@@ -163,7 +162,7 @@ FrontierCode's benchmark methods become conformance-quality methods rather than 
 
 “Would the maintainer merge this?” translates more accurately to:
 
-> Would the accountable process owners recognize this Lasm representation, Nuveris projection, agent conduct, and outcome as faithful to the process they are responsible for?
+> Would the accountable process owners recognize this Lasm representation and projections, agent conduct, and outcome as faithful to the process they are responsible for?
 
 The accountable people should author and review conformance claims. Benchmark specialists can help make those claims executable, but should not invent the operational standard.
 
@@ -212,7 +211,7 @@ Its separations among tasks, datasets, agents, models, environments, trials, and
 - execute locally or across managed container environments;
 - later distribute a sanitized public corpus.
 
-A Harbor adapter should remain outside the Nuveris Core Sans I/O boundary. The core owns serializable Lasm, Nuveris, state, evidence, and conformance models. The adapter materializes those models into runnable environments and translates results back into structured findings.
+A Harbor adapter should remain outside the `@lasm/core` Sans I/O boundary. The library owns serializable Lasm, projection, state, evidence, and conformance models. The adapter materializes those models into runnable environments and translates results back into structured findings.
 
 The container is a laboratory for replay and perturbation. It is not the operational truth. Harbor can make a case portable without proving that the case corresponds to the business.
 
@@ -231,7 +230,7 @@ Candidate cases might cover:
 - pricing, finance, or goodwill decisions constrained by disclosure and authority;
 - delayed consequences that reveal an apparently complete episode left an invalid commitment.
 
-These are not initially “questions for agents.” Each is a test of whether a piece of operational reality can survive compilation into Lasm, projection through Nuveris, action by a proxy, and validation against resulting state.
+These are not initially “questions for agents.” Each is a test of whether a piece of operational reality can survive compilation into Lasm, projection into agent-facing surfaces, action by a proxy, and validation against resulting state.
 
 The corpus should grow from:
 
@@ -255,7 +254,7 @@ A candidate distillation process is:
 4. **Preserve the conformance challenge.** The public case should retain the semantic distinction, authority boundary, state transition, disagreement, or delayed outcome that made the internal case valuable.
 5. **Audit the abstraction.** Servco practitioners and, where possible, practitioners from other automotive companies review whether the synthetic case remains realistic without claiming universality.
 6. **Attack the evaluator.** Invalid solutions, alternate valid paths, different proxies, and repeated trials expose false positives, false negatives, leakage, and accidental coupling.
-7. **Version and publish.** Release the task contract, synthetic Lasm, Nuveris projection, environment, verifier provenance, reporting method, and known limitations.
+7. **Version and publish.** Release the task contract, synthetic Lasm and projections, environment, verifier provenance, reporting method, and known limitations.
 8. **Support organization substitution.** Make it possible for another company to replace the synthetic overlay with its own Lasm and private conformance cases.
 
 The public benchmark should not ask whether another company conforms to Servco. It should ask whether an agentic proxy can be faithfully steered by a versioned automotive reality, and whether the surrounding system can detect where that steering fails.
@@ -283,7 +282,7 @@ A public Auto Bench distribution could eventually include:
 
 - the conformance-case schema and validation protocol;
 - a synthetic automotive LogicalAssembly and organization overlay;
-- representative Nuveris skills, MCP surfaces, permissions, and approvals;
+- representative Lasm skills, MCP surfaces, permissions, and approvals;
 - synthetic source systems and stateful episode environments;
 - conformance evaluators, counterfactual tests, and attribution formats;
 - public scenario families and procedurally generated variants;
@@ -327,7 +326,7 @@ The next useful sequence is:
 2. Identify its accountable practitioners and load-bearing sources.
 3. Capture the minimum Lasm slice needed to evaluate the process.
 4. Reconcile or explicitly represent disagreements among sources and practice.
-5. Generate the Nuveris projections through which a proxy will perceive and act.
+5. Generate the Lasm projections through which a proxy will perceive and act.
 6. Author conformance claims, perturbations, evidence requirements, and attribution rules.
 7. Replay known-good, known-bad, and legitimate alternate episodes.
 8. Run agentic proxies and inspect whether failures reveal problems in the proxy or elsewhere in the binding.
@@ -341,7 +340,7 @@ This sequence builds organizational capability first. Benchmark credibility beco
 - **Fossilizing current practice:** conformance must remain sourced and contestable rather than equating “current” with “correct.”
 - **Confusing documentation with reality:** a written policy is one source, not automatically the whole operational truth.
 - **Overfitting Lasm to one episode:** the assembly should preserve reusable meaning without pretending to model the entire company.
-- **Letting Nuveris hide semantic loss:** a polished skill or tool surface can still project the wrong distinction or authority.
+- **Letting a projection hide semantic loss:** a polished skill or tool surface can still project the wrong distinction or authority.
 - **Treating every failure as agent failure:** source, assembly, projection, process, external system, and evaluator defects must remain first-class findings.
 - **Premature generalization:** public schemas should be extracted from several authentic cases rather than imagined before conformance work.
 - **Exporting Servco as a universal norm:** other companies need a method for validating their reality, not an obligation to copy Servco's.
@@ -351,7 +350,7 @@ This sequence builds organizational capability first. Benchmark credibility beco
 
 ## Decisions Suggested by This Reframing
 
-1. Define Auto Bench first as the conformance harness for the Servco–Lasm–Nuveris binding.
+1. Define Auto Bench first as the conformance workbench that evaluates the Servco-derived Lasm.
 2. Treat Servco's lived processes and accountable practitioners as the source reference, not as subjects awaiting an external benchmark.
 3. Make structured divergence findings more important than aggregate agent scores.
 4. Use FrontierCode's methods to harden conformance claims and evaluators, not to force the project into a leaderboard product.
@@ -362,13 +361,13 @@ This sequence builds organizational capability first. Benchmark credibility beco
 
 ## Open Questions
 
-- Which Servco process offers the best first test of the full reality-to-Lasm-to-Nuveris-to-outcome chain?
+- Which Servco process offers the best first test of the full reality-to-Lasm-to-outcome chain?
 - What evidence is sufficient to say a Lasm entry conforms to lived practice?
 - Who has authority to resolve disagreement among policy, system behavior, local practice, and customer commitment?
 - How should conformance cases distinguish a tolerated workaround from a legitimate operational rule?
-- Which Nuveris projections should be generated mechanically from Lasm, and which require authored interpretation?
+- Which Lasm projections should be generated mechanically from the LogicalAssembly, and which require authored interpretation?
 - What minimum evaluator reach makes a Lasm slice sufficiently load-bearing for agentic steering?
-- How should findings feed changes back into Lasm, Nuveris, source systems, training, or the underlying process?
+- How should findings feed changes back into Lasm, source systems, training, or the underlying process?
 - When has an internal case matured enough to be distilled safely?
 - What aspects of automotive reality are common enough for a public domain pack, and which must always remain organization overlays?
 - Can a public benchmark test organization-specific grounding without rewarding memorization of its synthetic overlay?
@@ -376,7 +375,7 @@ This sequence builds organizational capability first. Benchmark credibility beco
 
 ## Working Hypothesis
 
-The central product is not a benchmark imposed on Servco. It is the capability to compile Servco's load-bearing operational reality into Lasm, project and enforce it through Nuveris, and continuously test that agentic conduct and resulting state conform to it.
+The central product is not a benchmark imposed on Servco. It is the capability to compile Servco's load-bearing operational reality into Lasm, project and enforce it through agent-facing surfaces, and continuously test that agentic conduct and resulting state conform to it.
 
 Auto Bench is the workbench on which that binding is exercised, challenged, diagnosed, and improved.
 
