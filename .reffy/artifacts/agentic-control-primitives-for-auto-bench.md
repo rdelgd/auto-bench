@@ -50,7 +50,7 @@ Telemetry remains necessary, but as evidence rather than purpose. The stack shou
 
 ### Logical Assemblies As The Semantic Substrate
 
-Durable Forms proposes a **LogicalAssembly** (Lasm) as an explicit, maintained representation of the domain meaning on which an organization acts. It is composed of six kinds of entry:
+The Durable Forms esssay proposes a **LogicalAssembly** (Lasm) as an explicit, maintained representation of the domain meaning on which an organization acts. It is composed of six kinds of entry:
 
 - **Concepts** define the distinctions the organization depends on.
 - **Relations** define how those concepts compose.
@@ -234,16 +234,27 @@ These markers should exist only where they help Auto Bench establish reality, co
 - Is Auto Bench primarily a benchmark dataset, a reality-validation protocol, a simulation environment, or a combination of all three?
 <!-- I'm leaning toward a combination of all three. See ideas here for reference: .reffy/artifacts/hle-template-for-a-generalized-reality-benchmark.md -->
 - Should an Auto Bench fixture carry a complete LogicalAssembly slice, or only stable references to the entries and projections exercised by the episode?
+<!-- only stable references -->
 - What minimum evaluative reach makes a LogicalAssembly slice sufficiently load-bearing for benchmark use?
+<!-- as complete as possible reach given the use case as revealed through use. load-bearing is a property that is discovered, even when it's confidently asserted in the beginning -->
 - How should Auto Bench distinguish a stale assembly entry from a lossy projection, incorrect agent inference, or weak Lasm control surface?
+<!-- Lasm should never be a weak control surface. It's definition is as the most authoritative projection of business reality, thus Auto Bench should assume lossy projections or incorrect inferences, never a "weak" Lasm -->
 - Which Lasm evaluations should run as hard gates during an episode, and which should remain benchmark observations?
+<!-- The most load bearing are the gates, everything else is a benchmark observation -->
 - Can model, harness, skill, or application replacement serve as a practical test that organizational meaning is genuinely runtime-independent?
+<!-- sure, but weighted properly as something that lives in code and needs to be validated in the real world -->
 - What is the minimum evidence Auto Bench must own, and what generic telemetry should it accept from external platforms?
+<!-- Auto Bench at a minimum needs to see evidence that load bearing agent actions are included in the telemetry, or derived from it -->
 - What automotive workflows are complex enough to reveal failures of reality representation, agent grounding, state transition, or outcome validation?
+<!-- At Servco, the overall data strategy is to decompose the data of the business into 360 domains. Each of those domains, or the equivalents in other businesses, should contain complex workflows with sufficient complexity -->
 - Should Auto Bench define canonical harness fixtures, skills, and MCP servers as part of the benchmark fixture?
+<!-- No, these aspects will become commodified or incorporated into protocols -->
 - How much of the benchmark should measure business outcome versus control-layer legibility?
+<!-- Business outcome is what matters. The benchmark should just measure that -->
 - What does a "good" agentic trace look like in Servco's actual operating context?
+<!-- To be determined -->
 - Can Auto Bench become a way to evaluate the quality of agent-facing abstractions before they are deployed into production workflows?
+<!-- That's the idea. As more agentic experiences are either built in-house or sold to Servco (or any business) there will be demand for precisely an evaluation of agent-facing abstractions -->
 
 ## Working Hypothesis
 
