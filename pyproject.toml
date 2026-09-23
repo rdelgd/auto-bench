@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lasm-core"
+version = "0.2.0"
+description = "Sans I/O library for modeling operational meaning and evaluating agentic conformance"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "UNLICENSED" }
+dependencies = []
+classifiers = [
+    "Private :: Do Not Upload",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+
+[dependency-groups]
+dev = [
+    "jsonschema>=4.23",
+    "mypy>=1.13",
+    "pytest>=8.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lasm_core"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/lasm_core",
+    "tests",
+    "scripts",
+    "docs",
+    "README.md",
+    "pyproject.toml",
+    "uv.lock",
+]
+exclude = ["tests/corpus/generator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src/lasm_core", "scripts"]

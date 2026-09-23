@@ -1,6 +1,13 @@
-node_modules/
+# Python
+__pycache__/
+*.py[cod]
+.venv/
 dist/
-*.tsbuildinfo
+build/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+
 .env
 
 .reffy/state/

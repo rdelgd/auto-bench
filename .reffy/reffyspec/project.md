@@ -18,19 +18,22 @@ The stack should answer:
 - Was the resulting business state acceptable, including delayed effects and side effects?
 - Can evidence locate divergence in the reality model, a projection, a control surface, agent conduct, an external system, or the evaluator?
 
-The reusable implementation is `@lasm/core`. It provides TypeScript Sans I/O vocabulary and deterministic validation and evaluation mechanics for materialized LogicalAssembly slices, projections, Auto Bench episodes, state transitions, outcomes, and evidence.
+The reusable implementation is the Python distribution `lasm-core`, imported as `lasm_core`. It provides Sans I/O vocabulary and deterministic validation and evaluation mechanics for materialized LogicalAssembly slices, projections, Auto Bench episodes, state transitions, outcomes, and evidence, plus a versioned JSON interchange contract. It replaced the TypeScript package `@lasm/core` in the `migrate-lasm-core-to-python` change; archived changes and artifacts retain the earlier identity as history.
 
 ## Tech Stack
-- TypeScript is the primary implementation language.
-- The package identity is `@lasm/core`.
-- Node.js-compatible tooling is used for development and tests.
+- Python 3.11+ is the implementation language; the development interpreter is pinned in `.python-version`.
+- The distribution is `lasm-core`, imported as `lasm_core`, with reference fixtures in `lasm_core.fixtures`.
+- The core has no runtime dependencies. `uv` manages the environment; `pytest`, `mypy` (strict), and `jsonschema` are development dependencies, and `hatchling` is the build backend.
+- Version 1 JSON Schemas (Draft 2020-12) are rendered from `lasm_core._schema_v1` into `src/lasm_core/schemas/v1/` by `scripts/write_schemas.py`.
+- Node.js is not required. `tests/corpus/generator/` retains the TypeScript reference generator as provenance only.
 - Markdown and ReffySpec are used for planning and project context.
 - Live MCP integration, live agent execution, source-system ingestion, persistence, and UI are adapter concerns.
 
 ## Project Conventions
 
 ### Code Style
-- Prefer explicit, serializable domain types over loosely shaped objects.
+- Prefer explicit, serializable domain types over loosely shaped objects. Records are `TypedDict`s keyed by the camelCase wire names; functions and modules use snake_case.
+- Optional record fields are omitted rather than set to `None`; core functions never mutate caller inputs.
 - Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, evidence event, evaluation, finding, handoff, and outcome.
 - Use small modules with clear boundaries.
 - Prefer deterministic functions that accept materialized values and return materialized values.
@@ -49,6 +52,10 @@ The reusable implementation is `@lasm/core`. It provides TypeScript Sans I/O voc
 
 ### Testing Strategy
 - Core behavior is covered with unit tests for validation, evidence normalization, and evaluation functions.
+- `tests/corpus/reference/` holds outputs recorded from the retired TypeScript implementation and is never edited. `tests/test_parity.py` must match them after the reviewed deviations in `tests/corpus/deviations.json` are applied. Never regenerate expected outputs from Python. A deliberate behavior change adds a deviation with its reason.
+- Use Python semantics (for example, `str.strip()`, `str()` number spelling, and numeric equality) rather than emulating JavaScript.
+- Interchange tests check that the checked-in schemas, the pure decoder, and `jsonschema` agree.
+- Sans I/O tests run the core with file, environment, network, process, and clock access patched to fail.
 - Fixture tests exercise complete conformance cases without filesystem, network, database, clock, or live MCP dependencies.
 - Tests prefer representative automotive workflows where domain meaning matters.
 - Tests cover stale or incoherent assembly entries, lossy projections, incorrect state references, prohibited transitions, unacceptable outcomes, and insufficient attribution evidence.

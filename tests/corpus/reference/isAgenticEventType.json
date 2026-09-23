@@ -1,0 +1,56 @@
+[
+  {
+    "id": "is-event-type.known",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \"intent.submitted\".",
+    "args": [
+      "intent.submitted"
+    ],
+    "expected": true
+  },
+  {
+    "id": "is-event-type.known-last",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \"reality.validation_assessed\".",
+    "args": [
+      "reality.validation_assessed"
+    ],
+    "expected": true
+  },
+  {
+    "id": "is-event-type.unknown",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \"custom.event\".",
+    "args": [
+      "custom.event"
+    ],
+    "expected": false
+  },
+  {
+    "id": "is-event-type.empty",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \"\".",
+    "args": [
+      ""
+    ],
+    "expected": false
+  },
+  {
+    "id": "is-event-type.case-sensitive",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \"Intent.Submitted\".",
+    "args": [
+      "Intent.Submitted"
+    ],
+    "expected": false
+  },
+  {
+    "id": "is-event-type.whitespace",
+    "function": "isAgenticEventType",
+    "description": "Event-type membership for \" intent.submitted\".",
+    "args": [
+      " intent.submitted"
+    ],
+    "expected": false
+  }
+]

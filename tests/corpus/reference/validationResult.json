@@ -1,0 +1,90 @@
+[
+  {
+    "id": "validation-result.empty",
+    "function": "validationResult",
+    "description": "No findings is valid.",
+    "args": [
+      []
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "validation-result.warning-only",
+    "function": "validationResult",
+    "description": "Warnings keep a result valid.",
+    "args": [
+      [
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        }
+      ]
+    ],
+    "expected": {
+      "valid": true,
+      "findings": [
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        }
+      ]
+    }
+  },
+  {
+    "id": "validation-result.mixed",
+    "function": "validationResult",
+    "description": "Errors invalidate and finding order is kept.",
+    "args": [
+      [
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        },
+        {
+          "code": "x.error",
+          "severity": "error",
+          "path": "x",
+          "message": "An error."
+        },
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        }
+      ]
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        },
+        {
+          "code": "x.error",
+          "severity": "error",
+          "path": "x",
+          "message": "An error."
+        },
+        {
+          "code": "x.warning",
+          "severity": "warning",
+          "path": "y",
+          "message": "A warning."
+        }
+      ]
+    }
+  }
+]

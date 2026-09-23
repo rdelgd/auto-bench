@@ -1,0 +1,187 @@
+{
+  "description": "Intentional differences from the TypeScript reference outputs in reference/. Each entry applies JSON Patch operations (add, remove, replace) to that case's recorded expected value. Every entry was reviewed; never add one to hide an unexplained mismatch.",
+  "change": "adopt-python-native-text-and-number-semantics",
+  "cases": {
+    "normalize.max-safe-sentinel": {
+      "reason": "Unsequenced events sort after every numbered event. The TypeScript sentinel (Number.MAX_SAFE_INTEGER) made an explicit 9007199254740991 tie with them.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/events/1/subjectId",
+          "value": "max-safe"
+        },
+        {
+          "op": "replace",
+          "path": "/events/2/subjectId",
+          "value": "omitted-first"
+        }
+      ]
+    },
+    "normalize.findings-use-input-indices": {
+      "reason": "Blank actors use str.strip(). U+FEFF is not Python whitespace, so the actor '\\u00a0\\ufeff' is present and its event is admitted.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/events",
+          "value": [
+            {
+              "type": "intent.submitted",
+              "position": 1,
+              "actorId": "customer",
+              "evidence": {}
+            },
+            {
+              "type": "state.observed",
+              "position": 2,
+              "actorId": "\u00a0\ufeff",
+              "evidence": {}
+            },
+            {
+              "type": "state.observed",
+              "position": 3,
+              "actorId": "\u200b",
+              "evidence": {}
+            },
+            {
+              "type": "task.completed",
+              "position": 4,
+              "actorId": "agent",
+              "evidence": {}
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/findings",
+          "value": [
+            {
+              "code": "trace.missing_actor",
+              "severity": "error",
+              "path": "trace[2].actorId",
+              "message": "Trace events require an actor identifier."
+            },
+            {
+              "code": "trace.unknown_event_type",
+              "severity": "error",
+              "path": "trace[3].type",
+              "message": "Unknown agentic event type: not.real"
+            },
+            {
+              "code": "trace.unknown_event_type",
+              "severity": "error",
+              "path": "trace[1].type",
+              "message": "Unknown agentic event type: <empty>"
+            }
+          ]
+        }
+      ]
+    },
+    "assembly.blank-strings": {
+      "reason": "Required strings use str.strip(). U+FEFF is not Python whitespace, so '\\u00a0\\ufeff\\u2028' is non-empty.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/findings",
+          "value": [
+            {
+              "code": "fixture.required",
+              "severity": "error",
+              "path": "assembly.id",
+              "message": "A non-empty value is required."
+            },
+            {
+              "code": "fixture.required",
+              "severity": "error",
+              "path": "assembly.version",
+              "message": "A non-empty value is required."
+            },
+            {
+              "code": "fixture.required",
+              "severity": "error",
+              "path": "assembly.title",
+              "message": "A non-empty value is required."
+            }
+          ]
+        }
+      ]
+    },
+    "assembly.non-whitespace-invisible": {
+      "reason": "Required strings use str.strip(). U+001C and U+0085 are Python whitespace, so those values are empty.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/valid",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/findings",
+          "value": [
+            {
+              "code": "fixture.required",
+              "severity": "error",
+              "path": "assembly.version",
+              "message": "A non-empty value is required."
+            },
+            {
+              "code": "fixture.required",
+              "severity": "error",
+              "path": "assembly.title",
+              "message": "A non-empty value is required."
+            }
+          ]
+        }
+      ]
+    },
+    "trace.sequence-spelling": {
+      "reason": "Duplicate-sequence messages use Python number spelling (str(1e-07) is '1e-07'), not JavaScript's.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/findings/0/message",
+          "value": "Duplicate id: 1e-07"
+        },
+        {
+          "op": "replace",
+          "path": "/findings/3/message",
+          "value": "Duplicate id: 1e-06"
+        }
+      ]
+    },
+    "trace.actor-and-type-problems": {
+      "reason": "Blank actors use str.strip(). U+FEFF is not Python whitespace, so the actor '\\ufeff' is present.",
+      "ops": [
+        {
+          "op": "replace",
+          "path": "/findings",
+          "value": [
+            {
+              "code": "trace.unknown_event_type",
+              "severity": "error",
+              "path": "trace[0].type",
+              "message": "Unknown agentic event type: <empty>"
+            },
+            {
+              "code": "trace.missing_actor",
+              "severity": "error",
+              "path": "trace[0].actorId",
+              "message": "Trace events require an actor identifier."
+            },
+            {
+              "code": "trace.missing_actor",
+              "severity": "error",
+              "path": "trace[1].actorId",
+              "message": "Trace events require an actor identifier."
+            },
+            {
+              "code": "trace.unknown_event_type",
+              "severity": "error",
+              "path": "trace[4].type",
+              "message": "Unknown agentic event type: TASK.COMPLETED"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

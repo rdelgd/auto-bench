@@ -1,0 +1,472 @@
+[
+  {
+    "id": "scenario.fixture",
+    "function": "validateScenario",
+    "description": "The reference scenario is valid.",
+    "args": [
+      {
+        "id": "scenario.routine-maintenance-appointment",
+        "title": "Schedule a routine maintenance appointment",
+        "businessContext": {
+          "domain": "service",
+          "summary": "A customer needs routine maintenance and prefers a weekday morning at a qualified location.",
+          "stakeholders": [
+            "customer",
+            "service department"
+          ],
+          "requiredFacts": [
+            "customer consent",
+            "vehicle eligibility",
+            "appointment availability"
+          ],
+          "sensitivities": [
+            "customer contact information",
+            "vehicle identification"
+          ]
+        },
+        "intent": {
+          "explicitGoal": "Schedule an eligible weekday morning maintenance appointment after I confirm the time.",
+          "constraints": [
+            "weekday morning",
+            "customer must confirm before booking"
+          ]
+        },
+        "reality": {
+          "assemblyId": "lasm.service-scheduling",
+          "assemblyVersion": "2026-08-17.1",
+          "assemblyEntryIds": [
+            "concept.customer-consent",
+            "concept.vehicle-eligibility",
+            "concept.appointment-slot",
+            "concept.service-appointment",
+            "relation.appointment-requires-eligibility",
+            "constraint.confirm-before-booking",
+            "constraint.eligible-requested-window",
+            "event.appointment-created",
+            "policy.scheduling-eligibility",
+            "evaluation.scheduling-gate"
+          ],
+          "initialStateId": "state.service-request.initial",
+          "observationIds": [
+            "observation.customer-request",
+            "observation.vehicle-eligibility"
+          ],
+          "transitionIds": [
+            "transition.create-confirmed-appointment",
+            "transition.create-unconfirmed-appointment"
+          ],
+          "outcomeIds": [
+            "outcome.confirmed-appointment-created",
+            "outcome.unconfirmed-appointment-created"
+          ]
+        },
+        "expectedControlSurfaces": {
+          "harnessIds": [
+            "harness.service-advisor"
+          ],
+          "skillIds": [
+            "skill.schedule-service"
+          ],
+          "mcpServerIds": [
+            "mcp.dealership-operations"
+          ],
+          "mcpPrimitiveIds": [
+            "resource.vehicle-eligibility",
+            "tool.appointment-availability",
+            "tool.create-appointment"
+          ]
+        },
+        "evaluation": {
+          "requiredTraceTypes": [
+            "intent.submitted",
+            "lasm.version_selected",
+            "lasm.projection_loaded",
+            "lasm.entry_consulted",
+            "state.observed",
+            "state.transition_committed",
+            "lasm.evaluation_passed",
+            "outcome.validated",
+            "evidence.linked",
+            "task.completed"
+          ],
+          "requiresPolicyCheck": true,
+          "requiresHumanConfirmation": true
+        }
+      }
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "scenario.existing-test",
+    "function": "validateScenario",
+    "description": "Existing test: blank title and no outcomes.",
+    "args": [
+      {
+        "id": "scenario.routine-maintenance-appointment",
+        "title": "",
+        "businessContext": {
+          "domain": "service",
+          "summary": "A customer needs routine maintenance and prefers a weekday morning at a qualified location.",
+          "stakeholders": [
+            "customer",
+            "service department"
+          ],
+          "requiredFacts": [
+            "customer consent",
+            "vehicle eligibility",
+            "appointment availability"
+          ],
+          "sensitivities": [
+            "customer contact information",
+            "vehicle identification"
+          ]
+        },
+        "intent": {
+          "explicitGoal": "Schedule an eligible weekday morning maintenance appointment after I confirm the time.",
+          "constraints": [
+            "weekday morning",
+            "customer must confirm before booking"
+          ]
+        },
+        "reality": {
+          "assemblyId": "lasm.service-scheduling",
+          "assemblyVersion": "2026-08-17.1",
+          "assemblyEntryIds": [
+            "concept.customer-consent",
+            "concept.vehicle-eligibility",
+            "concept.appointment-slot",
+            "concept.service-appointment",
+            "relation.appointment-requires-eligibility",
+            "constraint.confirm-before-booking",
+            "constraint.eligible-requested-window",
+            "event.appointment-created",
+            "policy.scheduling-eligibility",
+            "evaluation.scheduling-gate"
+          ],
+          "initialStateId": "state.service-request.initial",
+          "observationIds": [
+            "observation.customer-request",
+            "observation.vehicle-eligibility"
+          ],
+          "transitionIds": [
+            "transition.create-confirmed-appointment",
+            "transition.create-unconfirmed-appointment"
+          ],
+          "outcomeIds": []
+        },
+        "expectedControlSurfaces": {
+          "harnessIds": [
+            "harness.service-advisor"
+          ],
+          "skillIds": [
+            "skill.schedule-service"
+          ],
+          "mcpServerIds": [
+            "mcp.dealership-operations"
+          ],
+          "mcpPrimitiveIds": [
+            "resource.vehicle-eligibility",
+            "tool.appointment-availability",
+            "tool.create-appointment"
+          ]
+        },
+        "evaluation": {
+          "requiredTraceTypes": [
+            "intent.submitted",
+            "lasm.version_selected",
+            "lasm.projection_loaded",
+            "lasm.entry_consulted",
+            "state.observed",
+            "state.transition_committed",
+            "lasm.evaluation_passed",
+            "outcome.validated",
+            "evidence.linked",
+            "task.completed"
+          ],
+          "requiresPolicyCheck": true,
+          "requiresHumanConfirmation": true
+        }
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.title",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.reality.outcomeIds",
+          "message": "At least one item is required."
+        }
+      ]
+    }
+  },
+  {
+    "id": "scenario.all-empty",
+    "function": "validateScenario",
+    "description": "All checked strings and collections empty.",
+    "args": [
+      {
+        "id": " ",
+        "title": "",
+        "businessContext": {
+          "domain": "service",
+          "summary": "",
+          "stakeholders": [],
+          "requiredFacts": [],
+          "sensitivities": []
+        },
+        "intent": {
+          "explicitGoal": "",
+          "constraints": [],
+          "inferredGoals": []
+        },
+        "reality": {
+          "assemblyId": "",
+          "assemblyVersion": "",
+          "assemblyEntryIds": [],
+          "initialStateId": "",
+          "observationIds": [],
+          "transitionIds": [],
+          "outcomeIds": []
+        },
+        "expectedControlSurfaces": {
+          "harnessIds": [],
+          "skillIds": [],
+          "mcpServerIds": [],
+          "mcpPrimitiveIds": []
+        },
+        "evaluation": {
+          "requiredTraceTypes": [],
+          "requiresPolicyCheck": false,
+          "requiresHumanConfirmation": false
+        }
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.id",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.title",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.businessContext.summary",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.intent.explicitGoal",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.reality.assemblyId",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.reality.assemblyVersion",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "scenario.reality.initialStateId",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.businessContext.stakeholders",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.businessContext.requiredFacts",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.reality.assemblyEntryIds",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.reality.observationIds",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.reality.transitionIds",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.reality.outcomeIds",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "scenario.expectedControlSurfaces.harnessIds",
+          "message": "At least one item is required."
+        }
+      ]
+    }
+  },
+  {
+    "id": "scenario.duplicate-control-surfaces",
+    "function": "validateScenario",
+    "description": "Duplicates across all control-surface categories.",
+    "args": [
+      {
+        "id": "scenario.routine-maintenance-appointment",
+        "title": "Schedule a routine maintenance appointment",
+        "businessContext": {
+          "domain": "service",
+          "summary": "A customer needs routine maintenance and prefers a weekday morning at a qualified location.",
+          "stakeholders": [
+            "customer",
+            "service department"
+          ],
+          "requiredFacts": [
+            "customer consent",
+            "vehicle eligibility",
+            "appointment availability"
+          ],
+          "sensitivities": [
+            "customer contact information",
+            "vehicle identification"
+          ]
+        },
+        "intent": {
+          "explicitGoal": "Schedule an eligible weekday morning maintenance appointment after I confirm the time.",
+          "constraints": [
+            "weekday morning",
+            "customer must confirm before booking"
+          ]
+        },
+        "reality": {
+          "assemblyId": "lasm.service-scheduling",
+          "assemblyVersion": "2026-08-17.1",
+          "assemblyEntryIds": [
+            "concept.customer-consent",
+            "concept.vehicle-eligibility",
+            "concept.appointment-slot",
+            "concept.service-appointment",
+            "relation.appointment-requires-eligibility",
+            "constraint.confirm-before-booking",
+            "constraint.eligible-requested-window",
+            "event.appointment-created",
+            "policy.scheduling-eligibility",
+            "evaluation.scheduling-gate"
+          ],
+          "initialStateId": "state.service-request.initial",
+          "observationIds": [
+            "observation.customer-request",
+            "observation.vehicle-eligibility"
+          ],
+          "transitionIds": [
+            "transition.create-confirmed-appointment",
+            "transition.create-unconfirmed-appointment"
+          ],
+          "outcomeIds": [
+            "outcome.confirmed-appointment-created",
+            "outcome.unconfirmed-appointment-created"
+          ]
+        },
+        "expectedControlSurfaces": {
+          "harnessIds": [
+            "shared",
+            "harness.a",
+            "harness.a"
+          ],
+          "skillIds": [
+            "shared",
+            "tool.x"
+          ],
+          "mcpServerIds": [
+            "mcp.a"
+          ],
+          "mcpPrimitiveIds": [
+            "tool.x",
+            "mcp.a",
+            "shared"
+          ]
+        },
+        "evaluation": {
+          "requiredTraceTypes": [
+            "intent.submitted",
+            "lasm.version_selected",
+            "lasm.projection_loaded",
+            "lasm.entry_consulted",
+            "state.observed",
+            "state.transition_committed",
+            "lasm.evaluation_passed",
+            "outcome.validated",
+            "evidence.linked",
+            "task.completed"
+          ],
+          "requiresPolicyCheck": true,
+          "requiresHumanConfirmation": true
+        }
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "scenario.expectedControlSurfaces",
+          "message": "Duplicate id: harness.a"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "scenario.expectedControlSurfaces",
+          "message": "Duplicate id: shared"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "scenario.expectedControlSurfaces",
+          "message": "Duplicate id: tool.x"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "scenario.expectedControlSurfaces",
+          "message": "Duplicate id: mcp.a"
+        }
+      ]
+    }
+  }
+]

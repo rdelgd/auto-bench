@@ -1,0 +1,179 @@
+[
+  {
+    "id": "observation.fixture",
+    "function": "validateActorObservation",
+    "description": "The reference observation is valid.",
+    "args": [
+      {
+        "id": "observation.customer-request",
+        "actorId": "customer",
+        "fieldIds": [
+          "field.customer-consent",
+          "field.requested-slot"
+        ],
+        "observedValues": {
+          "consent": "unconfirmed",
+          "requestedSlot": "weekday morning"
+        }
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "observation.failures",
+    "function": "validateActorObservation",
+    "description": "Blank ids, empty fields.",
+    "args": [
+      {
+        "id": "",
+        "actorId": " ",
+        "fieldIds": [],
+        "observedValues": {}
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "observation.id",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "observation.actorId",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "observation.fieldIds",
+          "message": "At least one item is required."
+        }
+      ]
+    }
+  },
+  {
+    "id": "observation.unknown-fields",
+    "function": "validateActorObservation",
+    "description": "Unknown state fields.",
+    "args": [
+      {
+        "id": "observation.customer-request",
+        "actorId": "customer",
+        "fieldIds": [
+          "field.missing",
+          "field.customer-consent",
+          "field.other"
+        ],
+        "observedValues": {
+          "consent": "unconfirmed",
+          "requestedSlot": "weekday morning"
+        }
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "observation.unknown_state_field",
+          "severity": "error",
+          "path": "observation.fieldIds[0]",
+          "message": "Unknown state field: field.missing"
+        },
+        {
+          "code": "observation.unknown_state_field",
+          "severity": "error",
+          "path": "observation.fieldIds[2]",
+          "message": "Unknown state field: field.other"
+        }
+      ]
+    }
+  }
+]

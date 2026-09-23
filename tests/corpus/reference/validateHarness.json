@@ -1,0 +1,1447 @@
+[
+  {
+    "id": "harness.fixture",
+    "function": "validateHarness",
+    "description": "The reference harness is valid against assembly and state.",
+    "args": [
+      {
+        "id": "harness.service-advisor",
+        "name": "Service Advisor Workflow Harness",
+        "purpose": "Mediates customer scheduling work with scoped dealership-system access.",
+        "interactionMode": "interactive",
+        "contextSurfaces": [
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.customer-consent",
+                "concept.appointment-slot"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.requested-slot"
+              ]
+            }
+          },
+          {
+            "id": "context.service-policy",
+            "description": "Service scheduling policy",
+            "sensitivity": "internal",
+            "projection": {
+              "assemblyEntryIds": [
+                "constraint.confirm-before-booking",
+                "constraint.eligible-requested-window",
+                "policy.scheduling-eligibility",
+                "evaluation.scheduling-gate"
+              ]
+            }
+          }
+        ],
+        "affordances": [
+          "read appointment availability",
+          "propose an appointment",
+          "request customer confirmation"
+        ],
+        "permissionModel": {
+          "defaultLevel": "read-only",
+          "scopedPermissions": [
+            "appointments:read",
+            "appointments:create"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "event.appointment-created",
+              "policy.scheduling-eligibility"
+            ],
+            "stateFieldIds": [
+              "field.appointment-status"
+            ]
+          }
+        },
+        "approvalFlow": {
+          "requiredFor": [
+            "create customer appointment"
+          ],
+          "approverRoles": [
+            "customer"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "concept.customer-consent",
+              "constraint.confirm-before-booking"
+            ],
+            "stateFieldIds": [
+              "field.customer-consent"
+            ]
+          }
+        },
+        "handoffBoundaries": [
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "policy.scheduling-eligibility"
+              ]
+            }
+          }
+        ],
+        "projection": {
+          "assemblyEntryIds": [
+            "concept.service-appointment",
+            "policy.scheduling-eligibility"
+          ],
+          "stateFieldIds": [
+            "field.appointment-status"
+          ]
+        }
+      },
+      {
+        "id": "lasm.service-scheduling",
+        "version": "2026-08-17.1",
+        "title": "Service Scheduling LogicalAssembly",
+        "description": "The minimum operational meaning required to schedule a confirmed routine-maintenance appointment.",
+        "provenance": [
+          {
+            "id": "source.service-policy",
+            "kind": "policy",
+            "title": "Service scheduling policy",
+            "locator": "policy://service/scheduling",
+            "owner": "service operations",
+            "version": "2026.08",
+            "status": "current"
+          },
+          {
+            "id": "source.appointment-schema",
+            "kind": "schema",
+            "title": "Appointment system schema",
+            "locator": "schema://appointments/current",
+            "owner": "automotive technology",
+            "version": "4",
+            "status": "current"
+          },
+          {
+            "id": "source.service-advisor-judgment",
+            "kind": "judgment",
+            "title": "Service advisor acceptance review",
+            "locator": "review://service-advisors/routine-maintenance",
+            "owner": "service advisors",
+            "observedAt": "2026-08-15T00:00:00Z",
+            "status": "current"
+          }
+        ],
+        "concepts": [
+          {
+            "id": "concept.customer-consent",
+            "kind": "concept",
+            "name": "Customer consent",
+            "description": "The customer's explicit approval of a proposed appointment time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ]
+          },
+          {
+            "id": "concept.vehicle-eligibility",
+            "kind": "concept",
+            "name": "Vehicle eligibility",
+            "description": "Whether the vehicle and requested service can be handled by the selected location.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.appointment-slot",
+            "kind": "concept",
+            "name": "Appointment slot",
+            "description": "An available service time satisfying the requested scheduling window.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.service-appointment",
+            "kind": "concept",
+            "name": "Service appointment",
+            "description": "A committed service visit for an eligible vehicle at a confirmed time.",
+            "sourceIds": [
+              "source.appointment-schema",
+              "source.service-advisor-judgment"
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "id": "relation.appointment-requires-eligibility",
+            "kind": "relation",
+            "name": "Appointment requires eligibility",
+            "description": "A service appointment may be created only for an eligible vehicle.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "fromConceptId": "concept.service-appointment",
+            "toConceptId": "concept.vehicle-eligibility",
+            "predicate": "requires"
+          }
+        ],
+        "constraints": [
+          {
+            "id": "constraint.confirm-before-booking",
+            "kind": "constraint",
+            "name": "Confirm before booking",
+            "description": "A customer appointment cannot be committed until the customer confirms the proposed time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "concept.customer-consent",
+              "concept.service-appointment"
+            ],
+            "rule": "customer consent must be confirmed before appointment creation"
+          },
+          {
+            "id": "constraint.eligible-requested-window",
+            "kind": "constraint",
+            "name": "Eligible requested window",
+            "description": "The chosen slot must satisfy vehicle eligibility and the requested scheduling window.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "appliesToEntryIds": [
+              "concept.vehicle-eligibility",
+              "concept.appointment-slot"
+            ],
+            "rule": "slot must be eligible and within the requested window"
+          }
+        ],
+        "events": [
+          {
+            "id": "event.appointment-created",
+            "kind": "event",
+            "name": "Appointment created",
+            "description": "A confirmed appointment becomes committed in the scheduling system.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ],
+            "subjectConceptIds": [
+              "concept.service-appointment"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "policy.scheduling-eligibility",
+            "kind": "policy",
+            "name": "Scheduling eligibility policy",
+            "description": "Commit only eligible appointments that match the requested window and have customer confirmation.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "event.appointment-created"
+            ],
+            "authorityRoles": [
+              "customer",
+              "service advisor"
+            ],
+            "commitment": "create an appointment only after eligibility and customer confirmation are established"
+          }
+        ],
+        "evaluations": [
+          {
+            "id": "evaluation.scheduling-gate",
+            "kind": "evaluation",
+            "name": "Scheduling gate",
+            "description": "Checks eligibility, requested-window fit, and customer confirmation before appointment creation.",
+            "sourceIds": [
+              "source.service-policy"
+            ],
+            "mode": "gate",
+            "addressedEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "policy.scheduling-eligibility"
+            ],
+            "evaluatorId": "service-scheduling-gate-v1"
+          }
+        ]
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "harness.standalone",
+    "function": "validateHarness",
+    "description": "Without assembly or state, references are not resolved.",
+    "args": [
+      {
+        "id": "harness.service-advisor",
+        "name": "Service Advisor Workflow Harness",
+        "purpose": "Mediates customer scheduling work with scoped dealership-system access.",
+        "interactionMode": "interactive",
+        "contextSurfaces": [
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.customer-consent",
+                "concept.appointment-slot"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.requested-slot"
+              ]
+            }
+          },
+          {
+            "id": "context.service-policy",
+            "description": "Service scheduling policy",
+            "sensitivity": "internal",
+            "projection": {
+              "assemblyEntryIds": [
+                "constraint.confirm-before-booking",
+                "constraint.eligible-requested-window",
+                "policy.scheduling-eligibility",
+                "evaluation.scheduling-gate"
+              ]
+            }
+          }
+        ],
+        "affordances": [
+          "read appointment availability",
+          "propose an appointment",
+          "request customer confirmation"
+        ],
+        "permissionModel": {
+          "defaultLevel": "read-only",
+          "scopedPermissions": [
+            "appointments:read",
+            "appointments:create"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "event.appointment-created",
+              "policy.scheduling-eligibility"
+            ],
+            "stateFieldIds": [
+              "field.appointment-status"
+            ]
+          }
+        },
+        "approvalFlow": {
+          "requiredFor": [
+            "create customer appointment"
+          ],
+          "approverRoles": [
+            "customer"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "concept.customer-consent",
+              "constraint.confirm-before-booking"
+            ],
+            "stateFieldIds": [
+              "field.customer-consent"
+            ]
+          }
+        },
+        "handoffBoundaries": [
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "policy.scheduling-eligibility"
+              ]
+            }
+          }
+        ],
+        "projection": {
+          "assemblyEntryIds": [
+            "missing"
+          ],
+          "stateFieldIds": [
+            "missing"
+          ]
+        }
+      }
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "harness.assembly-only",
+    "function": "validateHarness",
+    "description": "With an assembly only, state references are not resolved.",
+    "args": [
+      {
+        "id": "harness.service-advisor",
+        "name": "Service Advisor Workflow Harness",
+        "purpose": "Mediates customer scheduling work with scoped dealership-system access.",
+        "interactionMode": "interactive",
+        "contextSurfaces": [
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.customer-consent",
+                "concept.appointment-slot"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.requested-slot"
+              ]
+            }
+          },
+          {
+            "id": "context.service-policy",
+            "description": "Service scheduling policy",
+            "sensitivity": "internal",
+            "projection": {
+              "assemblyEntryIds": [
+                "constraint.confirm-before-booking",
+                "constraint.eligible-requested-window",
+                "policy.scheduling-eligibility",
+                "evaluation.scheduling-gate"
+              ]
+            }
+          }
+        ],
+        "affordances": [
+          "read appointment availability",
+          "propose an appointment",
+          "request customer confirmation"
+        ],
+        "permissionModel": {
+          "defaultLevel": "read-only",
+          "scopedPermissions": [
+            "appointments:read",
+            "appointments:create"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "event.appointment-created",
+              "policy.scheduling-eligibility"
+            ],
+            "stateFieldIds": [
+              "field.appointment-status"
+            ]
+          }
+        },
+        "approvalFlow": {
+          "requiredFor": [
+            "create customer appointment"
+          ],
+          "approverRoles": [
+            "customer"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "concept.customer-consent",
+              "constraint.confirm-before-booking"
+            ],
+            "stateFieldIds": [
+              "field.customer-consent"
+            ]
+          }
+        },
+        "handoffBoundaries": [
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "policy.scheduling-eligibility"
+              ]
+            }
+          }
+        ],
+        "projection": {
+          "assemblyEntryIds": [
+            "missing"
+          ],
+          "stateFieldIds": [
+            "missing"
+          ]
+        }
+      },
+      {
+        "id": "lasm.service-scheduling",
+        "version": "2026-08-17.1",
+        "title": "Service Scheduling LogicalAssembly",
+        "description": "The minimum operational meaning required to schedule a confirmed routine-maintenance appointment.",
+        "provenance": [
+          {
+            "id": "source.service-policy",
+            "kind": "policy",
+            "title": "Service scheduling policy",
+            "locator": "policy://service/scheduling",
+            "owner": "service operations",
+            "version": "2026.08",
+            "status": "current"
+          },
+          {
+            "id": "source.appointment-schema",
+            "kind": "schema",
+            "title": "Appointment system schema",
+            "locator": "schema://appointments/current",
+            "owner": "automotive technology",
+            "version": "4",
+            "status": "current"
+          },
+          {
+            "id": "source.service-advisor-judgment",
+            "kind": "judgment",
+            "title": "Service advisor acceptance review",
+            "locator": "review://service-advisors/routine-maintenance",
+            "owner": "service advisors",
+            "observedAt": "2026-08-15T00:00:00Z",
+            "status": "current"
+          }
+        ],
+        "concepts": [
+          {
+            "id": "concept.customer-consent",
+            "kind": "concept",
+            "name": "Customer consent",
+            "description": "The customer's explicit approval of a proposed appointment time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ]
+          },
+          {
+            "id": "concept.vehicle-eligibility",
+            "kind": "concept",
+            "name": "Vehicle eligibility",
+            "description": "Whether the vehicle and requested service can be handled by the selected location.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.appointment-slot",
+            "kind": "concept",
+            "name": "Appointment slot",
+            "description": "An available service time satisfying the requested scheduling window.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.service-appointment",
+            "kind": "concept",
+            "name": "Service appointment",
+            "description": "A committed service visit for an eligible vehicle at a confirmed time.",
+            "sourceIds": [
+              "source.appointment-schema",
+              "source.service-advisor-judgment"
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "id": "relation.appointment-requires-eligibility",
+            "kind": "relation",
+            "name": "Appointment requires eligibility",
+            "description": "A service appointment may be created only for an eligible vehicle.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "fromConceptId": "concept.service-appointment",
+            "toConceptId": "concept.vehicle-eligibility",
+            "predicate": "requires"
+          }
+        ],
+        "constraints": [
+          {
+            "id": "constraint.confirm-before-booking",
+            "kind": "constraint",
+            "name": "Confirm before booking",
+            "description": "A customer appointment cannot be committed until the customer confirms the proposed time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "concept.customer-consent",
+              "concept.service-appointment"
+            ],
+            "rule": "customer consent must be confirmed before appointment creation"
+          },
+          {
+            "id": "constraint.eligible-requested-window",
+            "kind": "constraint",
+            "name": "Eligible requested window",
+            "description": "The chosen slot must satisfy vehicle eligibility and the requested scheduling window.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "appliesToEntryIds": [
+              "concept.vehicle-eligibility",
+              "concept.appointment-slot"
+            ],
+            "rule": "slot must be eligible and within the requested window"
+          }
+        ],
+        "events": [
+          {
+            "id": "event.appointment-created",
+            "kind": "event",
+            "name": "Appointment created",
+            "description": "A confirmed appointment becomes committed in the scheduling system.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ],
+            "subjectConceptIds": [
+              "concept.service-appointment"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "policy.scheduling-eligibility",
+            "kind": "policy",
+            "name": "Scheduling eligibility policy",
+            "description": "Commit only eligible appointments that match the requested window and have customer confirmation.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "event.appointment-created"
+            ],
+            "authorityRoles": [
+              "customer",
+              "service advisor"
+            ],
+            "commitment": "create an appointment only after eligibility and customer confirmation are established"
+          }
+        ],
+        "evaluations": [
+          {
+            "id": "evaluation.scheduling-gate",
+            "kind": "evaluation",
+            "name": "Scheduling gate",
+            "description": "Checks eligibility, requested-window fit, and customer confirmation before appointment creation.",
+            "sourceIds": [
+              "source.service-policy"
+            ],
+            "mode": "gate",
+            "addressedEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "policy.scheduling-eligibility"
+            ],
+            "evaluatorId": "service-scheduling-gate-v1"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "projection.unknown_assembly_entry",
+          "severity": "error",
+          "path": "harness.projection.assemblyEntryIds[0]",
+          "message": "Unknown assembly entry: missing"
+        }
+      ]
+    }
+  },
+  {
+    "id": "harness.failures",
+    "function": "validateHarness",
+    "description": "Blank fields, empty collections, duplicate ids, and bad projections.",
+    "args": [
+      {
+        "id": "",
+        "name": " ",
+        "purpose": "",
+        "interactionMode": "interactive",
+        "contextSurfaces": [
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": []
+            }
+          },
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "x",
+                "x",
+                "concept.customer-consent"
+              ],
+              "stateFieldIds": [
+                "field.x",
+                "field.x"
+              ]
+            }
+          },
+          {
+            "id": "context.service-policy",
+            "description": "Service scheduling policy",
+            "sensitivity": "internal",
+            "projection": {
+              "assemblyEntryIds": [
+                "constraint.confirm-before-booking",
+                "constraint.eligible-requested-window",
+                "policy.scheduling-eligibility",
+                "evaluation.scheduling-gate"
+              ]
+            }
+          },
+          {
+            "id": "context.bare",
+            "description": "no projection",
+            "sensitivity": "public"
+          }
+        ],
+        "affordances": [],
+        "permissionModel": {
+          "defaultLevel": "privileged",
+          "scopedPermissions": [],
+          "projection": {
+            "assemblyEntryIds": [],
+            "stateFieldIds": []
+          }
+        },
+        "approvalFlow": {
+          "requiredFor": [],
+          "approverRoles": [],
+          "projection": {
+            "assemblyEntryIds": [],
+            "stateFieldIds": [
+              "field.customer-consent",
+              "field.none"
+            ]
+          }
+        },
+        "handoffBoundaries": [],
+        "projection": {
+          "assemblyEntryIds": [
+            "concept.service-appointment",
+            "policy.scheduling-eligibility"
+          ],
+          "stateFieldIds": [
+            "field.appointment-status"
+          ]
+        }
+      },
+      {
+        "id": "lasm.service-scheduling",
+        "version": "2026-08-17.1",
+        "title": "Service Scheduling LogicalAssembly",
+        "description": "The minimum operational meaning required to schedule a confirmed routine-maintenance appointment.",
+        "provenance": [
+          {
+            "id": "source.service-policy",
+            "kind": "policy",
+            "title": "Service scheduling policy",
+            "locator": "policy://service/scheduling",
+            "owner": "service operations",
+            "version": "2026.08",
+            "status": "current"
+          },
+          {
+            "id": "source.appointment-schema",
+            "kind": "schema",
+            "title": "Appointment system schema",
+            "locator": "schema://appointments/current",
+            "owner": "automotive technology",
+            "version": "4",
+            "status": "current"
+          },
+          {
+            "id": "source.service-advisor-judgment",
+            "kind": "judgment",
+            "title": "Service advisor acceptance review",
+            "locator": "review://service-advisors/routine-maintenance",
+            "owner": "service advisors",
+            "observedAt": "2026-08-15T00:00:00Z",
+            "status": "current"
+          }
+        ],
+        "concepts": [
+          {
+            "id": "concept.customer-consent",
+            "kind": "concept",
+            "name": "Customer consent",
+            "description": "The customer's explicit approval of a proposed appointment time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ]
+          },
+          {
+            "id": "concept.vehicle-eligibility",
+            "kind": "concept",
+            "name": "Vehicle eligibility",
+            "description": "Whether the vehicle and requested service can be handled by the selected location.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.appointment-slot",
+            "kind": "concept",
+            "name": "Appointment slot",
+            "description": "An available service time satisfying the requested scheduling window.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.service-appointment",
+            "kind": "concept",
+            "name": "Service appointment",
+            "description": "A committed service visit for an eligible vehicle at a confirmed time.",
+            "sourceIds": [
+              "source.appointment-schema",
+              "source.service-advisor-judgment"
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "id": "relation.appointment-requires-eligibility",
+            "kind": "relation",
+            "name": "Appointment requires eligibility",
+            "description": "A service appointment may be created only for an eligible vehicle.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "fromConceptId": "concept.service-appointment",
+            "toConceptId": "concept.vehicle-eligibility",
+            "predicate": "requires"
+          }
+        ],
+        "constraints": [
+          {
+            "id": "constraint.confirm-before-booking",
+            "kind": "constraint",
+            "name": "Confirm before booking",
+            "description": "A customer appointment cannot be committed until the customer confirms the proposed time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "concept.customer-consent",
+              "concept.service-appointment"
+            ],
+            "rule": "customer consent must be confirmed before appointment creation"
+          },
+          {
+            "id": "constraint.eligible-requested-window",
+            "kind": "constraint",
+            "name": "Eligible requested window",
+            "description": "The chosen slot must satisfy vehicle eligibility and the requested scheduling window.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "appliesToEntryIds": [
+              "concept.vehicle-eligibility",
+              "concept.appointment-slot"
+            ],
+            "rule": "slot must be eligible and within the requested window"
+          }
+        ],
+        "events": [
+          {
+            "id": "event.appointment-created",
+            "kind": "event",
+            "name": "Appointment created",
+            "description": "A confirmed appointment becomes committed in the scheduling system.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ],
+            "subjectConceptIds": [
+              "concept.service-appointment"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "policy.scheduling-eligibility",
+            "kind": "policy",
+            "name": "Scheduling eligibility policy",
+            "description": "Commit only eligible appointments that match the requested window and have customer confirmation.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "event.appointment-created"
+            ],
+            "authorityRoles": [
+              "customer",
+              "service advisor"
+            ],
+            "commitment": "create an appointment only after eligibility and customer confirmation are established"
+          }
+        ],
+        "evaluations": [
+          {
+            "id": "evaluation.scheduling-gate",
+            "kind": "evaluation",
+            "name": "Scheduling gate",
+            "description": "Checks eligibility, requested-window fit, and customer confirmation before appointment creation.",
+            "sourceIds": [
+              "source.service-policy"
+            ],
+            "mode": "gate",
+            "addressedEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "policy.scheduling-eligibility"
+            ],
+            "evaluatorId": "service-scheduling-gate-v1"
+          }
+        ]
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "harness.id",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "harness.name",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "harness.purpose",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "harness.affordances",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "harness.permissionModel.scopedPermissions",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "harness.handoffBoundaries",
+          "message": "At least one item is required."
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "harness.contextSurfaces",
+          "message": "Duplicate id: context.customer-request"
+        },
+        {
+          "code": "projection.empty",
+          "severity": "error",
+          "path": "harness.contextSurfaces[0].projection",
+          "message": "A projection must reference assembly entries or operational-state fields."
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.assemblyEntryIds",
+          "message": "Duplicate id: x"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.stateFieldIds",
+          "message": "Duplicate id: field.x"
+        },
+        {
+          "code": "projection.unknown_assembly_entry",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.assemblyEntryIds[0]",
+          "message": "Unknown assembly entry: x"
+        },
+        {
+          "code": "projection.unknown_assembly_entry",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.assemblyEntryIds[1]",
+          "message": "Unknown assembly entry: x"
+        },
+        {
+          "code": "projection.unknown_state_field",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.stateFieldIds[0]",
+          "message": "Unknown state field: field.x"
+        },
+        {
+          "code": "projection.unknown_state_field",
+          "severity": "error",
+          "path": "harness.contextSurfaces[1].projection.stateFieldIds[1]",
+          "message": "Unknown state field: field.x"
+        },
+        {
+          "code": "projection.empty",
+          "severity": "error",
+          "path": "harness.permissionModel.projection",
+          "message": "A projection must reference assembly entries or operational-state fields."
+        },
+        {
+          "code": "projection.unknown_state_field",
+          "severity": "error",
+          "path": "harness.approvalFlow.projection.stateFieldIds[1]",
+          "message": "Unknown state field: field.none"
+        }
+      ]
+    }
+  },
+  {
+    "id": "harness.duplicate-surfaces",
+    "function": "validateHarness",
+    "description": "Duplicate context surfaces and handoffs without top-level projection.",
+    "args": [
+      {
+        "id": "harness.service-advisor",
+        "name": "Service Advisor Workflow Harness",
+        "purpose": "Mediates customer scheduling work with scoped dealership-system access.",
+        "interactionMode": "interactive",
+        "contextSurfaces": [
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.customer-consent",
+                "concept.appointment-slot"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.requested-slot"
+              ]
+            }
+          },
+          {
+            "id": "context.service-policy",
+            "description": "Service scheduling policy",
+            "sensitivity": "internal",
+            "projection": {
+              "assemblyEntryIds": [
+                "constraint.confirm-before-booking",
+                "constraint.eligible-requested-window",
+                "policy.scheduling-eligibility",
+                "evaluation.scheduling-gate"
+              ]
+            }
+          },
+          {
+            "id": "context.customer-request",
+            "description": "Materialized customer request",
+            "sensitivity": "sensitive",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.customer-consent",
+                "concept.appointment-slot"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.requested-slot"
+              ]
+            }
+          }
+        ],
+        "affordances": [
+          "read appointment availability",
+          "propose an appointment",
+          "request customer confirmation"
+        ],
+        "permissionModel": {
+          "defaultLevel": "read-only",
+          "scopedPermissions": [
+            "appointments:read",
+            "appointments:create"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "event.appointment-created",
+              "policy.scheduling-eligibility"
+            ],
+            "stateFieldIds": [
+              "field.appointment-status"
+            ]
+          }
+        },
+        "approvalFlow": {
+          "requiredFor": [
+            "create customer appointment"
+          ],
+          "approverRoles": [
+            "customer"
+          ],
+          "projection": {
+            "assemblyEntryIds": [
+              "concept.customer-consent",
+              "constraint.confirm-before-booking"
+            ],
+            "stateFieldIds": [
+              "field.customer-consent"
+            ]
+          }
+        },
+        "handoffBoundaries": [
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "policy.scheduling-eligibility"
+              ]
+            }
+          },
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "policy.scheduling-eligibility"
+              ]
+            }
+          },
+          {
+            "id": "handoff.warranty-exception",
+            "description": "A service advisor handles warranty exceptions.",
+            "projection": {
+              "assemblyEntryIds": [
+                "nope"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "lasm.service-scheduling",
+        "version": "2026-08-17.1",
+        "title": "Service Scheduling LogicalAssembly",
+        "description": "The minimum operational meaning required to schedule a confirmed routine-maintenance appointment.",
+        "provenance": [
+          {
+            "id": "source.service-policy",
+            "kind": "policy",
+            "title": "Service scheduling policy",
+            "locator": "policy://service/scheduling",
+            "owner": "service operations",
+            "version": "2026.08",
+            "status": "current"
+          },
+          {
+            "id": "source.appointment-schema",
+            "kind": "schema",
+            "title": "Appointment system schema",
+            "locator": "schema://appointments/current",
+            "owner": "automotive technology",
+            "version": "4",
+            "status": "current"
+          },
+          {
+            "id": "source.service-advisor-judgment",
+            "kind": "judgment",
+            "title": "Service advisor acceptance review",
+            "locator": "review://service-advisors/routine-maintenance",
+            "owner": "service advisors",
+            "observedAt": "2026-08-15T00:00:00Z",
+            "status": "current"
+          }
+        ],
+        "concepts": [
+          {
+            "id": "concept.customer-consent",
+            "kind": "concept",
+            "name": "Customer consent",
+            "description": "The customer's explicit approval of a proposed appointment time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ]
+          },
+          {
+            "id": "concept.vehicle-eligibility",
+            "kind": "concept",
+            "name": "Vehicle eligibility",
+            "description": "Whether the vehicle and requested service can be handled by the selected location.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.appointment-slot",
+            "kind": "concept",
+            "name": "Appointment slot",
+            "description": "An available service time satisfying the requested scheduling window.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ]
+          },
+          {
+            "id": "concept.service-appointment",
+            "kind": "concept",
+            "name": "Service appointment",
+            "description": "A committed service visit for an eligible vehicle at a confirmed time.",
+            "sourceIds": [
+              "source.appointment-schema",
+              "source.service-advisor-judgment"
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "id": "relation.appointment-requires-eligibility",
+            "kind": "relation",
+            "name": "Appointment requires eligibility",
+            "description": "A service appointment may be created only for an eligible vehicle.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "fromConceptId": "concept.service-appointment",
+            "toConceptId": "concept.vehicle-eligibility",
+            "predicate": "requires"
+          }
+        ],
+        "constraints": [
+          {
+            "id": "constraint.confirm-before-booking",
+            "kind": "constraint",
+            "name": "Confirm before booking",
+            "description": "A customer appointment cannot be committed until the customer confirms the proposed time.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "concept.customer-consent",
+              "concept.service-appointment"
+            ],
+            "rule": "customer consent must be confirmed before appointment creation"
+          },
+          {
+            "id": "constraint.eligible-requested-window",
+            "kind": "constraint",
+            "name": "Eligible requested window",
+            "description": "The chosen slot must satisfy vehicle eligibility and the requested scheduling window.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.appointment-schema"
+            ],
+            "appliesToEntryIds": [
+              "concept.vehicle-eligibility",
+              "concept.appointment-slot"
+            ],
+            "rule": "slot must be eligible and within the requested window"
+          }
+        ],
+        "events": [
+          {
+            "id": "event.appointment-created",
+            "kind": "event",
+            "name": "Appointment created",
+            "description": "A confirmed appointment becomes committed in the scheduling system.",
+            "sourceIds": [
+              "source.appointment-schema"
+            ],
+            "subjectConceptIds": [
+              "concept.service-appointment"
+            ]
+          }
+        ],
+        "policies": [
+          {
+            "id": "policy.scheduling-eligibility",
+            "kind": "policy",
+            "name": "Scheduling eligibility policy",
+            "description": "Commit only eligible appointments that match the requested window and have customer confirmation.",
+            "sourceIds": [
+              "source.service-policy",
+              "source.service-advisor-judgment"
+            ],
+            "appliesToEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "event.appointment-created"
+            ],
+            "authorityRoles": [
+              "customer",
+              "service advisor"
+            ],
+            "commitment": "create an appointment only after eligibility and customer confirmation are established"
+          }
+        ],
+        "evaluations": [
+          {
+            "id": "evaluation.scheduling-gate",
+            "kind": "evaluation",
+            "name": "Scheduling gate",
+            "description": "Checks eligibility, requested-window fit, and customer confirmation before appointment creation.",
+            "sourceIds": [
+              "source.service-policy"
+            ],
+            "mode": "gate",
+            "addressedEntryIds": [
+              "constraint.confirm-before-booking",
+              "constraint.eligible-requested-window",
+              "policy.scheduling-eligibility"
+            ],
+            "evaluatorId": "service-scheduling-gate-v1"
+          }
+        ]
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "harness.contextSurfaces",
+          "message": "Duplicate id: context.customer-request"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "harness.handoffBoundaries",
+          "message": "Duplicate id: handoff.warranty-exception"
+        },
+        {
+          "code": "projection.unknown_assembly_entry",
+          "severity": "error",
+          "path": "harness.handoffBoundaries[2].projection.assemblyEntryIds[0]",
+          "message": "Unknown assembly entry: nope"
+        }
+      ]
+    }
+  }
+]

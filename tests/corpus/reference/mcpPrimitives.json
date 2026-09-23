@@ -1,0 +1,205 @@
+[
+  {
+    "id": "primitives.fixture",
+    "function": "mcpPrimitives",
+    "description": "Tools, then resources, then prompts.",
+    "args": [
+      {
+        "id": "mcp.dealership-operations",
+        "name": "Dealership Operations",
+        "purpose": "Exposes scoped dealership scheduling primitives to agents.",
+        "resources": [
+          {
+            "id": "resource.vehicle-eligibility",
+            "name": "Vehicle Eligibility",
+            "purpose": "Returns materialized service eligibility and relevant policy context.",
+            "risk": "low",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.vehicle-eligibility",
+                "relation.appointment-requires-eligibility"
+              ],
+              "stateFieldIds": [
+                "field.vehicle-eligibility"
+              ]
+            }
+          }
+        ],
+        "tools": [
+          {
+            "id": "tool.appointment-availability",
+            "name": "Get Appointment Availability",
+            "purpose": "Lists eligible service appointment windows.",
+            "risk": "low",
+            "requiredPermission": "appointments:read",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.appointment-slot",
+                "constraint.eligible-requested-window"
+              ],
+              "stateFieldIds": [
+                "field.requested-slot"
+              ]
+            }
+          },
+          {
+            "id": "tool.create-appointment",
+            "name": "Create Appointment",
+            "purpose": "Creates a confirmed service appointment.",
+            "risk": "moderate",
+            "requiredPermission": "appointments:create",
+            "projection": {
+              "assemblyEntryIds": [
+                "concept.service-appointment",
+                "constraint.confirm-before-booking",
+                "event.appointment-created",
+                "policy.scheduling-eligibility"
+              ],
+              "stateFieldIds": [
+                "field.customer-consent",
+                "field.appointment-status"
+              ]
+            }
+          }
+        ],
+        "prompts": [],
+        "projection": {
+          "assemblyEntryIds": [
+            "evaluation.scheduling-gate"
+          ]
+        }
+      }
+    ],
+    "expected": [
+      {
+        "id": "tool.appointment-availability",
+        "name": "Get Appointment Availability",
+        "purpose": "Lists eligible service appointment windows.",
+        "risk": "low",
+        "requiredPermission": "appointments:read",
+        "projection": {
+          "assemblyEntryIds": [
+            "concept.appointment-slot",
+            "constraint.eligible-requested-window"
+          ],
+          "stateFieldIds": [
+            "field.requested-slot"
+          ]
+        }
+      },
+      {
+        "id": "tool.create-appointment",
+        "name": "Create Appointment",
+        "purpose": "Creates a confirmed service appointment.",
+        "risk": "moderate",
+        "requiredPermission": "appointments:create",
+        "projection": {
+          "assemblyEntryIds": [
+            "concept.service-appointment",
+            "constraint.confirm-before-booking",
+            "event.appointment-created",
+            "policy.scheduling-eligibility"
+          ],
+          "stateFieldIds": [
+            "field.customer-consent",
+            "field.appointment-status"
+          ]
+        }
+      },
+      {
+        "id": "resource.vehicle-eligibility",
+        "name": "Vehicle Eligibility",
+        "purpose": "Returns materialized service eligibility and relevant policy context.",
+        "risk": "low",
+        "projection": {
+          "assemblyEntryIds": [
+            "concept.vehicle-eligibility",
+            "relation.appointment-requires-eligibility"
+          ],
+          "stateFieldIds": [
+            "field.vehicle-eligibility"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "primitives.ordering",
+    "function": "mcpPrimitives",
+    "description": "Collection order is tools, resources, prompts regardless of key order.",
+    "args": [
+      {
+        "prompts": [
+          {
+            "id": "prompt.a",
+            "name": "A",
+            "purpose": "a",
+            "risk": "low"
+          }
+        ],
+        "resources": [
+          {
+            "id": "resource.b",
+            "name": "B",
+            "purpose": "b",
+            "risk": "moderate"
+          }
+        ],
+        "tools": [
+          {
+            "id": "tool.c",
+            "name": "C",
+            "purpose": "c",
+            "risk": "high",
+            "requiredPermission": "p"
+          }
+        ],
+        "id": "mcp.order",
+        "name": "Order",
+        "purpose": "ordering"
+      }
+    ],
+    "expected": [
+      {
+        "id": "tool.c",
+        "name": "C",
+        "purpose": "c",
+        "risk": "high",
+        "requiredPermission": "p"
+      },
+      {
+        "id": "resource.b",
+        "name": "B",
+        "purpose": "b",
+        "risk": "moderate"
+      },
+      {
+        "id": "prompt.a",
+        "name": "A",
+        "purpose": "a",
+        "risk": "low"
+      }
+    ]
+  },
+  {
+    "id": "primitives.empty",
+    "function": "mcpPrimitives",
+    "description": "A surface without primitives.",
+    "args": [
+      {
+        "id": "mcp.dealership-operations",
+        "name": "Dealership Operations",
+        "purpose": "Exposes scoped dealership scheduling primitives to agents.",
+        "resources": [],
+        "tools": [],
+        "prompts": [],
+        "projection": {
+          "assemblyEntryIds": [
+            "evaluation.scheduling-gate"
+          ]
+        }
+      }
+    ],
+    "expected": []
+  }
+]

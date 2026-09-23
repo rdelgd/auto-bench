@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:schema:v1:trace-normalization-result",
+  "title": "Lasm trace-normalization-result document, version 1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "trace-normalization-result"
+    },
+    "value": {
+      "$ref": "urn:lasm-core:schema:v1:domain#/$defs/TraceNormalizationResult"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "value"
+  ],
+  "additionalProperties": false
+}

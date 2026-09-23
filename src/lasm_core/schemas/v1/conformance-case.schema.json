@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:schema:v1:conformance-case",
+  "title": "Lasm conformance-case document, version 1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "conformance-case"
+    },
+    "value": {
+      "$ref": "urn:lasm-core:schema:v1:domain#/$defs/ConformanceCase"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "value"
+  ],
+  "additionalProperties": false
+}

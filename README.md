@@ -23,7 +23,7 @@ The name operates at three related levels:
 
 - **Lasm, the thesis:** operational meaning should be sourced, versioned, contestable, projected into agent-facing surfaces, and continuously tested.
 - **LogicalAssembly, the domain model:** a materialized slice containing concepts, relations, constraints, events, policies, runtime evaluations, provenance, and version identity.
-- **`@lasm/core`, the library:** the deterministic Sans I/O implementation for assemblies, projections, operational state, evidence, validation, and evaluation mechanics.
+- **`lasm-core`, the library:** the deterministic Sans I/O Python implementation for assemblies, projections, operational state, evidence, validation, and evaluation mechanics, imported as `lasm_core`.
 
 Harness context, skills, MCP surfaces, permissions, approvals, and handoffs are modeled as Lasm projections or control surfaces. They can reference the assembly entries and operational-state fields they expose or enforce.
 
@@ -46,44 +46,51 @@ Lasm runtime evaluations and Auto Bench evaluation remain distinct. Runtime eval
 
 ## What Exists Today
 
-`@lasm/core` provides:
+`lasm-core` provides:
 
 - explicit LogicalAssembly entry and provenance models;
 - materialized operational state, actor observation, transition, and outcome contracts;
 - harness, skill, MCP, permission, approval, and handoff projection references;
 - pure cross-reference validation and deterministic evidence normalization;
 - structured findings with assembly-entry, transition, outcome, evidence, and attribution references;
-- an automotive service-scheduling fixture covering a complete Lasm evaluation episode.
+- an automotive service-scheduling fixture covering a complete Lasm evaluation episode;
+- versioned JSON interchange documents and JSON Schemas for assemblies, cases, traces, and results.
 
-The package accepts materialized values and returns materialized results. It does not perform filesystem, network, database, environment, clock, persistence, runtime orchestration, or live MCP operations.
+The package accepts materialized values and returns materialized results. It has no runtime dependencies and does not perform filesystem, network, database, environment, process, clock, persistence, runtime orchestration, or live MCP operations.
 
 ## Architecture Boundaries
 
-- `@lasm/core` owns serializable domain models, deterministic validation, evidence normalization, and pure evaluation mechanics.
+- `lasm_core` owns serializable domain models, deterministic validation, evidence normalization, pure evaluation mechanics, and the versioned JSON interchange contract.
 - Auto Bench owns automotive conformance cases, expectations, fixtures, perturbations, and the evaluation of a Lasm.
-- Adapters may load operational sources, run agents, host synthetic systems, invoke live MCP servers, or persist results.
+- Adapters may load operational sources, run agents, host synthetic systems, invoke live MCP servers, persist results, or expose Lasm to other languages through JSON documents.
 - Telemetry is evidence when it supports conformance or attribution; generic analytics are not the product thesis.
 - Archived ReffySpec changes retain earlier naming decisions as historical provenance.
 
 ## Development
 
+Requires Python 3.11 or later and [uv](https://docs.astral.sh/uv/). Node.js is not required.
+
 ```sh
-npm install
-npm run typecheck
-npm test
+uv sync                                        # create the environment with development tools
+uv run pytest                                  # behavior, parity, interchange, and Sans I/O tests
+uv run mypy                                    # strict static typing
+uv run python scripts/write_schemas.py --check # verify the checked-in JSON Schemas are current
+uv build                                       # build the wheel and source distribution into dist/
 ```
 
-The package exports the core API and automotive reference fixtures separately:
+The package exposes the core API and the automotive reference fixtures separately:
 
-```ts
-import { evaluateConformance } from "@lasm/core";
-import { routineMaintenanceConformanceCase } from "@lasm/core/fixtures";
+```python
+from lasm_core import evaluate_conformance
+from lasm_core.fixtures import routine_maintenance_conformance_case
 
-const evaluation = evaluateConformance(routineMaintenanceConformanceCase);
-console.log(evaluation.conformant);
+evaluation = evaluate_conformance(routine_maintenance_conformance_case)
+print(evaluation["conformant"])
 ```
 
-The private pre-release package moved directly to `@lasm/core` without a compatibility alias for its former import specifier.
+Records are plain dictionaries with the same camelCase keys as the JSON contract. Other languages exchange version 1 documents (`{"schemaVersion": 1, "kind": ..., "value": ...}`) through an adapter; `decode_document` and `encode_document` validate them without I/O.
+
+`lasm-core` replaced the private npm package `@lasm/core` without a compatibility wrapper. See the [migration guide](docs/migrating-from-npm.md) and the [API inventory](docs/api-inventory.md). The TypeScript implementation is retained in version control history, and its recorded outputs remain the [regression corpus](tests/corpus/PROVENANCE.md).
 
 ## Project Map
 
@@ -91,5 +98,7 @@ The private pre-release package moved directly to `@lasm/core` without a compati
 - [Conformance-first thesis](.reffy/artifacts/operational-conformance-first-benchmark-second.md)
 - [Project context](.reffy/reffyspec/project.md)
 - [Current specification](.reffy/reffyspec/specs/establish-auto-bench-sans-io-core/spec.md)
-- [Lasm source](src/)
-- [Automotive service fixture](src/fixtures/service-appointment.ts)
+- [Lasm source](src/lasm_core/)
+- [Automotive service fixture](src/lasm_core/fixtures/service_appointment.py)
+- [Interchange schemas](src/lasm_core/schemas/v1/)
+- [Migration guide](docs/migrating-from-npm.md)

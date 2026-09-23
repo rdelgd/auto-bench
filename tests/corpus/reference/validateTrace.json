@@ -1,0 +1,782 @@
+[
+  {
+    "id": "trace.fixture",
+    "function": "validateTrace",
+    "description": "The reference trace is valid.",
+    "args": [
+      [
+        {
+          "type": "intent.submitted",
+          "sequence": 1,
+          "actorId": "customer",
+          "subjectId": "scenario.routine-maintenance-appointment",
+          "evidence": {
+            "goal": "Schedule an eligible weekday morning maintenance appointment after I confirm the time."
+          }
+        },
+        {
+          "type": "lasm.version_selected",
+          "sequence": 2,
+          "actorId": "auto-bench",
+          "subjectId": "lasm.service-scheduling",
+          "evidence": {
+            "version": "2026-08-17.1"
+          }
+        },
+        {
+          "type": "agent.role_selected",
+          "sequence": 3,
+          "actorId": "harness",
+          "subjectId": "role.service-scheduling-assistant",
+          "evidence": {
+            "reason": "routine service scheduling request"
+          }
+        },
+        {
+          "type": "harness.selected",
+          "sequence": 4,
+          "actorId": "system",
+          "subjectId": "harness.service-advisor",
+          "evidence": {
+            "interactionMode": "interactive"
+          }
+        },
+        {
+          "type": "lasm.projection_loaded",
+          "sequence": 5,
+          "actorId": "harness",
+          "subjectId": "harness.service-advisor",
+          "evidence": {
+            "projection": "service advisor context and authority"
+          }
+        },
+        {
+          "type": "harness.context_loaded",
+          "sequence": 6,
+          "actorId": "harness",
+          "subjectId": "context.customer-request",
+          "evidence": {
+            "businessFacts": [
+              "customer consent"
+            ]
+          }
+        },
+        {
+          "type": "state.observed",
+          "sequence": 7,
+          "actorId": "customer",
+          "subjectId": "observation.customer-request",
+          "evidence": {
+            "stateFieldIds": [
+              "field.customer-consent",
+              "field.requested-slot"
+            ]
+          }
+        },
+        {
+          "type": "skill.activated",
+          "sequence": 8,
+          "actorId": "agent",
+          "subjectId": "skill.schedule-service",
+          "evidence": {
+            "applicability": "routine automotive service"
+          }
+        },
+        {
+          "type": "lasm.projection_loaded",
+          "sequence": 9,
+          "actorId": "agent",
+          "subjectId": "skill.schedule-service",
+          "evidence": {
+            "projection": "service scheduling procedure"
+          }
+        },
+        {
+          "type": "mcp.server_connected",
+          "sequence": 10,
+          "actorId": "harness",
+          "subjectId": "mcp.dealership-operations",
+          "evidence": {
+            "transport": "fixture"
+          }
+        },
+        {
+          "type": "lasm.projection_loaded",
+          "sequence": 11,
+          "actorId": "harness",
+          "subjectId": "mcp.dealership-operations",
+          "evidence": {
+            "projection": "dealership scheduling capabilities"
+          }
+        },
+        {
+          "type": "mcp.primitives_listed",
+          "sequence": 12,
+          "actorId": "agent",
+          "subjectId": "mcp.dealership-operations",
+          "evidence": {
+            "primitiveCount": 3
+          }
+        },
+        {
+          "type": "mcp.resource_read",
+          "sequence": 13,
+          "actorId": "agent",
+          "subjectId": "resource.vehicle-eligibility",
+          "evidence": {
+            "businessFacts": [
+              "vehicle eligibility"
+            ]
+          }
+        },
+        {
+          "type": "state.observed",
+          "sequence": 14,
+          "actorId": "agent",
+          "subjectId": "observation.vehicle-eligibility",
+          "evidence": {
+            "stateFieldIds": [
+              "field.vehicle-eligibility"
+            ]
+          }
+        },
+        {
+          "type": "mcp.tool_selected",
+          "sequence": 15,
+          "actorId": "agent",
+          "subjectId": "tool.appointment-availability",
+          "evidence": {
+            "reason": "find eligible requested window"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 16,
+          "actorId": "agent",
+          "subjectId": "concept.customer-consent",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 17,
+          "actorId": "agent",
+          "subjectId": "concept.vehicle-eligibility",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 18,
+          "actorId": "agent",
+          "subjectId": "concept.appointment-slot",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 19,
+          "actorId": "agent",
+          "subjectId": "concept.service-appointment",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 20,
+          "actorId": "agent",
+          "subjectId": "relation.appointment-requires-eligibility",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 21,
+          "actorId": "agent",
+          "subjectId": "constraint.confirm-before-booking",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 22,
+          "actorId": "agent",
+          "subjectId": "constraint.eligible-requested-window",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 23,
+          "actorId": "agent",
+          "subjectId": "event.appointment-created",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 24,
+          "actorId": "agent",
+          "subjectId": "policy.scheduling-eligibility",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "lasm.entry_consulted",
+          "sequence": 25,
+          "actorId": "agent",
+          "subjectId": "evaluation.scheduling-gate",
+          "evidence": {
+            "reason": "required by service scheduling episode"
+          }
+        },
+        {
+          "type": "mcp.tool_called",
+          "sequence": 26,
+          "actorId": "agent",
+          "subjectId": "tool.appointment-availability",
+          "evidence": {
+            "businessFacts": [
+              "appointment availability"
+            ],
+            "result": "weekday morning available"
+          }
+        },
+        {
+          "type": "policy.check_requested",
+          "sequence": 27,
+          "actorId": "agent",
+          "subjectId": "policy.scheduling-eligibility",
+          "evidence": {
+            "requestedAction": "create customer appointment"
+          }
+        },
+        {
+          "type": "lasm.evaluation_requested",
+          "sequence": 28,
+          "actorId": "agent",
+          "subjectId": "evaluation.scheduling-gate",
+          "evidence": {
+            "requestedAction": "create customer appointment"
+          }
+        },
+        {
+          "type": "policy.check_passed",
+          "sequence": 29,
+          "actorId": "policy-engine",
+          "subjectId": "policy.scheduling-eligibility",
+          "evidence": {
+            "decision": "allow after customer confirmation"
+          }
+        },
+        {
+          "type": "lasm.evaluation_passed",
+          "sequence": 30,
+          "actorId": "service-scheduling-gate-v1",
+          "subjectId": "evaluation.scheduling-gate",
+          "evidence": {
+            "decision": "allow after customer confirmation"
+          }
+        },
+        {
+          "type": "human.confirmation_requested",
+          "sequence": 31,
+          "actorId": "agent",
+          "subjectId": "customer",
+          "evidence": {
+            "proposedTime": "weekday 09:00"
+          }
+        },
+        {
+          "type": "human.confirmation_received",
+          "sequence": 32,
+          "actorId": "customer",
+          "subjectId": "customer",
+          "evidence": {
+            "confirmed": true,
+            "proposedTime": "weekday 09:00"
+          }
+        },
+        {
+          "type": "harness.permission_granted",
+          "sequence": 33,
+          "actorId": "harness",
+          "subjectId": "appointments:create",
+          "evidence": {
+            "scope": "confirmed appointment"
+          }
+        },
+        {
+          "type": "state.transition_proposed",
+          "sequence": 34,
+          "actorId": "agent",
+          "subjectId": "transition.create-confirmed-appointment",
+          "evidence": {
+            "eventId": "event.appointment-created"
+          }
+        },
+        {
+          "type": "mcp.tool_called",
+          "sequence": 35,
+          "actorId": "agent",
+          "subjectId": "tool.create-appointment",
+          "evidence": {
+            "action": "appointment created",
+            "authorization": "customer confirmation"
+          }
+        },
+        {
+          "type": "state.transition_committed",
+          "sequence": 36,
+          "actorId": "appointment-system",
+          "subjectId": "transition.create-confirmed-appointment",
+          "evidence": {
+            "eventId": "event.appointment-created",
+            "appointmentStatus": "created"
+          }
+        },
+        {
+          "type": "outcome.observed",
+          "sequence": 37,
+          "actorId": "auto-bench",
+          "subjectId": "outcome.confirmed-appointment-created",
+          "evidence": {
+            "appointmentStatus": "created",
+            "consent": "confirmed"
+          }
+        },
+        {
+          "type": "outcome.validated",
+          "sequence": 38,
+          "actorId": "auto-bench",
+          "subjectId": "outcome.confirmed-appointment-created",
+          "evidence": {
+            "accepted": true
+          }
+        },
+        {
+          "type": "evidence.linked",
+          "sequence": 39,
+          "actorId": "auto-bench",
+          "subjectId": "scenario.routine-maintenance-appointment",
+          "evidence": {
+            "references": [
+              "trace:2",
+              "trace:30",
+              "trace:36",
+              "trace:38"
+            ]
+          }
+        },
+        {
+          "type": "task.completed",
+          "sequence": 40,
+          "actorId": "agent",
+          "subjectId": "scenario.routine-maintenance-appointment",
+          "evidence": {
+            "outcome": "eligible confirmed service appointment created"
+          }
+        }
+      ]
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "trace.existing-test",
+    "function": "validateTrace",
+    "description": "Existing test: unknown type, no actor, negative sequence.",
+    "args": [
+      [
+        {
+          "type": "custom.event",
+          "sequence": -1
+        }
+      ]
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "trace.unknown_event_type",
+          "severity": "error",
+          "path": "trace[0].type",
+          "message": "Unknown agentic event type: custom.event"
+        },
+        {
+          "code": "trace.missing_actor",
+          "severity": "error",
+          "path": "trace[0].actorId",
+          "message": "Trace events require an actor identifier."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[0].sequence",
+          "message": "Sequence must be a non-negative integer."
+        }
+      ]
+    }
+  },
+  {
+    "id": "trace.empty",
+    "function": "validateTrace",
+    "description": "An empty trace.",
+    "args": [
+      []
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "trace",
+          "message": "At least one item is required."
+        }
+      ]
+    }
+  },
+  {
+    "id": "trace.sequence-problems",
+    "function": "validateTrace",
+    "description": "Fractional, negative, and duplicate sequences, with omitted sequences ignored.",
+    "args": [
+      [
+        {
+          "type": "task.completed",
+          "sequence": 1,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1.5,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": -2.5,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1.5,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 0,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1,
+          "actorId": "a"
+        }
+      ]
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 1"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 1.5"
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[1].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[4].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[6].sequence",
+          "message": "Sequence must be a non-negative integer."
+        }
+      ]
+    }
+  },
+  {
+    "id": "trace.sequence-spelling",
+    "function": "validateTrace",
+    "description": "Duplicate-sequence messages use JavaScript number spelling.",
+    "args": [
+      [
+        {
+          "type": "task.completed",
+          "sequence": 1e-7,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1e-7,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 123456.789,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 123456.789,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 9007199254740991,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 9007199254740991,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 0.000001,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 0.000001,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 1000000000000000,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 2.5e-10,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 2.5e-10,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": -0.1,
+          "actorId": "a"
+        },
+        {
+          "type": "task.completed",
+          "sequence": -0.1,
+          "actorId": "a"
+        }
+      ]
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 1e-7"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 123456.789"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 9007199254740991"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 0.000001"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: 2.5e-10"
+        },
+        {
+          "code": "fixture.duplicate_id",
+          "severity": "error",
+          "path": "trace.sequence",
+          "message": "Duplicate id: -0.1"
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[0].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[1].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[2].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[3].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[6].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[7].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[9].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[10].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[11].sequence",
+          "message": "Sequence must be a non-negative integer."
+        },
+        {
+          "code": "trace.invalid_sequence",
+          "severity": "error",
+          "path": "trace[12].sequence",
+          "message": "Sequence must be a non-negative integer."
+        }
+      ]
+    }
+  },
+  {
+    "id": "trace.actor-and-type-problems",
+    "function": "validateTrace",
+    "description": "Empty types and blank actors of several kinds.",
+    "args": [
+      [
+        {
+          "type": "",
+          "sequence": 1,
+          "actorId": ""
+        },
+        {
+          "type": "task.completed",
+          "sequence": 2,
+          "actorId": " \t"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 3,
+          "actorId": "﻿"
+        },
+        {
+          "type": "task.completed",
+          "sequence": 4,
+          "actorId": "​"
+        },
+        {
+          "type": "TASK.COMPLETED",
+          "sequence": 5,
+          "actorId": "agent"
+        }
+      ]
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "trace.unknown_event_type",
+          "severity": "error",
+          "path": "trace[0].type",
+          "message": "Unknown agentic event type: <empty>"
+        },
+        {
+          "code": "trace.missing_actor",
+          "severity": "error",
+          "path": "trace[0].actorId",
+          "message": "Trace events require an actor identifier."
+        },
+        {
+          "code": "trace.missing_actor",
+          "severity": "error",
+          "path": "trace[1].actorId",
+          "message": "Trace events require an actor identifier."
+        },
+        {
+          "code": "trace.missing_actor",
+          "severity": "error",
+          "path": "trace[2].actorId",
+          "message": "Trace events require an actor identifier."
+        },
+        {
+          "code": "trace.unknown_event_type",
+          "severity": "error",
+          "path": "trace[4].type",
+          "message": "Unknown agentic event type: TASK.COMPLETED"
+        }
+      ]
+    }
+  }
+]

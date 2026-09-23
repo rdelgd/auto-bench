@@ -1,0 +1,34 @@
+[
+  {
+    "id": "evidence-ref.position",
+    "function": "traceEvidenceRef",
+    "description": "Evidence references use the one-based position.",
+    "args": [
+      {
+        "type": "task.completed",
+        "position": 7,
+        "actorId": "agent",
+        "evidence": {}
+      }
+    ],
+    "expected": "trace:7"
+  },
+  {
+    "id": "evidence-ref.first",
+    "function": "traceEvidenceRef",
+    "description": "The first normalized event.",
+    "args": [
+      {
+        "type": "intent.submitted",
+        "position": 1,
+        "actorId": "customer",
+        "subjectId": "scenario.x",
+        "timestamp": "2026-01-01T00:00:00Z",
+        "evidence": {
+          "goal": "g"
+        }
+      }
+    ],
+    "expected": "trace:1"
+  }
+]

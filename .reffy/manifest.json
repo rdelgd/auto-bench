@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-09-16T21:23:36.508Z",
+  "updated_at": "2026-09-23T01:30:54.770Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -17,7 +17,7 @@
       "size_bytes": 20703,
       "tags": [],
       "created_at": "2026-07-15T22:06:59.204Z",
-      "updated_at": "2026-08-09T00:17:56.137Z",
+      "updated_at": "2026-09-23T01:30:54.770Z",
       "related_changes": [
         "adopt-auto-bench-name"
       ],
@@ -37,7 +37,7 @@
       "size_bytes": 10240,
       "tags": [],
       "created_at": "2026-07-16T07:10:39.423Z",
-      "updated_at": "2026-08-18T01:52:16.047Z",
+      "updated_at": "2026-09-23T01:30:54.770Z",
       "related_changes": [
         "rename-sarb-core-to-nuveris",
         "adopt-auto-bench-name",
@@ -66,7 +66,7 @@
       "size_bytes": 20704,
       "tags": [],
       "created_at": "2026-07-15T00:01:45.565Z",
-      "updated_at": "2026-08-22T01:03:36.264Z",
+      "updated_at": "2026-09-23T01:30:54.770Z",
       "related_changes": [
         "establish-sarb-sans-io-core",
         "rename-sarb-core-to-nuveris",
@@ -101,7 +101,7 @@
       "size_bytes": 27246,
       "tags": [],
       "created_at": "2026-08-12T00:54:55.304Z",
-      "updated_at": "2026-08-18T01:49:57.247Z",
+      "updated_at": "2026-09-23T01:30:54.770Z",
       "related_changes": [
         "adopt-conformance-api"
       ],
@@ -121,7 +121,9 @@
       "size_bytes": 23209,
       "tags": [],
       "created_at": "2026-09-16T21:19:16.328Z",
-      "updated_at": "2026-09-16T21:19:16.328Z"
+      "updated_at": "2026-09-23T01:30:54.770Z",
+      "related_changes": [],
+      "derived_outputs": []
     },
     {
       "id": "29bd6e4d-c595-4a7b-b84f-b2a78fe5253a",
@@ -129,10 +131,32 @@
       "filename": "lasm-reality-workbench-on-databricks.md",
       "kind": "note",
       "mime_type": "text/markdown",
-      "size_bytes": 37656,
+      "size_bytes": 40921,
       "tags": [],
       "created_at": "2026-09-16T21:19:39.652Z",
-      "updated_at": "2026-09-16T21:23:33.920Z"
+      "updated_at": "2026-09-23T01:30:54.770Z",
+      "related_changes": [
+        "migrate-lasm-core-to-python"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/archive/2026-09-23-migrate-lasm-core-to-python/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-09-23-migrate-lasm-core-to-python/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-09-23-migrate-lasm-core-to-python/design.md",
+        ".reffy/reffyspec/changes/archive/2026-09-23-migrate-lasm-core-to-python/specs/establish-auto-bench-sans-io-core/spec.md"
+      ]
+    },
+    {
+      "id": "d2bd53ff-104c-4976-87c2-a18a60dd729d",
+      "name": "servco ontology ledger 2",
+      "filename": "servco-ontology-ledger-2.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 25707,
+      "tags": [],
+      "created_at": "2026-09-17T19:45:53.831Z",
+      "updated_at": "2026-09-23T01:30:54.770Z",
+      "related_changes": [],
+      "derived_outputs": []
     }
   ]
 }

@@ -1,9 +1,9 @@
-# establish-auto-bench-sans-io-core Specification
+## RENAMED Requirements
 
-## Purpose
-Define Lasm as the deterministic Python Sans I/O library (`lasm-core`, imported as `lasm_core`) for operational meaning, agent-facing projections, conformance evidence, and its versioned JSON interchange contract, while preserving Auto Bench as the automotive workbench that evaluates the Lasm.
+- FROM: `### Requirement: TypeScript Sans I/O Core`
+- TO: `### Requirement: Python Sans I/O Core`
 
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Python Sans I/O Core
 
@@ -77,7 +77,7 @@ The system SHALL represent MCP servers and primitives as first-class Lasm projec
 
 ### Requirement: Agentic Trace Model
 
-The system SHALL normalize validation evidence for submitted intent, LogicalAssembly selection and consultation, Lasm projections, actor observations, harness behavior, skill usage, MCP usage, policy checks, permissions, human confirmations, handoffs, proposed or committed state transitions, runtime Lasm evaluations, observed outcomes, evidence links, and failure attribution. The Python implementation SHALL preserve the existing event vocabulary, finding codes and paths, and evidence-reference behavior. It SHALL use Python semantics rather than JavaScript emulation for blank values, sequence ordering, and number spelling.
+The system SHALL normalize validation evidence for submitted intent, LogicalAssembly selection and consultation, Lasm projections, actor observations, harness behavior, skill usage, MCP usage, policy checks, permissions, human confirmations, handoffs, proposed or committed state transitions, runtime Lasm evaluations, observed outcomes, evidence links, and failure attribution. The Python implementation SHALL preserve the existing event vocabulary, normalization ordering, event admission, finding paths, and evidence-reference behavior.
 
 #### Scenario: Normalize evidence for evaluating a Lasm
 
@@ -87,22 +87,14 @@ The system SHALL normalize validation evidence for submitted intent, LogicalAsse
 - **AND** the normalized sequence can distinguish represented reality, projected meaning, observed state, agent inference, proposed action, committed transition, runtime Lasm evaluation, Auto Bench evaluation evidence, and validated outcome
 - **AND** malformed or unknown evidence is reported as validation findings rather than causing hidden side effects
 
-#### Scenario: Order and address sequenced and unsequenced evidence
+#### Scenario: Preserve sequence and evidence addressing during the port
 
 - **GIVEN** raw events with numeric or omitted sequences, equal-sequence ties, unknown types, and missing actors
 - **WHEN** the Python normalizer processes the materialized trace
-- **THEN** numbered events are ordered by sequence, followed by every unsequenced event, with ties kept in original input order
+- **THEN** ordering and event admission match the recorded TypeScript reference, including its omitted-sequence sentinel and original-input-order tie breaking
 - **AND** accepted events receive consecutive one-based positions and `trace:<position>` references
 - **AND** normalization findings refer to the original input indices
 - **AND** trace validation retains its distinct reporting of invalid or duplicate sequences
-
-#### Scenario: Apply Python value semantics
-
-- **GIVEN** required strings or trace actors containing only characters that Python's `str.strip()` removes, or trace sequences `1` and `1.0`
-- **WHEN** validation or normalization runs
-- **THEN** those strings are treated as blank and reported as missing
-- **AND** `1` and `1.0` are the same valid integer sequence and are reported as a duplicate
-- **AND** duplicate-sequence messages spell the value with Python's `str()`
 
 ### Requirement: Structured Evaluation Results
 
@@ -150,24 +142,7 @@ The system SHALL represent an immutable, serializable, episode-scoped LogicalAss
 - **AND** missing, duplicate, or dangling references are returned as addressed validation findings
 - **AND** the supplied assembly is unchanged
 
-### Requirement: Lasm Projection Model
-The system SHALL represent agent-facing harness, skill, MCP, prompt, permission, approval, and handoff surfaces as projections or controls that MAY reference the LogicalAssembly entries and operational-state contracts they expose or enforce.
-
-#### Scenario: Attribute a lossy agent-facing projection
-- **GIVEN** an agent-facing surface references the assembly meaning it projects or enforces
-- **WHEN** Auto Bench evidence shows that the surface omitted, distorted, or contradicted that meaning
-- **THEN** the evaluator can attribute the divergence to the projection or control surface
-- **AND** no separately named middle-layer model is required to connect the surface to the LogicalAssembly
-
-### Requirement: Operational State Transition Model
-The system SHALL represent initial operational state, actor-specific observations, proposed and committed transitions, transition constraints, and acceptable or prohibited outcomes as serializable values.
-
-#### Scenario: Validate an episode's resulting state
-- **GIVEN** initial state, transition expectations, evidence of actions and committed transitions, and outcome expectations
-- **WHEN** Auto Bench evaluates the Lasm episode
-- **THEN** the evaluator determines whether observed transitions were permitted
-- **AND** it determines whether the resulting state is acceptable or prohibited
-- **AND** missing state evidence, delayed effects, side effects, and unresolved outcomes can be reported without relying on a live clock
+## ADDED Requirements
 
 ### Requirement: Versioned JSON Interchange
 
@@ -213,23 +188,22 @@ The system SHALL supply a typed Python equivalent for every current public domai
 
 ### Requirement: Migration Behavioral Parity
 
-The migration SHALL record TypeScript source provenance and a language-independent corpus of inputs and reference outputs before retiring the existing implementation. The corpus SHALL cover every public behavioral function, existing behavioral tests, and migration-sensitive ordering, omission, scalar-type, invalid-input, and nested-evidence cases within the supported JSON domain. The recorded corpus SHALL remain unedited. Python results SHALL match the recorded reference after applying reviewed deviations; each deviation SHALL name its case, state its reason, and specify its change as patch operations, with no unexplained differences. Comparison SHALL preserve JSON scalar types and all ordered result content; it MAY ignore object-key order and equivalent JSON numeric spelling. Set-valued helper results SHALL use an explicit corpus encoding and compare membership without relaxing order checks for domain or result arrays.
+The migration SHALL record TypeScript source provenance and a language-independent corpus of inputs and reference outputs before retiring the existing implementation. The corpus SHALL cover every public behavioral function, existing behavioral tests, and migration-sensitive ordering, omission, scalar-type, invalid-input, and nested-evidence cases within the supported JSON domain. Python results SHALL match the reference with no unexplained differences. Comparison SHALL preserve JSON scalar types and all ordered result content; it MAY ignore object-key order and equivalent JSON numeric spelling. Set-valued helper results SHALL use an explicit corpus encoding and compare membership without relaxing order checks for domain or result arrays.
 
-#### Scenario: Verify the implementation against the recorded reference
+#### Scenario: Verify the port against the recorded reference
 
 - **GIVEN** a corpus produced by the recorded TypeScript source revision and any recorded working-tree patch
 - **WHEN** the Python implementation evaluates the same inputs
-- **THEN** outputs match the reference, with reviewed deviations applied, in event order and positions, finding order, codes, severity, paths, messages, attribution, IDs, evidence references, dimensions, and aggregate flags
+- **THEN** outputs match in event order and positions, finding order, codes, severity, paths, messages, attribution, IDs, evidence references, dimensions, and aggregate flags
 - **AND** missing properties remain distinguishable from explicit nulls and booleans remain distinguishable from numbers
 - **AND** expected outputs are not regenerated from Python to conceal mismatches
 
-#### Scenario: A deliberate behavior change is recorded as a deviation
+#### Scenario: A mismatch prevents retirement
 
-- **GIVEN** an intentional change makes a Python result differ from the recorded reference
-- **WHEN** the change is implemented
-- **THEN** a deviation entry records the case, the reason, and the patch against the recorded expected value
-- **AND** entries for unknown cases, entries without a reason, and entries that change nothing fail the test suite
-- **AND** any difference without such an entry fails the parity test
+- **GIVEN** a Python result differs from the reference for a supported input
+- **WHEN** migration readiness is assessed
+- **THEN** TypeScript retirement remains incomplete until the mismatch is explained and resolved
+- **AND** unrelated changes to evaluation semantics are tracked separately from the language port
 
 ### Requirement: Single Canonical Core After Migration
 

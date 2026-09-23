@@ -1,0 +1,169 @@
+[
+  {
+    "id": "outcome.fixture",
+    "function": "validateOutcome",
+    "description": "The reference outcome is valid.",
+    "args": [
+      {
+        "id": "outcome.confirmed-appointment-created",
+        "description": "An eligible appointment is created at the customer-confirmed time.",
+        "disposition": "acceptable",
+        "required": true,
+        "fieldIds": [
+          "field.customer-consent",
+          "field.vehicle-eligibility",
+          "field.appointment-status"
+        ]
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": true,
+      "findings": []
+    }
+  },
+  {
+    "id": "outcome.failures",
+    "function": "validateOutcome",
+    "description": "Blank fields and unknown state references.",
+    "args": [
+      {
+        "id": "\t",
+        "description": "",
+        "disposition": "prohibited",
+        "required": false,
+        "fieldIds": [
+          "field.missing"
+        ]
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "outcome.id",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "fixture.required",
+          "severity": "error",
+          "path": "outcome.description",
+          "message": "A non-empty value is required."
+        },
+        {
+          "code": "outcome.unknown_state_field",
+          "severity": "error",
+          "path": "outcome.fieldIds[0]",
+          "message": "Unknown state field: field.missing"
+        }
+      ]
+    }
+  },
+  {
+    "id": "outcome.empty-fields",
+    "function": "validateOutcome",
+    "description": "No fields.",
+    "args": [
+      {
+        "id": "outcome.confirmed-appointment-created",
+        "description": "An eligible appointment is created at the customer-confirmed time.",
+        "disposition": "acceptable",
+        "required": true,
+        "fieldIds": []
+      },
+      {
+        "id": "state.service-request.initial",
+        "assemblyId": "lasm.service-scheduling",
+        "assemblyVersion": "2026-08-17.1",
+        "fields": [
+          {
+            "id": "field.customer-consent",
+            "conceptId": "concept.customer-consent",
+            "value": "unconfirmed"
+          },
+          {
+            "id": "field.vehicle-eligibility",
+            "conceptId": "concept.vehicle-eligibility",
+            "value": "eligible"
+          },
+          {
+            "id": "field.requested-slot",
+            "conceptId": "concept.appointment-slot",
+            "value": "weekday morning"
+          },
+          {
+            "id": "field.appointment-status",
+            "conceptId": "concept.service-appointment",
+            "value": "not-created"
+          }
+        ]
+      }
+    ],
+    "expected": {
+      "valid": false,
+      "findings": [
+        {
+          "code": "fixture.non_empty",
+          "severity": "error",
+          "path": "outcome.fieldIds",
+          "message": "At least one item is required."
+        }
+      ]
+    }
+  }
+]

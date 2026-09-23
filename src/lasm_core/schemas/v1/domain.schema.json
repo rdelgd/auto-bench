@@ -1,0 +1,1557 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:schema:v1:domain",
+  "title": "Lasm core interchange records, version 1",
+  "$defs": {
+    "JsonNumber": {
+      "description": "A finite JSON number; integer-valued numbers must be within the JavaScript safe-integer range.",
+      "type": "number",
+      "if": {
+        "type": "integer"
+      },
+      "then": {
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/JsonNumber"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "EvidencePayload": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      }
+    },
+    "ValidationSeverity": {
+      "enum": [
+        "error",
+        "warning"
+      ]
+    },
+    "ValidationFinding": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/ValidationSeverity"
+        },
+        "path": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "path",
+        "message"
+      ],
+      "additionalProperties": false
+    },
+    "ValidationResult": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationFinding"
+          }
+        }
+      },
+      "required": [
+        "valid",
+        "findings"
+      ],
+      "additionalProperties": false
+    },
+    "ProvenanceKind": {
+      "enum": [
+        "schema",
+        "code",
+        "policy",
+        "practice",
+        "incident",
+        "commitment",
+        "judgment"
+      ]
+    },
+    "ProvenanceStatus": {
+      "enum": [
+        "current",
+        "stale",
+        "disputed"
+      ]
+    },
+    "ProvenanceSource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ProvenanceKind"
+        },
+        "title": {
+          "type": "string"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/ProvenanceStatus"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "observedAt": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "locator",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "ConceptEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "concept"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds"
+      ],
+      "additionalProperties": false
+    },
+    "RelationEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "relation"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fromConceptId": {
+          "type": "string"
+        },
+        "toConceptId": {
+          "type": "string"
+        },
+        "predicate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds",
+        "fromConceptId",
+        "toConceptId",
+        "predicate"
+      ],
+      "additionalProperties": false
+    },
+    "ConstraintEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "constraint"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "appliesToEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rule": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds",
+        "appliesToEntryIds",
+        "rule"
+      ],
+      "additionalProperties": false
+    },
+    "EventEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "event"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subjectConceptIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds",
+        "subjectConceptIds"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyEntry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "policy"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "appliesToEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authorityRoles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "commitment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds",
+        "appliesToEntryIds",
+        "authorityRoles",
+        "commitment"
+      ],
+      "additionalProperties": false
+    },
+    "RuntimeEvaluationMode": {
+      "enum": [
+        "gate",
+        "check"
+      ]
+    },
+    "RuntimeEvaluationDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "const": "evaluation"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mode": {
+          "$ref": "#/$defs/RuntimeEvaluationMode"
+        },
+        "addressedEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evaluatorId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "description",
+        "sourceIds",
+        "mode",
+        "addressedEntryIds",
+        "evaluatorId"
+      ],
+      "additionalProperties": false
+    },
+    "LogicalAssemblySlice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProvenanceSource"
+          }
+        },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConceptEntry"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RelationEntry"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConstraintEntry"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EventEntry"
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PolicyEntry"
+          }
+        },
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RuntimeEvaluationDescriptor"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "title",
+        "description",
+        "provenance",
+        "concepts",
+        "relations",
+        "constraints",
+        "events",
+        "policies",
+        "evaluations"
+      ],
+      "additionalProperties": false
+    },
+    "LasmProjectionReferences": {
+      "type": "object",
+      "properties": {
+        "assemblyEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stateFieldIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "assemblyEntryIds"
+      ],
+      "additionalProperties": false
+    },
+    "InteractionMode": {
+      "enum": [
+        "interactive",
+        "autonomous",
+        "delegated",
+        "workflow"
+      ]
+    },
+    "PermissionLevel": {
+      "enum": [
+        "read-only",
+        "scoped-write",
+        "privileged"
+      ]
+    },
+    "ContextSensitivity": {
+      "enum": [
+        "public",
+        "internal",
+        "sensitive"
+      ]
+    },
+    "ContextSurface": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sensitivity": {
+          "$ref": "#/$defs/ContextSensitivity"
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "sensitivity"
+      ],
+      "additionalProperties": false
+    },
+    "HandoffBoundary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "PermissionModel": {
+      "type": "object",
+      "properties": {
+        "defaultLevel": {
+          "$ref": "#/$defs/PermissionLevel"
+        },
+        "scopedPermissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "defaultLevel",
+        "scopedPermissions"
+      ],
+      "additionalProperties": false
+    },
+    "ApprovalFlow": {
+      "type": "object",
+      "properties": {
+        "requiredFor": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "approverRoles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "requiredFor",
+        "approverRoles"
+      ],
+      "additionalProperties": false
+    },
+    "HarnessDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "interactionMode": {
+          "$ref": "#/$defs/InteractionMode"
+        },
+        "contextSurfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ContextSurface"
+          }
+        },
+        "affordances": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "permissionModel": {
+          "$ref": "#/$defs/PermissionModel"
+        },
+        "approvalFlow": {
+          "$ref": "#/$defs/ApprovalFlow"
+        },
+        "handoffBoundaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HandoffBoundary"
+          }
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "interactionMode",
+        "contextSurfaces",
+        "affordances",
+        "permissionModel",
+        "approvalFlow",
+        "handoffBoundaries"
+      ],
+      "additionalProperties": false
+    },
+    "SkillReferenceKind": {
+      "enum": [
+        "instruction",
+        "reference",
+        "script",
+        "asset"
+      ]
+    },
+    "SkillReference": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/SkillReferenceKind"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "SkillDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "applicability": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SkillReference"
+          }
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "applicability",
+        "capabilities"
+      ],
+      "additionalProperties": false
+    },
+    "McpRisk": {
+      "enum": [
+        "low",
+        "moderate",
+        "high"
+      ]
+    },
+    "McpPrimitiveDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "risk": {
+          "$ref": "#/$defs/McpRisk"
+        },
+        "requiredPermission": {
+          "type": "string"
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "risk"
+      ],
+      "additionalProperties": false
+    },
+    "McpSurfaceDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpPrimitiveDescriptor"
+          }
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpPrimitiveDescriptor"
+          }
+        },
+        "prompts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpPrimitiveDescriptor"
+          }
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "tools",
+        "resources",
+        "prompts"
+      ],
+      "additionalProperties": false
+    },
+    "OperationalStateField": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "conceptId": {
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/JsonValue"
+        }
+      },
+      "required": [
+        "id",
+        "conceptId",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "OperationalState": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "assemblyId": {
+          "type": "string"
+        },
+        "assemblyVersion": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationalStateField"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "assemblyId",
+        "assemblyVersion",
+        "fields"
+      ],
+      "additionalProperties": false
+    },
+    "ActorObservation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "fieldIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "observedValues": {
+          "$ref": "#/$defs/EvidencePayload"
+        }
+      },
+      "required": [
+        "id",
+        "actorId",
+        "fieldIds",
+        "observedValues"
+      ],
+      "additionalProperties": false
+    },
+    "TransitionDisposition": {
+      "enum": [
+        "permitted",
+        "prohibited"
+      ]
+    },
+    "StateTransitionExpectation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/TransitionDisposition"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "fieldIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "eventId": {
+          "type": "string"
+        },
+        "before": {
+          "$ref": "#/$defs/EvidencePayload"
+        },
+        "after": {
+          "$ref": "#/$defs/EvidencePayload"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "disposition",
+        "required",
+        "fieldIds"
+      ],
+      "additionalProperties": false
+    },
+    "OutcomeDisposition": {
+      "enum": [
+        "acceptable",
+        "prohibited"
+      ]
+    },
+    "OutcomeExpectation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "disposition": {
+          "$ref": "#/$defs/OutcomeDisposition"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "fieldIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "disposition",
+        "required",
+        "fieldIds"
+      ],
+      "additionalProperties": false
+    },
+    "AutomotiveDomain": {
+      "enum": [
+        "service",
+        "parts",
+        "sales",
+        "finance",
+        "customer-experience",
+        "inventory",
+        "warranty",
+        "compliance",
+        "operations"
+      ]
+    },
+    "BusinessContext": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "$ref": "#/$defs/AutomotiveDomain"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "stakeholders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredFacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sensitivities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "domain",
+        "summary",
+        "stakeholders",
+        "requiredFacts",
+        "sensitivities"
+      ],
+      "additionalProperties": false
+    },
+    "UserIntent": {
+      "type": "object",
+      "properties": {
+        "explicitGoal": {
+          "type": "string"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inferredGoals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "explicitGoal",
+        "constraints"
+      ],
+      "additionalProperties": false
+    },
+    "ExpectedControlSurfaces": {
+      "type": "object",
+      "properties": {
+        "harnessIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "skillIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mcpServerIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mcpPrimitiveIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "harnessIds",
+        "skillIds",
+        "mcpServerIds",
+        "mcpPrimitiveIds"
+      ],
+      "additionalProperties": false
+    },
+    "RealityReferenceSet": {
+      "type": "object",
+      "properties": {
+        "assemblyId": {
+          "type": "string"
+        },
+        "assemblyVersion": {
+          "type": "string"
+        },
+        "assemblyEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "initialStateId": {
+          "type": "string"
+        },
+        "observationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transitionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outcomeIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "assemblyId",
+        "assemblyVersion",
+        "assemblyEntryIds",
+        "initialStateId",
+        "observationIds",
+        "transitionIds",
+        "outcomeIds"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluationExpectations": {
+      "type": "object",
+      "properties": {
+        "requiredTraceTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgenticEventType"
+          }
+        },
+        "requiresPolicyCheck": {
+          "type": "boolean"
+        },
+        "requiresHumanConfirmation": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "requiredTraceTypes",
+        "requiresPolicyCheck",
+        "requiresHumanConfirmation"
+      ],
+      "additionalProperties": false
+    },
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "businessContext": {
+          "$ref": "#/$defs/BusinessContext"
+        },
+        "intent": {
+          "$ref": "#/$defs/UserIntent"
+        },
+        "reality": {
+          "$ref": "#/$defs/RealityReferenceSet"
+        },
+        "expectedControlSurfaces": {
+          "$ref": "#/$defs/ExpectedControlSurfaces"
+        },
+        "evaluation": {
+          "$ref": "#/$defs/EvaluationExpectations"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "businessContext",
+        "intent",
+        "reality",
+        "expectedControlSurfaces",
+        "evaluation"
+      ],
+      "additionalProperties": false
+    },
+    "AgenticEventType": {
+      "enum": [
+        "intent.submitted",
+        "lasm.version_selected",
+        "lasm.projection_loaded",
+        "lasm.entry_consulted",
+        "lasm.evaluation_requested",
+        "lasm.evaluation_passed",
+        "lasm.evaluation_failed",
+        "lasm.divergence_detected",
+        "lasm.failure_attributed",
+        "state.observed",
+        "state.transition_proposed",
+        "state.transition_committed",
+        "state.transition_rejected",
+        "agent.role_selected",
+        "harness.selected",
+        "harness.configured",
+        "harness.context_loaded",
+        "harness.permission_requested",
+        "harness.permission_granted",
+        "harness.permission_denied",
+        "skill.discovered",
+        "skill.activated",
+        "skill.reference_loaded",
+        "mcp.server_connected",
+        "mcp.primitives_listed",
+        "mcp.tool_selected",
+        "mcp.tool_called",
+        "mcp.resource_read",
+        "mcp.prompt_used",
+        "policy.check_requested",
+        "policy.check_passed",
+        "policy.check_failed",
+        "human.confirmation_requested",
+        "human.confirmation_received",
+        "handoff.created",
+        "outcome.observed",
+        "outcome.validated",
+        "evidence.linked",
+        "task.completed",
+        "task.failed",
+        "intent.fidelity_assessed",
+        "reality.validation_assessed"
+      ]
+    },
+    "RawTraceEvent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "sequence": {
+          "$ref": "#/$defs/JsonNumber"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "subjectId": {
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidencePayload"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "description": "Raw evidence is intentionally permissive: event types, actors, and sequences are checked by domain validation."
+    },
+    "RawTrace": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/RawTraceEvent"
+      }
+    },
+    "NormalizedTraceEvent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/AgenticEventType"
+        },
+        "position": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "actorId": {
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "#/$defs/EvidencePayload"
+        },
+        "timestamp": {
+          "type": "string"
+        },
+        "subjectId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "position",
+        "actorId",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "TraceNormalizationResult": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NormalizedTraceEvent"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationFinding"
+          }
+        }
+      },
+      "required": [
+        "events",
+        "findings"
+      ],
+      "additionalProperties": false
+    },
+    "ConformanceCase": {
+      "type": "object",
+      "properties": {
+        "assembly": {
+          "$ref": "#/$defs/LogicalAssemblySlice"
+        },
+        "scenario": {
+          "$ref": "#/$defs/Scenario"
+        },
+        "initialState": {
+          "$ref": "#/$defs/OperationalState"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActorObservation"
+          }
+        },
+        "transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StateTransitionExpectation"
+          }
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutcomeExpectation"
+          }
+        },
+        "harnesses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HarnessDescriptor"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SkillDescriptor"
+          }
+        },
+        "mcpSurfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/McpSurfaceDescriptor"
+          }
+        },
+        "trace": {
+          "$ref": "#/$defs/RawTrace"
+        }
+      },
+      "required": [
+        "assembly",
+        "scenario",
+        "initialState",
+        "observations",
+        "transitions",
+        "outcomes",
+        "harnesses",
+        "skills",
+        "mcpSurfaces",
+        "trace"
+      ],
+      "additionalProperties": false
+    },
+    "EvaluationDimension": {
+      "enum": [
+        "intent-fidelity",
+        "semantic-fidelity",
+        "reality-model-validity",
+        "state-and-outcome-validity",
+        "control-surface-quality",
+        "reality-coverage",
+        "evidence-and-attribution",
+        "governance"
+      ]
+    },
+    "EvaluationStatus": {
+      "enum": [
+        "pass",
+        "warning",
+        "fail"
+      ]
+    },
+    "EvaluationFindingSeverity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ]
+    },
+    "DivergenceSource": {
+      "enum": [
+        "reality-model",
+        "projection",
+        "control-surface",
+        "agent-conduct",
+        "external-system",
+        "insufficient-evidence"
+      ]
+    },
+    "EvaluationFinding": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/EvaluationFindingSeverity"
+        },
+        "message": {
+          "type": "string"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assemblyEntryIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transitionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outcomeIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "attribution": {
+          "$ref": "#/$defs/DivergenceSource"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "message",
+        "evidenceRefs",
+        "assemblyEntryIds",
+        "transitionIds",
+        "outcomeIds"
+      ],
+      "additionalProperties": false
+    },
+    "DimensionResult": {
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/EvaluationDimension"
+        },
+        "status": {
+          "$ref": "#/$defs/EvaluationStatus"
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EvaluationFinding"
+          }
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "dimension",
+        "status",
+        "findings",
+        "evidenceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "ConformanceEvaluation": {
+      "type": "object",
+      "properties": {
+        "assemblyId": {
+          "type": "string"
+        },
+        "assemblyVersion": {
+          "type": "string"
+        },
+        "scenarioId": {
+          "type": "string"
+        },
+        "valid": {
+          "type": "boolean"
+        },
+        "conformant": {
+          "type": "boolean"
+        },
+        "validationFindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ValidationFinding"
+          }
+        },
+        "dimensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DimensionResult"
+          }
+        }
+      },
+      "required": [
+        "assemblyId",
+        "assemblyVersion",
+        "scenarioId",
+        "valid",
+        "conformant",
+        "validationFindings",
+        "dimensions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

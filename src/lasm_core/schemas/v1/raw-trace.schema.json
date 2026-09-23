@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:schema:v1:raw-trace",
+  "title": "Lasm raw-trace document, version 1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "raw-trace"
+    },
+    "value": {
+      "$ref": "urn:lasm-core:schema:v1:domain#/$defs/RawTrace"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "value"
+  ],
+  "additionalProperties": false
+}

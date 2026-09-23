@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:schema:v1:logical-assembly",
+  "title": "Lasm logical-assembly document, version 1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "kind": {
+      "const": "logical-assembly"
+    },
+    "value": {
+      "$ref": "urn:lasm-core:schema:v1:domain#/$defs/LogicalAssemblySlice"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "value"
+  ],
+  "additionalProperties": false
+}
