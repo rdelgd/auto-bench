@@ -1,7 +1,7 @@
 # A Lasm Reality Workbench on Databricks
 
 Status: exploratory
-Date: 2026-09-16
+Date: 2026-09-17
 Authors: Roberto Delgado, Codex
 
 ## Prompt
@@ -12,9 +12,9 @@ The motivating interpretation is that Lasm behaves like a **type definition of a
 
 ## Source Snapshot
 
-This exploration was informed by the following repository sources, inspected on 2026-09-16:
+This exploration was informed by the following repository sources, inspected on 2026-09-16 and revised against the updated Servco direction on 2026-09-17:
 
-- Servco ontology conversational ledger: `servco-ontology-ledger.md`
+- Revised Servco ontology conversational ledger: `servco-ontology-ledger-2.md`
 - Genie Workbench repository and README: https://github.com/databricks-solutions/databricks-genie-workbench
 - Genie Workbench architecture: https://github.com/databricks-solutions/databricks-genie-workbench/blob/main/docs/docs/getting-started/architecture-overview.md
 - Genie Workbench Auto-Optimize design: https://github.com/databricks-solutions/databricks-genie-workbench/blob/main/docs/docs/features/auto-optimize.md
@@ -89,7 +89,7 @@ The Workbench should not create a parallel semantic registry when a Databricks-n
 | Domains and Pages | Business-domain scope, terminology, curation, and qualitative semantics that can serve as governed source or projection material, subject to current platform access and data-handling limits |
 | Genie One | A workspace-wide analytical consumption surface through which governed semantic context is used |
 | Genie monitoring and benchmark behavior | Evidence about whether analytical interpretations are working, not proof that the broader Lasm conforms |
-| Skills, MCP/AI Gateway surfaces, Apps, and workflows | Other consumer-specific projections of business meaning, capability, and authority |
+| Skills, direct client MCP connections, Apps, and workflows | Other consumer-specific projections of business meaning, capability, and authority |
 
 Lasm's distinct contribution is the wider binding: sources and definitions are connected to constraints, recognized events, authority, permitted state transitions, expected outcomes, runtime evaluations, agent-facing projections, and conformance evidence. The Workbench would reference and test Databricks-native semantic assets rather than copy their definitions into a second catalog.
 
@@ -135,6 +135,14 @@ The Workbench can supply evidence, execute checks, prepare candidate diffs, and 
 
 Servco's strategy consolidates analytical behavior in Genie One, scoped by domain, and removes standalone Genie Agents from the target operating model. Inspiration from Genie Workbench is methodological—portfolio scanning, monitoring, benchmarks, durable optimization history—not an architectural proposal to introduce another fleet of Genie Agents.
 
+### Direct connector topology and infrastructure restraint
+
+Servco has abandoned the proposed centralized AI Gateway strategy. Each consuming surface, such as Claude or ChatGPT, will instead connect directly to Databricks through its own client-specific MCP endpoints. The accepted operational cost is duplicated connection management; the avoided cost is owning gateway middleware that harness vendors are likely to absorb into their platforms.
+
+The Workbench should honor that decision rather than becoming a gateway by another name. It may inventory and test connections, but each connector remains an independently deployed projection boundary with its own endpoint, caller identity, permissions, exposed operations, version, health, and audit evidence. A gateway-like connector name is not evidence of a shared control plane or common capabilities.
+
+This changes the status of connection diagnostics. A connector-helper surface may be durable operational tooling under the direct-connection model rather than temporary cutover scaffolding. Its implementation should still remain thin and replaceable as client platforms gain native connection and identity support.
+
 ### Guardrails as historical evidence
 
 The sales intelligence skill is a useful source of “negative requirements”: each special instruction testifies to a failure or gap that once required compensation. The Workbench should help classify every guardrail as one of:
@@ -173,6 +181,7 @@ Candidate signals include:
 - **Source freshness:** current, stale, disputed, unreachable, or changed since the assembly version was approved.
 - **Assembly integrity:** valid references among concepts, relations, constraints, events, policies, and evaluations.
 - **Projection version skew:** production skills, prompts, tools, schemas, and applications still using an older or unexpected assembly projection.
+- **Connector drift:** a direct client connection's endpoint, effective identity, permissions, supported operations, or projected Lasm version differs from its approved contract.
 - **Evaluation reach:** load-bearing entries with no runtime gate, check, or Auto Bench case.
 - **Episode usage:** which assembly version, entries, projections, and evaluations actually shaped consequential activity.
 - **Evidence completeness:** whether intent, initial state, authority, action, transition, outcome, and attribution can be reconstructed.
@@ -247,6 +256,8 @@ A composite health score may help sort a portfolio, but it should never hide blo
 
 The likely product genre is an **analytic repository**: an overview for triage, with hierarchical drill-down into exact evidence, versions, and cases. It should optimize for domain stewards, control owners, platform engineers, and Auto Bench authors rather than executives alone.
 
+A managed AI/BI dashboard could publish a read-only portfolio summary, but the full Workbench is justified as a custom Databricks App by its governed drill-down, run control, review actions, and change preparation.
+
 ### Portfolio
 
 A stratified overview of all Lasm domains:
@@ -280,8 +291,9 @@ A work queue showing changed, stale, disputed, or unobserved sources and the ass
 
 ### Projection Matrix
 
-A matrix of assembly entries and state fields against each skill, prompt, MCP surface, application, permission boundary, and approval flow. It should expose:
+A matrix of assembly entries and state fields against each skill, prompt, direct client MCP connection, application, permission boundary, and approval flow. It should expose:
 
+- client, endpoint, authentication mode, effective caller, permission scope, and supported operations for each connection;
 - expected versus observed projection version;
 - required meaning omitted from a surface;
 - capabilities not supported by the governing assembly;
@@ -347,7 +359,8 @@ The Genie Workbench composition offers a plausible reference architecture, with 
 | MLflow tracing | Optional pointers to agent and model traces that support episode evidence and attribution; not the sole conformance record |
 | Unity Catalog system tables | Supporting evidence for access, lineage, query, job, compute, and cost behavior where it bears on a Lasm finding |
 | DABs and Git | Environment promotion, reviewable infrastructure/configuration changes, reproducible jobs, and release automation |
-| JSM through the approved integration surface | Authoritative intake and lifecycle record linked from findings, candidates, reviews, and releases |
+| Direct client MCP endpoints | Per-consumer access to Databricks or approved external systems, modeled with explicit client, endpoint, identity, capability, permission, and health metadata |
+| JSM through an approved direct integration surface | Authoritative intake and lifecycle record linked from findings, candidates, reviews, and releases |
 
 Two identities should remain explicit:
 
@@ -356,7 +369,11 @@ Two identities should remain explicit:
 
 The service principal's broader access must never substitute for checking whether the requesting person is authorized to view, propose, approve, release, or roll back a particular Lasm domain.
 
-The AI Gateway integration surface should be treated as capability-dependent. The ledger confirms working Atlassian read/write through the gateway, but ontology read, enumerate, author, and certify operations remain uncertain. Until those capabilities exist and are governed, the Workbench should use explicit links, import/export artifacts, and human workflow rather than simulate unsupported authoring access.
+Direct connectors add another identity boundary: the effective caller may be a human on whose behalf the client acts, the Workbench service principal, or a connector-specific credential. Every connector-derived observation should therefore record the client, endpoint, authentication mode, effective principal, and permission scope. It should not infer authority from the connector's display name.
+
+Connector capabilities must also be discovered and governed per client. A working Atlassian read/write connection does not establish that another client or an ontology endpoint can read, enumerate, author, or certify the same resources. Until a specific connection supports those operations, the Workbench should use explicit links, import/export artifacts, and human workflow rather than simulate unsupported authoring access.
+
+The Workbench may supply a shared diagnostic and conformance view over these connections, but it should not proxy all client traffic or own centralized credential routing. That would recreate the retired gateway architecture and concentrate authority the direct-connection decision intentionally leaves distributed.
 
 Unity Catalog can retain immutable evidence that an approval occurred and exactly what content it covered, while JSM remains authoritative for workflow status, ownership, and lifecycle progression.
 
@@ -368,6 +385,7 @@ The exact physical model remains open, but the Workbench likely needs durable co
 - immutable assembly version and content digest;
 - assembly entry and provenance source;
 - projection identity, version, target, and release status;
+- connector client, endpoint, authentication mode, effective principal, permission scope, capability snapshot, and observed health;
 - runtime evaluation descriptor and implementation reference;
 - Auto Bench case and corpus version;
 - scan snapshot and health finding;
@@ -390,7 +408,7 @@ A deterministic scan could report a profile rather than one opaque score:
 | Assembly integrity | Unique IDs, valid cross-references, coherent addressed entries, complete required metadata |
 | Semantic accountability | Named owners, rationale, contestability, decision records, explicit scope |
 | Evaluative reach | Load-bearing entries addressed by gates/checks and exercised by Auto Bench cases |
-| Projection fidelity | Required references present, unsupported capability absent, deployed version matches release |
+| Projection fidelity | Required references present, unsupported capability absent, deployed version matches release, each direct connector matches its approved identity and capability contract |
 | Evidence readiness | Required intent, state, action, authority, transition, outcome, and attribution markers available |
 | Conformance quality | Hard blockers, outcome fidelity, alternate-path tolerance, perturbation sensitivity, attribution completeness |
 | Evolution safety | Compatibility analysis, regression coverage, approval state, release and rollback readiness |
@@ -454,6 +472,7 @@ The two slices answer different questions:
 - promotion gates for agentic applications that require passing domain-specific conformance suites;
 - cross-domain composition for episodes spanning multiple 360 domains;
 - comparison of conformance across models, harnesses, and projection implementations;
+- per-client connector conformance and drift comparison without centralizing connector traffic or credentials;
 - a sanitized public benchmark export that preserves conformance structure without exposing Servco reality;
 - a steward assistant that converts interviews and source changes into cited candidate patches and tests.
 
@@ -463,6 +482,7 @@ The two slices answer different questions:
 - Treat Unity Catalog metadata or a data model as the complete operational reality.
 - Recreate native Metric View, Domain, Page, Genie One, or JSM responsibilities in a parallel registry or workflow.
 - Reintroduce standalone Genie Agents into Servco's target analytical architecture.
+- Build or operate a centralized MCP gateway for external client connections.
 - Build a universal agent analytics product.
 - Collapse Lasm runtime evaluation and Auto Bench evaluation into one score.
 - Allow an LLM or optimizer to publish business meaning without accountable approval.
@@ -481,6 +501,7 @@ The two slices answer different questions:
 - Which assembly entries are “load-bearing” enough to require hard gates, and how is that status discovered and revised?
 - How should projection fidelity be measured when the projection is natural-language instruction rather than a typed interface?
 - What exact evidence proves that a deployed skill, prompt, or tool used the released projection rather than merely claiming its version?
+- How should connector contracts and conformance evidence be normalized across clients whose MCP endpoints, identity models, and operation sets differ?
 - Which optimization targets are safe for mechanical quick fixes, and which always require domain-owner judgment?
 - Should candidate changes branch at the whole-assembly level or at independently releasable domain slices?
 - How are cross-domain episodes evaluated when two Lasm domains disagree about shared concepts or authority?
