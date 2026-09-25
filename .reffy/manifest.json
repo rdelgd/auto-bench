@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-09-23T01:30:54.770Z",
+  "updated_at": "2026-09-23T19:11:41.734Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -157,6 +157,17 @@
       "updated_at": "2026-09-23T01:30:54.770Z",
       "related_changes": [],
       "derived_outputs": []
+    },
+    {
+      "id": "a7b86678-91ab-4beb-b63e-4975ba10d50c",
+      "name": "servco ontology ledger 3",
+      "filename": "servco-ontology-ledger-3.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 28871,
+      "tags": [],
+      "created_at": "2026-09-23T19:11:41.734Z",
+      "updated_at": "2026-09-23T19:11:41.734Z"
     }
   ]
 }
