@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-09-23T19:11:41.734Z",
+  "updated_at": "2026-09-30T21:37:03.146Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -168,6 +168,17 @@
       "tags": [],
       "created_at": "2026-09-23T19:11:41.734Z",
       "updated_at": "2026-09-23T19:11:41.734Z"
+    },
+    {
+      "id": "cfa4d2bc-189e-4982-b29d-0917a12c8c79",
+      "name": "lasm as sovereign mapping plugin",
+      "filename": "lasm-as-sovereign-mapping-plugin.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 11405,
+      "tags": [],
+      "created_at": "2026-09-30T21:37:03.146Z",
+      "updated_at": "2026-09-30T21:37:03.146Z"
     }
   ]
 }
