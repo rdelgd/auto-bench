@@ -25,7 +25,7 @@ The name operates at three related levels:
 - **LogicalAssembly, the domain model:** a materialized slice containing concepts, relations, constraints, events, policies, runtime evaluations, provenance, and version identity.
 - **`lasm-core`, the library:** the deterministic Sans I/O Python implementation for assemblies, projections, operational state, evidence, validation, and evaluation mechanics, imported as `lasm_core`.
 
-Harness context, skills, MCP surfaces, permissions, approvals, and handoffs are modeled as Lasm projections or control surfaces. They can reference the assembly entries and operational-state fields they expose or enforce.
+Harness context, skills, MCP surfaces, weight patches, permissions, approvals, and handoffs are modeled as Lasm projections or control surfaces. They can reference the assembly entries and operational-state fields they expose or enforce.
 
 ## What Auto Bench Evaluates
 
@@ -50,10 +50,11 @@ Lasm runtime evaluations and Auto Bench evaluation remain distinct. Runtime eval
 
 - explicit LogicalAssembly entry and provenance models;
 - materialized operational state, actor observation, transition, and outcome contracts;
-- harness, skill, MCP, permission, approval, and handoff projection references;
+- harness, skill, MCP, weight patch, permission, approval, and handoff projection references;
 - pure cross-reference validation and deterministic evidence normalization;
 - structured findings with assembly-entry, transition, outcome, evidence, and attribution references;
-- an automotive service-scheduling fixture covering a complete Lasm evaluation episode;
+- an automotive service-scheduling fixture covering a complete conformant Lasm evaluation episode;
+- a sales new-vehicle-units fixture in which a compiled weight patch drops a governed distinction and Auto Bench attributes the loss to the patch;
 - versioned JSON interchange documents and JSON Schemas for assemblies, cases, traces, and results.
 
 The package accepts materialized values and returns materialized results. It has no runtime dependencies and does not perform filesystem, network, database, environment, process, clock, persistence, runtime orchestration, or live MCP operations.

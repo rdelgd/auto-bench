@@ -107,9 +107,11 @@ from .validate import (
     validate_skill,
     validate_state_transition,
     validate_trace,
+    validate_weight_patch,
 )
+from .weight_patch import WeightPatchDescriptor
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "AGENTIC_EVENT_TYPES",
@@ -178,6 +180,7 @@ __all__ = [
     "ValidationFinding",
     "ValidationResult",
     "ValidationSeverity",
+    "WeightPatchDescriptor",
     "decode_document",
     "encode_document",
     "evaluate_conformance",
@@ -199,6 +202,7 @@ __all__ = [
     "validate_skill",
     "validate_state_transition",
     "validate_trace",
+    "validate_weight_patch",
     "validation_result",
     "wrap_document",
 ]

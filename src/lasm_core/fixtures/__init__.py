@@ -1,5 +1,19 @@
 """Automotive reference fixtures for Lasm conformance evaluation."""
 
+from .new_vehicle_units import (
+    new_vehicle_units_assembly,
+    new_vehicle_units_conformance_case,
+    new_vehicle_units_evaluation,
+    new_vehicle_units_initial_state,
+    new_vehicle_units_observations,
+    new_vehicle_units_outcomes,
+    new_vehicle_units_scenario,
+    new_vehicle_units_skill,
+    new_vehicle_units_trace,
+    new_vehicle_units_transitions,
+    new_vehicle_units_weight_patch,
+    sales_analyst_harness,
+)
 from .service_appointment import (
     dealership_operations_mcp,
     routine_maintenance_conformance_case,
@@ -16,6 +30,18 @@ from .service_appointment import (
 )
 
 __all__ = [
+    "new_vehicle_units_assembly",
+    "new_vehicle_units_conformance_case",
+    "new_vehicle_units_evaluation",
+    "new_vehicle_units_initial_state",
+    "new_vehicle_units_observations",
+    "new_vehicle_units_outcomes",
+    "new_vehicle_units_scenario",
+    "new_vehicle_units_skill",
+    "new_vehicle_units_trace",
+    "new_vehicle_units_transitions",
+    "new_vehicle_units_weight_patch",
+    "sales_analyst_harness",
     "dealership_operations_mcp",
     "routine_maintenance_conformance_case",
     "routine_maintenance_evaluation",

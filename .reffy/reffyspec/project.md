@@ -34,7 +34,7 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 ### Code Style
 - Prefer explicit, serializable domain types over loosely shaped objects. Records are `TypedDict`s keyed by the camelCase wire names; functions and modules use snake_case.
 - Optional record fields are omitted rather than set to `None`; core functions never mutate caller inputs.
-- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, evidence event, evaluation, finding, handoff, and outcome.
+- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, weight patch, evidence event, evaluation, finding, handoff, and outcome.
 - Use small modules with clear boundaries.
 - Prefer deterministic functions that accept materialized values and return materialized values.
 - Avoid global state and implicit dependencies in the core library.
@@ -44,7 +44,7 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 - Adapters pass already-materialized values into the library.
 - The library owns domain models, cross-reference validation, evidence normalization, runtime-evaluation records, and deterministic evaluation mechanics.
 - Materialized LogicalAssembly slices are runtime-independent inputs; source extraction and reconciliation remain adapter concerns.
-- Harnesses, skills, MCP surfaces, prompts, permissions, approvals, and handoffs are Lasm projections or controls that may reference assembly entries and operational-state fields.
+- Harnesses, skills, MCP surfaces, weight patches, prompts, permissions, approvals, and handoffs are Lasm projections or controls that may reference assembly entries and operational-state fields. A weight patch is identified by its digest; the core never compiles, serves, or probes patches.
 - Operational state and transitions are explicit conformance objects rather than facts inferred from task-completion claims.
 - Lasm runtime evaluations gate or check behavior against maintained meaning; Auto Bench evaluates the Lasm as a whole.
 - Evaluation produces structured findings with evidence, assembly-entry, transition, outcome, and attribution references.
@@ -72,8 +72,8 @@ A `ConformanceCase` is the materialized evidence chain between represented opera
 - an episode-scoped LogicalAssembly and provenance;
 - initial operational state and actor-specific observations;
 - permitted or prohibited transitions and acceptable or prohibited outcomes;
-- Lasm projections through harness, skill, MCP, permission, approval, and handoff fixtures;
-- normalized evidence for intent, assembly selection and consultation, projections, state, runtime evaluation, actions, outcomes, links, and attribution.
+- Lasm projections through harness, skill, MCP, weight patch, permission, approval, and handoff fixtures;
+- normalized evidence for intent, assembly selection and consultation, projections, weight patch application and probing, state, runtime evaluation, actions, outcomes, links, and attribution.
 
 A LogicalAssembly contains concepts, relations, constraints, events, policies, and runtime evaluations. It is compiled from already load-bearing sources such as schemas, code, policy documents, observed practice, incidents, commitments, and practitioner judgment. Each entry identifies its provenance.
 

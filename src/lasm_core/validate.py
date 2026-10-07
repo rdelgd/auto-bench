@@ -11,6 +11,7 @@ from .operational_state import ActorObservation, OperationalState, OutcomeExpect
 from .scenario import Scenario
 from .skill import SkillDescriptor
 from .trace import RawTraceEvent, is_agentic_event_type
+from .weight_patch import WeightPatchDescriptor
 
 
 def _required(value: str, path: str, findings: list[ValidationFinding]) -> None:
@@ -243,6 +244,7 @@ def validate_scenario(scenario: Scenario) -> ValidationResult:
             *expected["skillIds"],
             *expected["mcpServerIds"],
             *expected["mcpPrimitiveIds"],
+            *expected.get("weightPatchIds", []),
         ],
         "scenario.expectedControlSurfaces",
         findings,
@@ -321,6 +323,27 @@ def validate_mcp_surface(
     return validation_result(findings)
 
 
+def validate_weight_patch(
+    patch: WeightPatchDescriptor,
+    assembly: LogicalAssemblySlice | None = None,
+    state: OperationalState | None = None,
+) -> ValidationResult:
+    findings: list[ValidationFinding] = []
+    _required(patch["id"], "weightPatch.id", findings)
+    _required(patch["name"], "weightPatch.name", findings)
+    _required(patch["purpose"], "weightPatch.purpose", findings)
+    _required(patch["baseModelId"], "weightPatch.baseModelId", findings)
+    _required(patch["digest"], "weightPatch.digest", findings)
+    _validate_projection_references(
+        patch["projection"],
+        "weightPatch.projection",
+        None if assembly is None else logical_assembly_entry_ids(assembly),
+        _state_field_ids(state),
+        findings,
+    )
+    return validation_result(findings)
+
+
 def validate_trace(trace: Sequence[RawTraceEvent]) -> ValidationResult:
     findings: list[ValidationFinding] = []
     _non_empty(trace, "trace", findings)
@@ -373,6 +396,9 @@ def validate_conformance_case(input: ConformanceCase) -> ValidationResult:
         findings.extend(validate_skill(skill, assembly, initial_state)["findings"])
     for surface in input["mcpSurfaces"]:
         findings.extend(validate_mcp_surface(surface, assembly, initial_state)["findings"])
+    weight_patches = input.get("weightPatches", [])
+    for patch in weight_patches:
+        findings.extend(validate_weight_patch(patch, assembly, initial_state)["findings"])
     findings.extend(validate_trace(input["trace"])["findings"])
 
     reality = input["scenario"]["reality"]
@@ -408,6 +434,9 @@ def validate_conformance_case(input: ConformanceCase) -> ValidationResult:
         _reference(id, server_ids, f"scenario.expectedControlSurfaces.mcpServerIds[{index}]", "scenario.unknown_mcp_server", "MCP server", findings)
     for index, id in enumerate(expected["mcpPrimitiveIds"]):
         _reference(id, primitive_ids, f"scenario.expectedControlSurfaces.mcpPrimitiveIds[{index}]", "scenario.unknown_mcp_primitive", "MCP primitive", findings)
+    patch_ids = frozenset(patch["id"] for patch in weight_patches)
+    for index, id in enumerate(expected.get("weightPatchIds", [])):
+        _reference(id, patch_ids, f"scenario.expectedControlSurfaces.weightPatchIds[{index}]", "scenario.unknown_weight_patch", "weight patch", findings)
 
     _unique_ids([observation["id"] for observation in input["observations"]], "observations", findings)
     _unique_ids([transition["id"] for transition in input["transitions"]], "transitions", findings)
@@ -415,5 +444,6 @@ def validate_conformance_case(input: ConformanceCase) -> ValidationResult:
     _unique_ids([harness["id"] for harness in input["harnesses"]], "harnesses", findings)
     _unique_ids([skill["id"] for skill in input["skills"]], "skills", findings)
     _unique_ids([surface["id"] for surface in input["mcpSurfaces"]], "mcpSurfaces", findings)
+    _unique_ids([patch["id"] for patch in weight_patches], "weightPatches", findings)
 
     return validation_result(findings)

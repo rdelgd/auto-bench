@@ -162,6 +162,14 @@ DEFINITIONS: dict[str, JsonSchema] = {
     ),
     "McpRisk": _enum("low", "moderate", "high"),
     "McpPrimitiveDescriptor": _primitive_descriptor(),
+    "WeightPatchDescriptor": _record({
+        "id": STRING,
+        "name": STRING,
+        "purpose": STRING,
+        "baseModelId": STRING,
+        "digest": STRING,
+        "projection": _ref("LasmProjectionReferences"),
+    }),
     "McpSurfaceDescriptor": _record(
         {
             "id": STRING,
@@ -218,12 +226,10 @@ DEFINITIONS: dict[str, JsonSchema] = {
         "sensitivities": STRINGS,
     }),
     "UserIntent": _record({"explicitGoal": STRING, "constraints": STRINGS}, {"inferredGoals": STRINGS}),
-    "ExpectedControlSurfaces": _record({
-        "harnessIds": STRINGS,
-        "skillIds": STRINGS,
-        "mcpServerIds": STRINGS,
-        "mcpPrimitiveIds": STRINGS,
-    }),
+    "ExpectedControlSurfaces": _record(
+        {"harnessIds": STRINGS, "skillIds": STRINGS, "mcpServerIds": STRINGS, "mcpPrimitiveIds": STRINGS},
+        {"weightPatchIds": STRINGS},
+    ),
     "RealityReferenceSet": _record({
         "assemblyId": STRING,
         "assemblyVersion": STRING,
@@ -272,18 +278,21 @@ DEFINITIONS: dict[str, JsonSchema] = {
         "findings": _array(_ref("ValidationFinding")),
     }),
     # Conformance -------------------------------------------------------------
-    "ConformanceCase": _record({
-        "assembly": _ref("LogicalAssemblySlice"),
-        "scenario": _ref("Scenario"),
-        "initialState": _ref("OperationalState"),
-        "observations": _array(_ref("ActorObservation")),
-        "transitions": _array(_ref("StateTransitionExpectation")),
-        "outcomes": _array(_ref("OutcomeExpectation")),
-        "harnesses": _array(_ref("HarnessDescriptor")),
-        "skills": _array(_ref("SkillDescriptor")),
-        "mcpSurfaces": _array(_ref("McpSurfaceDescriptor")),
-        "trace": _ref("RawTrace"),
-    }),
+    "ConformanceCase": _record(
+        {
+            "assembly": _ref("LogicalAssemblySlice"),
+            "scenario": _ref("Scenario"),
+            "initialState": _ref("OperationalState"),
+            "observations": _array(_ref("ActorObservation")),
+            "transitions": _array(_ref("StateTransitionExpectation")),
+            "outcomes": _array(_ref("OutcomeExpectation")),
+            "harnesses": _array(_ref("HarnessDescriptor")),
+            "skills": _array(_ref("SkillDescriptor")),
+            "mcpSurfaces": _array(_ref("McpSurfaceDescriptor")),
+            "trace": _ref("RawTrace"),
+        },
+        {"weightPatches": _array(_ref("WeightPatchDescriptor"))},
+    ),
     "EvaluationDimension": _enum(
         "intent-fidelity",
         "semantic-fidelity",

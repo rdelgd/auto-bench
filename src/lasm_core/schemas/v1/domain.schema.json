@@ -777,6 +777,38 @@
       ],
       "additionalProperties": false
     },
+    "WeightPatchDescriptor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "baseModelId": {
+          "type": "string"
+        },
+        "digest": {
+          "type": "string"
+        },
+        "projection": {
+          "$ref": "#/$defs/LasmProjectionReferences"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose",
+        "baseModelId",
+        "digest",
+        "projection"
+      ],
+      "additionalProperties": false
+    },
     "McpSurfaceDescriptor": {
       "type": "object",
       "properties": {
@@ -1079,6 +1111,12 @@
           "items": {
             "type": "string"
           }
+        },
+        "weightPatchIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -1227,6 +1265,8 @@
         "mcp.tool_called",
         "mcp.resource_read",
         "mcp.prompt_used",
+        "patch.applied",
+        "patch.probed",
         "policy.check_requested",
         "policy.check_passed",
         "policy.check_failed",
@@ -1378,6 +1418,12 @@
         },
         "trace": {
           "$ref": "#/$defs/RawTrace"
+        },
+        "weightPatches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/WeightPatchDescriptor"
+          }
         }
       },
       "required": [

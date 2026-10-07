@@ -141,6 +141,36 @@ The checked-in JSON Schemas are packaged under `lasm_core/schemas/v1/`. Loading 
 `lasm_core` does not import `lasm_core.fixtures`. As in TypeScript, `routine_maintenance_evaluation`
 is computed when the fixtures module is first imported.
 
+## Added After Migration
+
+These exports have no TypeScript counterpart. They were added by the `add-weight-patch-projection-surface`
+change and are covered by ordinary tests rather than the TypeScript reference corpus.
+
+| Python | Representation | Purpose |
+| --- | --- | --- |
+| `WeightPatchDescriptor` | `TypedDict` | A compiled knowledge patch modeled as a Lasm projection: `id`, `name`, `purpose`, `baseModelId`, `digest`, required `projection`. |
+| `validate_weight_patch` | function | Validates a descriptor's required fields and projection references against an optional assembly and state. |
+| `ConformanceCase["weightPatches"]` | `NotRequired` | Omitted means no weight patches. |
+| `ExpectedControlSurfaces["weightPatchIds"]` | `NotRequired` | Omitted means none are expected. |
+| `AgenticEventType` values `patch.applied`, `patch.probed` | `Literal` | Subject is the weight patch id; the evaluator reads `digest`, `probe`, and `passed` from evidence. |
+
+Sales-domain reference fixture in `lasm_core.fixtures`:
+
+| Python | Purpose |
+| --- | --- |
+| `new_vehicle_units_assembly` | Net new-vehicle units and the stock-type distinction. |
+| `new_vehicle_units_initial_state` | Governed definition, stock-type scope, and the unreported figure. |
+| `new_vehicle_units_observations` | The agent's observation of the governed definition. |
+| `new_vehicle_units_transitions` | The permitted, required units-reported transition. |
+| `new_vehicle_units_outcomes` | Acceptable all-stock-types outcome and prohibited retail-only outcome. |
+| `sales_analyst_harness` | Read-only analytical harness. |
+| `new_vehicle_units_skill` | Skill projecting the units definition. |
+| `new_vehicle_units_weight_patch` | Weight patch claiming the units and stock-type concepts. |
+| `new_vehicle_units_scenario` | The regional manager's question, expecting the harness, skill, and patch. |
+| `new_vehicle_units_trace` | Patch applied with its digest, canonical probe passed, paraphrase probe failed, retail-only figure reported. |
+| `new_vehicle_units_conformance_case` | The complete case. |
+| `new_vehicle_units_evaluation` | Nonconformant: probe failure and divergence attributed to the patch, prohibited outcome observed. |
+
 ## Consumer Audit
 
 Recorded on 2026-09-22 before retiring the npm package:

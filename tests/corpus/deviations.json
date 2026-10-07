@@ -33,13 +33,13 @@
             {
               "type": "state.observed",
               "position": 2,
-              "actorId": "\u00a0\ufeff",
+              "actorId": " ﻿",
               "evidence": {}
             },
             {
               "type": "state.observed",
               "position": 3,
-              "actorId": "\u200b",
+              "actorId": "​",
               "evidence": {}
             },
             {
@@ -180,6 +180,22 @@
               "message": "Unknown agentic event type: TASK.COMPLETED"
             }
           ]
+        }
+      ]
+    },
+    "constant.agentic-event-types": {
+      "change": "add-weight-patch-projection-surface",
+      "reason": "Two event types, patch.applied and patch.probed, were added after the migration so a compiled weight patch can be observed as a Lasm projection. They follow the mcp.* group.",
+      "ops": [
+        {
+          "op": "add",
+          "path": "/29",
+          "value": "patch.applied"
+        },
+        {
+          "op": "add",
+          "path": "/30",
+          "value": "patch.probed"
         }
       ]
     }

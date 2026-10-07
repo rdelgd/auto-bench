@@ -10,6 +10,7 @@ from .mcp import McpSurfaceDescriptor, mcp_primitives
 from .scenario import Scenario
 from .trace import AgenticEventType, NormalizedTraceEvent, normalize_trace, trace_evidence_ref
 from .validate import validate_conformance_case, validate_logical_assembly
+from .weight_patch import WeightPatchDescriptor
 
 EvaluationDimension: TypeAlias = Literal[
     "intent-fidelity",
@@ -146,7 +147,17 @@ def _projection_references(input: ConformanceCase) -> list[LasmProjectionReferen
     for surface in input["mcpSurfaces"]:
         references.append(surface.get("projection"))
         references.extend(primitive.get("projection") for primitive in mcp_primitives(surface))
+    references.extend(patch["projection"] for patch in input.get("weightPatches", []))
     return [projection for projection in references if projection is not None]
+
+
+def _weight_patches_by_entry(patches: Sequence[WeightPatchDescriptor]) -> dict[str, list[str]]:
+    """Assembly entry id -> ids of the weight patches claiming it, in fixture order."""
+    by_entry: dict[str, list[str]] = {}
+    for patch in patches:
+        for entry_id in patch["projection"]["assemblyEntryIds"]:
+            by_entry.setdefault(entry_id, []).append(patch["id"])
+    return by_entry
 
 
 def _evaluate_intent(scenario: Scenario, events: Sequence[NormalizedTraceEvent]) -> DimensionResult:
@@ -185,6 +196,7 @@ def _evaluate_semantic_fidelity(input: ConformanceCase, events: Sequence[Normali
     consulted_events = _events_of_type(events, "lasm.entry_consulted")
     consulted_ids = _subject_ids(consulted_events)
     divergence_events = _events_of_type(events, "lasm.divergence_detected")
+    patches_by_entry = _weight_patches_by_entry(input.get("weightPatches", []))
     findings: list[EvaluationFinding] = []
 
     for id in relevant_entry_ids:
@@ -209,6 +221,16 @@ def _evaluate_semantic_fidelity(input: ConformanceCase, events: Sequence[Normali
             assembly_entry_ids=[divergence["subjectId"]] if "subjectId" in divergence else [],
             attribution="projection",
         ))
+        patch_ids = patches_by_entry.get(divergence.get("subjectId", ""), [])
+        if patch_ids:
+            findings.append(_finding(
+                "semantic.divergence_in_weight_patch",
+                "error",
+                f"The diverged entry is projected by weight patch(es): {', '.join(patch_ids)}",
+                evidence_refs=[trace_evidence_ref(divergence)],
+                assembly_entry_ids=[divergence["subjectId"]],
+                attribution="projection",
+            ))
     return _result("semantic-fidelity", findings)
 
 
@@ -337,10 +359,14 @@ def _evaluate_control_surfaces(input: ConformanceCase, events: Sequence[Normaliz
     fixture_skill_ids = frozenset(skill["id"] for skill in input["skills"])
     fixture_server_ids = frozenset(surface["id"] for surface in input["mcpSurfaces"])
     fixture_primitive_ids = frozenset(primitive["id"] for surface in input["mcpSurfaces"] for primitive in mcp_primitives(surface))
+    weight_patches = input.get("weightPatches", [])
+    fixture_patches = {patch["id"]: patch for patch in weight_patches}
     selected_harness_ids = _subject_ids(_events_of_type(events, "harness.selected"))
     activated_skill_ids = _subject_ids(_events_of_type(events, "skill.activated"))
     connected_server_ids = _subject_ids(_events_of_type(events, "mcp.server_connected"))
     used_primitive_ids = _subject_ids(_events_of_type(events, "mcp.tool_selected", "mcp.tool_called", "mcp.resource_read", "mcp.prompt_used"))
+    applied_patches = _events_of_type(events, "patch.applied")
+    applied_patch_ids = _subject_ids(applied_patches)
     findings: list[EvaluationFinding] = []
 
     checks: tuple[tuple[str, str, Sequence[str], frozenset[str], dict[str, None]], ...] = (
@@ -348,6 +374,7 @@ def _evaluate_control_surfaces(input: ConformanceCase, events: Sequence[Normaliz
         ("skill", "skill", expected["skillIds"], fixture_skill_ids, activated_skill_ids),
         ("mcp_server", "MCP server", expected["mcpServerIds"], fixture_server_ids, connected_server_ids),
         ("mcp_primitive", "MCP primitive", expected["mcpPrimitiveIds"], fixture_primitive_ids, used_primitive_ids),
+        ("weight_patch", "weight patch", expected.get("weightPatchIds", []), frozenset(fixture_patches), applied_patch_ids),
     )
     for code, label, expected_ids, fixture_ids, observed_ids in checks:
         for id in expected_ids:
@@ -358,12 +385,36 @@ def _evaluate_control_surfaces(input: ConformanceCase, events: Sequence[Normaliz
         for id in observed_ids:
             if id not in fixture_ids:
                 findings.append(_finding(f"control.{code}_unmodeled", "error", f"Trace used an unmodeled {label}: {id}", attribution="control-surface"))
+    for applied in applied_patches:
+        patch = fixture_patches.get(applied.get("subjectId", ""))
+        if patch is not None and applied["evidence"].get("digest") != patch["digest"]:
+            findings.append(_finding(
+                "control.weight_patch_digest_mismatch",
+                "error",
+                f"Applied weight patch digest differs from its descriptor: {patch['id']}",
+                evidence_refs=[trace_evidence_ref(applied)],
+                assembly_entry_ids=patch["projection"]["assemblyEntryIds"],
+                attribution="control-surface",
+            ))
+    for probed in _events_of_type(events, "patch.probed"):
+        patch = fixture_patches.get(probed.get("subjectId", ""))
+        if patch is not None and probed["evidence"].get("passed") is not True:
+            probe = probed["evidence"].get("probe")
+            findings.append(_finding(
+                "control.weight_patch_probe_failed",
+                "error",
+                f"Weight patch probe did not pass: {patch['id']} ({probe if isinstance(probe, str) else '<unknown>'})",
+                evidence_refs=[trace_evidence_ref(probed)],
+                assembly_entry_ids=patch["projection"]["assemblyEntryIds"],
+                attribution="projection",
+            ))
     if not findings:
         expected_ids = [
             *expected["harnessIds"],
             *expected["skillIds"],
             *expected["mcpServerIds"],
             *expected["mcpPrimitiveIds"],
+            *expected.get("weightPatchIds", []),
         ]
         findings.append(_passing_finding(
             "control.expected_surfaces_used",

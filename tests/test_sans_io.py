@@ -73,6 +73,12 @@ def test_domain_and_interchange_calls_run_with_io_unavailable(io_unavailable: No
     assert lasm_core.evaluate_conformance(decoded["value"]) == evaluation
     assert lasm_core.encode_document(evaluation, "conformance-evaluation")["valid"]
 
+    sales = fixtures.new_vehicle_units_conformance_case
+    assert lasm_core.validate_conformance_case(sales)["valid"]
+    assert lasm_core.validate_weight_patch(sales["weightPatches"][0], sales["assembly"], sales["initialState"])["valid"]
+    assert lasm_core.evaluate_conformance(sales) == fixtures.new_vehicle_units_evaluation
+    assert lasm_core.encode_document(sales, "conformance-case")["valid"]
+
 
 def _run_python(code: str) -> dict[str, Any]:
     completed = subprocess.run(

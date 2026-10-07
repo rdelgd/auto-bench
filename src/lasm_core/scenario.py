@@ -37,6 +37,7 @@ class ExpectedControlSurfaces(TypedDict):
     skillIds: Sequence[str]
     mcpServerIds: Sequence[str]
     mcpPrimitiveIds: Sequence[str]
+    weightPatchIds: NotRequired[Sequence[str]]
 
 
 class RealityReferenceSet(TypedDict):

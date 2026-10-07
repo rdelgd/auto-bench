@@ -40,7 +40,9 @@ def test_corpus_covers_every_public_behavioral_export() -> None:
     assert {f"fixture:{name}" for name in FIXTURES} <= covered
     public_callables = {name for name in lasm_core.__all__ if callable(getattr(lasm_core, name)) and name[0].islower()}
     interchange = {"decode_document", "encode_document", "validate_document", "wrap_document"}
-    assert public_callables - interchange == {function.__name__ for function in FUNCTIONS.values()}
+    # Exports added after the migration have no TypeScript reference; ordinary tests cover them.
+    post_migration = {"validate_weight_patch"}
+    assert public_callables - interchange - post_migration == {function.__name__ for function in FUNCTIONS.values()}
 
 
 def test_every_deviation_is_explained_and_changes_a_recorded_case() -> None:

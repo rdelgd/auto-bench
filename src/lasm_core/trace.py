@@ -35,6 +35,8 @@ AgenticEventType: TypeAlias = Literal[
     "mcp.tool_called",
     "mcp.resource_read",
     "mcp.prompt_used",
+    "patch.applied",
+    "patch.probed",
     "policy.check_requested",
     "policy.check_passed",
     "policy.check_failed",

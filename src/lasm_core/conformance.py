@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 from .harness import HarnessDescriptor
 from .lasm import LogicalAssemblySlice
@@ -10,6 +10,7 @@ from .operational_state import ActorObservation, OperationalState, OutcomeExpect
 from .scenario import Scenario
 from .skill import SkillDescriptor
 from .trace import RawTraceEvent
+from .weight_patch import WeightPatchDescriptor
 
 
 class ConformanceCase(TypedDict):
@@ -22,4 +23,5 @@ class ConformanceCase(TypedDict):
     harnesses: Sequence[HarnessDescriptor]
     skills: Sequence[SkillDescriptor]
     mcpSurfaces: Sequence[McpSurfaceDescriptor]
+    weightPatches: NotRequired[Sequence[WeightPatchDescriptor]]
     trace: Sequence[RawTraceEvent]
