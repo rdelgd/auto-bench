@@ -56,12 +56,14 @@ Lasm runtime evaluations and Auto Bench evaluation remain distinct. Runtime eval
 - an automotive service-scheduling fixture covering a complete conformant Lasm evaluation episode;
 - a sales new-vehicle-units fixture in which a compiled weight patch drops a governed distinction and Auto Bench attributes the loss to the patch;
 - versioned JSON interchange documents and JSON Schemas for assemblies, cases, traces, and results.
+- world-ledger governance semantics: `policy.accepted`, `decision.made`, and `application.removed` event data with per-event-type JSON Schemas, the `decide_policy` aggregate, and the `project_decision_rules` projection.
 
 The package accepts materialized values and returns materialized results. It has no runtime dependencies and does not perform filesystem, network, database, environment, process, clock, persistence, runtime orchestration, or live MCP operations.
 
 ## Architecture Boundaries
 
 - `lasm_core` owns serializable domain models, deterministic validation, evidence normalization, pure evaluation mechanics, and the versioned JSON interchange contract.
+- `lasm_core` owns the meaning of world-ledger events: their schemas, which commands may produce them, and how they fold into state. The ledger keeps order, durability, idempotency, and attribution; adapters read, append, and handle concurrency.
 - Auto Bench owns automotive conformance cases, expectations, fixtures, perturbations, and the evaluation of a Lasm.
 - Adapters may load operational sources, run agents, host synthetic systems, invoke live MCP servers, persist results, or expose Lasm to other languages through JSON documents.
 - Telemetry is evidence when it supports conformance or attribution; generic analytics are not the product thesis.
@@ -91,6 +93,8 @@ print(evaluation["conformant"])
 
 Records are plain dictionaries with the same camelCase keys as the JSON contract. Other languages exchange version 1 documents (`{"schemaVersion": 1, "kind": ..., "value": ...}`) through an adapter; `decode_document` and `encode_document` validate them without I/O.
 
+Ledger adapters pin a release tag as a git dependency, for example `lasm-core @ git+ssh://git@github.com/rdelgd/auto-bench.git@v0.4.0`.
+
 `lasm-core` replaced the private npm package `@lasm/core` without a compatibility wrapper. See the [migration guide](docs/migrating-from-npm.md) and the [API inventory](docs/api-inventory.md). The TypeScript implementation is retained in version control history, and its recorded outputs remain the [regression corpus](tests/corpus/PROVENANCE.md).
 
 ## Project Map
@@ -102,4 +106,5 @@ Records are plain dictionaries with the same camelCase keys as the JSON contract
 - [Lasm source](src/lasm_core/)
 - [Automotive service fixture](src/lasm_core/fixtures/service_appointment.py)
 - [Interchange schemas](src/lasm_core/schemas/v1/)
+- [Ledger event schemas](src/lasm_core/schemas/ledger/)
 - [Migration guide](docs/migrating-from-npm.md)

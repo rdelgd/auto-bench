@@ -41,7 +41,14 @@ def test_corpus_covers_every_public_behavioral_export() -> None:
     public_callables = {name for name in lasm_core.__all__ if callable(getattr(lasm_core, name)) and name[0].islower()}
     interchange = {"decode_document", "encode_document", "validate_document", "wrap_document"}
     # Exports added after the migration have no TypeScript reference; ordinary tests cover them.
-    post_migration = {"validate_weight_patch"}
+    post_migration = {
+        "validate_weight_patch",
+        "application_stream_id",
+        "decide_policy",
+        "policy_stream_id",
+        "project_decision_rules",
+        "validate_ledger_event_data",
+    }
     assert public_callables - interchange - post_migration == {function.__name__ for function in FUNCTIONS.values()}
 
 

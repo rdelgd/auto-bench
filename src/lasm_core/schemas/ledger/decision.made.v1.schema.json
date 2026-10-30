@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:decision.made:v1",
+  "title": "Lasm decision.made ledger event data, version 1",
+  "$defs": {
+    "DecisionBasis": {
+      "enum": [
+        "rule",
+        "unknown-action",
+        "unknown-application",
+        "no-rule"
+      ]
+    },
+    "DecisionMadeData": {
+      "type": "object",
+      "properties": {
+        "decisionId": {
+          "type": "string"
+        },
+        "applicationId": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "requestedBy": {
+          "type": "string"
+        },
+        "requestedAt": {
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/PolicyDecision"
+        },
+        "basis": {
+          "$ref": "#/$defs/DecisionBasis"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "policy": {
+          "$ref": "#/$defs/LedgerEventRef"
+        },
+        "projectionPosition": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "traceId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "decisionId",
+        "applicationId",
+        "action",
+        "resource",
+        "requestedBy",
+        "requestedAt",
+        "decision",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "JsonNumber": {
+      "description": "A finite JSON number; integer-valued numbers must be within the JavaScript safe-integer range.",
+      "type": "number",
+      "if": {
+        "type": "integer"
+      },
+      "then": {
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/JsonNumber"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "LedgerEventRef": {
+      "type": "object",
+      "properties": {
+        "streamId": {
+          "type": "string"
+        },
+        "streamVersion": {
+          "$ref": "#/$defs/SafeInteger"
+        }
+      },
+      "required": [
+        "streamId",
+        "streamVersion"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyDecision": {
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    }
+  },
+  "$ref": "#/$defs/DecisionMadeData"
+}

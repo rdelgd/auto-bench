@@ -171,6 +171,37 @@ Sales-domain reference fixture in `lasm_core.fixtures`:
 | `new_vehicle_units_conformance_case` | The complete case. |
 | `new_vehicle_units_evaluation` | Nonconformant: probe failure and divergence attributed to the patch, prohibited outcome observed. |
 
+### World-Ledger Governance Events
+
+Added by the `add-world-ledger-governance-events` change (`0.4.0`) in `lasm_core.ledger`, re-exported from `lasm_core`.
+Event data is versioned per event type, independently of the version 1 interchange documents, with schemas in
+`lasm_core/schemas/ledger/<type>.v<n>.schema.json`.
+
+| Python | Representation | Purpose |
+| --- | --- | --- |
+| `LedgerEventType` | `Literal` | `policy.accepted`, `decision.made`, `application.removed`. |
+| `LEDGER_EVENT_TYPES` | `tuple[LedgerEventType, ...]` | The event types this release defines. |
+| `LEDGER_EVENT_SCHEMA_VERSIONS` | `Mapping[LedgerEventType, tuple[int, ...]]` | The data schema versions understood for each event type. |
+| `PolicyDecision` | `Literal` | `allow` or `deny`. |
+| `DecisionBasis` | `Literal` | Why a decision was made: `rule`, `unknown-action`, `unknown-application`, or `no-rule`. |
+| `LedgerEventRef` | `TypedDict` | Cites a recorded event by `streamId` and `streamVersion`. |
+| `PolicyAcceptedData` | `TypedDict` | `policy.accepted` data on stream `policy:<policyId>`. |
+| `DecisionMadeData` | `TypedDict` | `decision.made` data on stream `application:<applicationId>`. |
+| `RemovalApproval` | `TypedDict` | The approval reported with a removal; every field optional. |
+| `ApplicationRemovedData` | `TypedDict` | `application.removed` data on stream `application:<applicationId>`; provenance optional. |
+| `NewEvent` | `TypedDict` | An event an aggregate asks the adapter to append: `type`, `schemaVersion`, `data`. |
+| `RecordedEvent` | `TypedDict` | An event read back from the ledger: `streamId`, `streamVersion`, `type`, `schemaVersion`, `data`. |
+| `AcceptPolicy` | `TypedDict` | The command to accept a policy. |
+| `PolicyCommandResult` | `TypedDict` | `accepted`, the `events` to append, and rejection `findings`. |
+| `DecisionRuleRecord` | `TypedDict` | One projected rule per (binding, action), citing its `policy.accepted` event. |
+| `DecisionRuleProjection` | `TypedDict` | Projected `rules`, sorted by binding and action, and `findings` for unreadable events. |
+| `FIRST_SLICE_BINDINGS` | `Mapping[str, tuple[str, ...]]` | The bindings and actions a first-slice policy may govern. |
+| `policy_stream_id` | function | `policy:<policyId>`. |
+| `application_stream_id` | function | `application:<applicationId>`. |
+| `validate_ledger_event_data` | function | Checks event data against its type and version schema; shape only. |
+| `decide_policy` | function | The policy aggregate: one `policy.accepted` event or every applicable rejection. |
+| `project_decision_rules` | function | Folds `policy.accepted` events into the current decision rules. |
+
 ## Consumer Audit
 
 Recorded on 2026-09-22 before retiring the npm package:

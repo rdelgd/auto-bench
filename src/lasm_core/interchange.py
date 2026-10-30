@@ -10,12 +10,15 @@ the domain validators.
 from __future__ import annotations
 
 import json
-import math
-import re
 from collections.abc import Mapping, Sequence
 from typing import Any, Literal, NotRequired, TypeAlias, TypedDict, get_args
 
-from ._schema_v1 import DEFINITIONS, DOCUMENT_DEFINITIONS, MAX_SAFE_INTEGER, SCHEMA_VERSION, JsonSchema
+from ._json_schema import child as _child
+from ._json_schema import describe as _describe
+from ._json_schema import finding as _finding
+from ._json_schema import json_equal as _json_equal
+from ._json_schema import shape_findings
+from ._schema_v1 import DEFINITIONS, DOCUMENT_DEFINITIONS, SCHEMA_VERSION
 from .domain import ValidationFinding
 
 DocumentKind: TypeAlias = Literal[
@@ -31,7 +34,6 @@ DOCUMENT_KINDS: tuple[DocumentKind, ...] = get_args(DocumentKind)
 SUPPORTED_SCHEMA_VERSIONS: tuple[int, ...] = (SCHEMA_VERSION,)
 
 _ENVELOPE_KEYS = ("schemaVersion", "kind", "value")
-_IDENTIFIER = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 
 
 class DocumentDecodeResult(TypedDict):
@@ -45,148 +47,6 @@ class DocumentEncodeResult(TypedDict):
     valid: bool
     findings: Sequence[ValidationFinding]
     text: NotRequired[str]
-
-
-def _finding(code: str, path: str, message: str) -> ValidationFinding:
-    return {"code": code, "severity": "error", "path": path, "message": message}
-
-
-def _child(path: str, key: str | int) -> str:
-    if isinstance(key, int):
-        return f"{path}[{key}]"
-    return f"{path}.{key}" if _IDENTIFIER.match(key) else f"{path}[{json.dumps(key, ensure_ascii=False)}]"
-
-
-def _is_number(value: object) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool)
-
-
-def _is_integer_valued(value: int | float) -> bool:
-    return isinstance(value, int) or (math.isfinite(value) and value.is_integer())
-
-
-def _json_equal(left: object, right: object) -> bool:
-    if isinstance(left, bool) or isinstance(right, bool):
-        return type(left) is type(right) and left == right
-    if _is_number(left) and _is_number(right):
-        return left == right
-    return type(left) is type(right) and left == right
-
-
-def _type_matches(expected: str, value: object) -> bool:
-    if expected == "object":
-        return isinstance(value, Mapping)
-    if expected == "array":
-        return isinstance(value, (list, tuple))
-    if expected == "string":
-        return isinstance(value, str)
-    if expected == "boolean":
-        return isinstance(value, bool)
-    if expected == "null":
-        return value is None
-    if expected == "number":
-        return _is_number(value)
-    if expected == "integer":
-        return _is_number(value) and _is_integer_valued(value)  # type: ignore[arg-type]
-    raise ValueError(f"unsupported schema type: {expected}")
-
-
-def _describe(value: object) -> str:
-    if value is None:
-        return "null"
-    if isinstance(value, bool):
-        return "boolean"
-    if _is_number(value):
-        return "number"
-    if isinstance(value, str):
-        return "string"
-    if isinstance(value, (list, tuple)):
-        return "array"
-    if isinstance(value, Mapping):
-        return "object"
-    return type(value).__name__
-
-
-def _numeric_findings(value: object, path: str, findings: list[ValidationFinding]) -> None:
-    """Report non-finite numbers and unsafe integer-valued numbers anywhere in a document."""
-    if _is_number(value):
-        number: int | float = value  # type: ignore[assignment]
-        if isinstance(number, float) and not math.isfinite(number):
-            findings.append(_finding("format.non_finite_number", path, "Numbers must be finite."))
-        elif _is_integer_valued(number) and abs(number) > MAX_SAFE_INTEGER:
-            findings.append(_finding(
-                "format.unsafe_integer",
-                path,
-                f"Integer-valued numbers must be between -{MAX_SAFE_INTEGER} and {MAX_SAFE_INTEGER}.",
-            ))
-    elif isinstance(value, (list, tuple)):
-        for index, item in enumerate(value):
-            _numeric_findings(item, _child(path, index), findings)
-    elif isinstance(value, Mapping):
-        for key, item in value.items():
-            _numeric_findings(item, _child(path, str(key)), findings)
-
-
-def _resolve(schema: JsonSchema) -> JsonSchema:
-    while "$ref" in schema:
-        schema = DEFINITIONS[schema["$ref"].removeprefix("#/$defs/")]
-    return schema
-
-
-def _matches(schema: JsonSchema, value: object) -> bool:
-    probe: list[ValidationFinding] = []
-    _check(schema, value, "$", probe)
-    return not probe
-
-
-def _check(schema: JsonSchema, value: object, path: str, findings: list[ValidationFinding]) -> None:
-    """Interpret the JSON Schema subset used by the version 1 definitions."""
-    if "$ref" in schema:
-        _check(_resolve(schema), value, path, findings)
-        return
-    if "anyOf" in schema:
-        options: list[JsonSchema] = [_resolve(option) for option in schema["anyOf"]]
-        if not any(_matches(option, value) for option in options):
-            # Report through the option for this value's JSON type so nested findings stay addressed.
-            typed = [option for option in options if "type" in option and _type_matches(option["type"], value)]
-            if typed:
-                _check(typed[0], value, path, findings)
-            else:
-                findings.append(_finding("format.invalid_value", path, f"Unsupported JSON value of type {_describe(value)}."))
-        return
-    if "const" in schema and not _json_equal(value, schema["const"]):
-        findings.append(_finding("format.invalid_value", path, f"Expected {json.dumps(schema['const'])}."))
-        return
-    if "enum" in schema and not any(_json_equal(value, option) for option in schema["enum"]):
-        findings.append(_finding("format.invalid_value", path, f"Unsupported value; expected one of: {', '.join(schema['enum'])}."))
-        return
-    if "type" in schema and not _type_matches(schema["type"], value):
-        findings.append(_finding("format.invalid_type", path, f"Expected {schema['type']} but found {_describe(value)}."))
-        return
-    if "if" in schema and _matches(schema["if"], value):
-        _check(schema["then"], value, path, findings)
-    if _is_number(value):
-        number: int | float = value  # type: ignore[assignment]
-        if ("minimum" in schema and number < schema["minimum"]) or ("maximum" in schema and number > schema["maximum"]):
-            findings.append(_finding("format.invalid_value", path, "Number is outside the supported range."))
-    if isinstance(value, (list, tuple)) and "items" in schema:
-        for index, item in enumerate(value):
-            _check(schema["items"], item, _child(path, index), findings)
-    if isinstance(value, Mapping):
-        properties: dict[str, JsonSchema] = schema.get("properties", {})
-        for key in schema.get("required", []):
-            if key not in value:
-                findings.append(_finding("format.missing_property", _child(path, key), f"Missing required property: {key}"))
-        additional = schema.get("additionalProperties", True)
-        for key, item in value.items():
-            if not isinstance(key, str):
-                findings.append(_finding("format.invalid_type", path, "Object keys must be strings."))
-            elif key in properties:
-                _check(properties[key], item, _child(path, key), findings)
-            elif additional is False:
-                findings.append(_finding("format.unknown_property", _child(path, key), f"Unknown property: {key}"))
-            elif isinstance(additional, dict):
-                _check(additional, item, _child(path, key), findings)
 
 
 def _envelope_findings(document: object, expected_kind: DocumentKind | None) -> list[ValidationFinding]:
@@ -225,12 +85,7 @@ def validate_document(document: object, kind: DocumentKind | None = None) -> Doc
         return {"valid": False, "findings": findings}
     assert isinstance(document, Mapping)
     document_kind: DocumentKind = document["kind"]
-    numeric: list[ValidationFinding] = []
-    _numeric_findings(document["value"], "$.value", numeric)
-    shape: list[ValidationFinding] = []
-    _check({"$ref": f"#/$defs/{DOCUMENT_DEFINITIONS[document_kind]}"}, document["value"], "$.value", shape)
-    numeric_paths = {finding["path"] for finding in numeric}
-    findings = [*numeric, *(finding for finding in shape if finding["path"] not in numeric_paths)]
+    findings = shape_findings({"$ref": f"#/$defs/{DOCUMENT_DEFINITIONS[document_kind]}"}, document["value"], "$.value", DEFINITIONS)
     if findings:
         return {"valid": False, "findings": findings, "kind": document_kind}
     return {"valid": True, "findings": [], "kind": document_kind, "value": document["value"]}

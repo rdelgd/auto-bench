@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:application.removed:v1",
+  "title": "Lasm application.removed ledger event data, version 1",
+  "$defs": {
+    "ApplicationRemovedData": {
+      "type": "object",
+      "properties": {
+        "applicationId": {
+          "type": "string"
+        },
+        "removedAt": {
+          "type": "string"
+        },
+        "registered": {
+          "type": "boolean"
+        },
+        "removedBy": {
+          "type": "string"
+        },
+        "approval": {
+          "$ref": "#/$defs/RemovalApproval"
+        }
+      },
+      "required": [
+        "applicationId",
+        "removedAt",
+        "registered"
+      ],
+      "additionalProperties": false
+    },
+    "RemovalApproval": {
+      "type": "object",
+      "properties": {
+        "decisionId": {
+          "type": "string"
+        },
+        "bypassed": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/ApplicationRemovedData"
+}

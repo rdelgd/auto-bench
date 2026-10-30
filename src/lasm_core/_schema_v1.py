@@ -11,16 +11,12 @@ domain validators to report.
 
 from __future__ import annotations
 
-from typing import Any
-
+from ._json_schema import MAX_SAFE_INTEGER, JsonSchema
 from .trace import AGENTIC_EVENT_TYPES
-
-JsonSchema = dict[str, Any]
 
 SCHEMA_VERSION = 1
 DRAFT = "https://json-schema.org/draft/2020-12/schema"
 DOMAIN_ID = "urn:lasm-core:schema:v1:domain"
-MAX_SAFE_INTEGER = 9007199254740991
 
 DOCUMENT_DEFINITIONS: dict[str, str] = {
     "logical-assembly": "LogicalAssemblySlice",

@@ -80,6 +80,31 @@ def test_domain_and_interchange_calls_run_with_io_unavailable(io_unavailable: No
     assert lasm_core.encode_document(sales, "conformance-case")["valid"]
 
 
+def test_ledger_calls_run_with_io_unavailable(io_unavailable: None) -> None:
+    command: lasm_core.AcceptPolicy = {
+        "policyId": "paseo-core.application.teardown",
+        "binding": "paseo-core",
+        "action": "application.teardown",
+        "decision": "deny",
+        "reason": "Contact an operator to tear down an application.",
+        "acceptedBy": "operator@example.com",
+    }
+    decided = lasm_core.decide_policy([], command)
+    assert decided["accepted"]
+    (event,) = decided["events"]
+    assert lasm_core.validate_ledger_event_data(event["type"], event["schemaVersion"], event["data"])["valid"]
+    recorded: lasm_core.RecordedEvent = {
+        "streamId": lasm_core.policy_stream_id(command["policyId"]),
+        "streamVersion": 1,
+        "type": event["type"],
+        "schemaVersion": event["schemaVersion"],
+        "data": dict(event["data"]),
+    }
+    assert lasm_core.decide_policy([recorded], command)["findings"][0]["code"] == "policy.unchanged"
+    projection = lasm_core.project_decision_rules([recorded])
+    assert projection["findings"] == [] and len(projection["rules"]) == 1
+
+
 def _run_python(code: str) -> dict[str, Any]:
     completed = subprocess.run(
         [sys.executable, "-I", "-c", code],

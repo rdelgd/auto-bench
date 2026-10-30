@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:policy.accepted:v1",
+  "title": "Lasm policy.accepted ledger event data, version 1",
+  "$defs": {
+    "PolicyAcceptedData": {
+      "type": "object",
+      "properties": {
+        "policyId": {
+          "type": "string"
+        },
+        "binding": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/PolicyDecision"
+        },
+        "acceptedBy": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "policyId",
+        "binding",
+        "action",
+        "decision",
+        "acceptedBy"
+      ],
+      "additionalProperties": false
+    },
+    "PolicyDecision": {
+      "enum": [
+        "allow",
+        "deny"
+      ]
+    }
+  },
+  "$ref": "#/$defs/PolicyAcceptedData"
+}

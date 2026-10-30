@@ -25,6 +25,8 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 - The distribution is `lasm-core`, imported as `lasm_core`, with reference fixtures in `lasm_core.fixtures`.
 - The core has no runtime dependencies. `uv` manages the environment; `pytest`, `mypy` (strict), and `jsonschema` are development dependencies, and `hatchling` is the build backend.
 - Version 1 JSON Schemas (Draft 2020-12) are rendered from `lasm_core._schema_v1` into `src/lasm_core/schemas/v1/` by `scripts/write_schemas.py`.
+- Ledger event-data schemas are rendered from `lasm_core._schema_ledger` into `src/lasm_core/schemas/ledger/`, one file per event type and version, on a version line independent of interchange version 1.
+- Consumers such as LogicalAssembly pin a release tag as a git dependency; the package is not published to an index.
 - Node.js is not required. `tests/corpus/generator/` retains the TypeScript reference generator as provenance only.
 - Markdown and ReffySpec are used for planning and project context.
 - Live MCP integration, live agent execution, source-system ingestion, persistence, and UI are adapter concerns.
@@ -34,7 +36,7 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 ### Code Style
 - Prefer explicit, serializable domain types over loosely shaped objects. Records are `TypedDict`s keyed by the camelCase wire names; functions and modules use snake_case.
 - Optional record fields are omitted rather than set to `None`; core functions never mutate caller inputs.
-- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, weight patch, evidence event, evaluation, finding, handoff, and outcome.
+- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, weight patch, evidence event, evaluation, finding, handoff, outcome, ledger event, aggregate, and rule projection.
 - Use small modules with clear boundaries.
 - Prefer deterministic functions that accept materialized values and return materialized values.
 - Avoid global state and implicit dependencies in the core library.
@@ -48,13 +50,14 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 - Operational state and transitions are explicit conformance objects rather than facts inferred from task-completion claims.
 - Lasm runtime evaluations gate or check behavior against maintained meaning; Auto Bench evaluates the Lasm as a whole.
 - Evaluation produces structured findings with evidence, assembly-entry, transition, outcome, and attribution references.
+- `lasm_core.ledger` owns the meaning of world-ledger events: their data schemas, the aggregates that decide which events may be appended, and the projections folded from them. The ledger (rastro) owns order, durability, idempotency, attribution, and the envelope; adapters read events as `RecordedEvent` values, append what aggregates return, and handle stream-version conflicts.
 - Dependency direction stays inward: UI, CLI, services, storage, ingestion, and runners depend on the library; the library does not depend on them.
 
 ### Testing Strategy
 - Core behavior is covered with unit tests for validation, evidence normalization, and evaluation functions.
 - `tests/corpus/reference/` holds outputs recorded from the retired TypeScript implementation and is never edited. `tests/test_parity.py` must match them after the reviewed deviations in `tests/corpus/deviations.json` are applied. Never regenerate expected outputs from Python. A deliberate behavior change adds a deviation with its reason.
 - Use Python semantics (for example, `str.strip()`, `str()` number spelling, and numeric equality) rather than emulating JavaScript.
-- Interchange tests check that the checked-in schemas, the pure decoder, and `jsonschema` agree.
+- Interchange and ledger schema tests check that the checked-in schemas, the pure validators, and `jsonschema` agree.
 - Sans I/O tests run the core with file, environment, network, process, and clock access patched to fail.
 - Fixture tests exercise complete conformance cases without filesystem, network, database, clock, or live MCP dependencies.
 - Tests prefer representative automotive workflows where domain meaning matters.
