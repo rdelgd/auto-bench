@@ -97,7 +97,7 @@ class DecisionMadeData(TypedDict):
     reason: NotRequired[str]
     policy: NotRequired[LedgerEventRef]   # absent when no accepted policy answered
     projectionPosition: NotRequired[int]  # absent for backfilled decisions
-    traceId: NotRequired[str]             # paseo-core's trace id, when it sent one
+    traceId: NotRequired[str]             # paseo-core's correlation id for this request
 
 class RemovalApproval(TypedDict):
     decisionId: NotRequired[str]
@@ -127,7 +127,7 @@ class RecordedEvent(TypedDict):           # what the adapter reads back from the
 The ledger records history as it was reported, so these fields are optional. The backfill would otherwise have to invent values:
 - `decision.made.policy` and `reason`. Backfilled history includes fail-closed denials, which have no policy event to cite. A backfilled allow was decided by the rule as it was then, which a superuser may have edited since, so citing the seeded policy event would credit the decision to the wrong content.
 - `application.removed.removedBy` and `approval`, plus every field inside `approval`. Removal provenance arrived in paseo-core's Phase 4, and its removal fields are parsed leniently, so older records can have an empty remover and an empty approval. Omitted means "not reported".
-- `decision.made.traceId`. Older decisions may not have one.
+- `decision.made.traceId`. It is paseo-core's correlation id for the decision request only, stored as sent. paseo-core issues a fresh one per request, and decisions are made outside any agent invocation, so it does not link a decision to an episode, and no projection reads it. Older decisions may not have one.
 
 `decision.made.basis` is required. It keeps the explanation LogicalAssembly's `ApplicationDecision.rule` holds today:
 
@@ -238,7 +238,7 @@ LogicalAssembly calls it before appending backfilled `decision.made` and `applic
 
 ## Resolved Questions
 
-LogicalAssembly accepted the design in `lasm-reply-to-auto-bench-ledger-events.md` and corrected three fields: `resource` is an object, `decision.made` has no `bypassed` field, and removal provenance is optional. They also added `basis` and `traceId`. They answered this design's open questions:
+LogicalAssembly accepted the design in `lasm-reply-to-auto-bench-ledger-events.md` and corrected three fields: `resource` is an object, `decision.made` has no `bypassed` field, and removal provenance is optional. They also added `basis` and `traceId`. They later corrected their reason for `traceId` in `lasm-reply-on-trace-ids-and-verdict-projection.md`: it is a per-request correlation id, not an episode link. The field and schema are unchanged. They answered this design's open questions:
 
 1. **Require `policy` whenever `decision` is `allow`?** No. A backfilled allow was decided by the rule as it was then, so `policy` stays optional, and `basis` lets LogicalAssembly check the write-forward invariant.
 2. **Make `FIRST_SLICE_BINDINGS` a parameter?** No. LogicalAssembly's `DecisionAction` choices hard-code the same three actions, so a new action already needs code on both sides. One source of valid actions is better than two that can disagree.

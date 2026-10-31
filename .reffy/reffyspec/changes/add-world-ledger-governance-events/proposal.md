@@ -42,3 +42,4 @@ None
 
 - `lasm-core-ledger-events-request.md` - the LogicalAssembly request: the three event types and their fields, the aggregate and its rejections, the projection, the test expectations, the seed/backfill/project/write-forward plan, and the four questions answered in `design.md`
 - `lasm-reply-to-auto-bench-ledger-events.md` - LogicalAssembly's acceptance of the design: `resource` corrected to an object, `bypassed` dropped from `decision.made`, removal provenance made optional, `basis` and `traceId` added, and answers to the design's three open questions
+- `lasm-reply-on-trace-ids-and-verdict-projection.md` - LogicalAssembly's correction: `decision.made.traceId` is paseo-core's per-request correlation id, not a link to an episode; no schema change
