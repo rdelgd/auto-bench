@@ -54,7 +54,7 @@ class EvidenceRecordedData(TypedDict):
     larqlBinarySha256: str
     manipulationCheck: ManipulationCheck
     tier: str
-    scope: str
+    claimScope: str
     controlsState: str
     measurements: Mapping[str, JsonValue]
     recordsDigest: str

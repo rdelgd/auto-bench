@@ -117,7 +117,7 @@ def test_verdict_projection_runs_with_io_unavailable(io_unavailable: None) -> No
         "larqlBinarySha256": "f" * 64,
         "manipulationCheck": "passed",
         "tier": "Tier 1",
-        "scope": "Gemma 3 1B, N=10",
+        "claimScope": "Gemma 3 1B, N=10",
         "controlsState": "passing",
         "measurements": {"strength": 0.91},
         "recordsDigest": "sha256:def",

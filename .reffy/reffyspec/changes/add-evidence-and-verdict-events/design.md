@@ -20,7 +20,7 @@ Goals:
 Non-goals:
 
 - Shapes for `evaluation:` streams, Auto Bench findings, or measurements by anything other than patchrig.
-- Interpreting `measurements`, `detail`, `tier`, `scope`, or `controlsState`. They are carried, not read.
+- Interpreting `measurements`, `detail`, `tier`, `claimScope`, or `controlsState`. They are carried, not read.
 - Ranking criteria into one summary, writer-side invalidation checks, or deciding what a verdict means for a policy.
 - Aggregates. Measurements and verdicts are facts about something that already happened, appended as such, like `decision.made`.
 
@@ -62,7 +62,7 @@ class EvidenceRecordedData(TypedDict):    # stream experiment:<cell-id>…
     larqlBinarySha256: str                # descriptive: identifies the build, not a scope list
     manipulationCheck: ManipulationCheck
     tier: str
-    scope: str
+    claimScope: str                       # what the measurement can be claimed to cover; descriptive
     controlsState: str
     measurements: Mapping[str, JsonValue]
     recordsDigest: str
@@ -258,7 +258,4 @@ LogicalAssembly's review also closed a gap in the draft:
 
 ## Open Questions
 
-1. **Two fields named `scope`:**
-   - On `evidence.recorded` it's a label ("Gemma 3 1B, N=10"). On `verdict.invalidated` it's a matching condition.
-   - LogicalAssembly suggested patchrig rename the measurement's field, for example to `claimScope`. It's patchrig's vocabulary, and patchrig hasn't answered yet.
-   - This design keeps `scope` until they do, and renaming before implementation costs nothing.
+None. The last one is resolved: patchrig renamed the measurement's `scope` to `claimScope` in `in-vitro-patching-reply-on-measurement-scope-rename.md`, before the tag, so one word keeps one meaning. `claimScope` is a short human-readable statement of what the measurement covers, from patchrig's rule that every finding states its scope and limits. It's descriptive, like `instrument` and `detail`: projections report it and never parse it. The invalidation's `scope`, a matching condition, keeps its name.

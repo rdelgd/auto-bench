@@ -4,7 +4,7 @@
 
 The system SHALL define version 1 ledger data schemas for four event types:
 
-- `evidence.recorded`: a measurement, carrying its cell id (without the attempt), attempt, optional shard index and count, target, vindex pin, patch digest, patchrig commit, larql version, larql binary digest, manipulation check, tier, scope, controls state, free-form measurements, records digest, environment, and optional ledger position.
+- `evidence.recorded`: a measurement, carrying its cell id (without the attempt), attempt, optional shard index and count, target, vindex pin, patch digest, patchrig commit, larql version, larql binary digest, manipulation check, tier, claim scope, controls state, free-form measurements, records digest, environment, and optional ledger position.
 - `verdict.recorded`: a judgement, carrying its cell id, attempt, a citation of one measurement event, pre-registration, scorer version, an optional superseded verdict stream, a verdict, an optional cannot-tell reason, optional detail, and an optional policy event citation.
 - `verdict.invalidated`: an instrument, a scope of optional patchrig commits, scorer versions, vindex pins, and larql versions, a citation of one affected verdict event, and a reason.
 - `invalidation.retracted`: a citation of one invalidation stream, as a stream id, and a reason.

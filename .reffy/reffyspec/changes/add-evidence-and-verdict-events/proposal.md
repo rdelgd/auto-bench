@@ -49,3 +49,4 @@ None
 - `in-vitro-patching-step-1-fruitfly-compose-check.md` - confirmation that the event shapes stand, and that the change can start now
 - `lasm-review-evidence-and-verdict-events.md` (project `nuveris`) - LogicalAssembly's acceptance: the `unresolved` status, supersession cycles, superseded-then-invalidated, and the suggested `claimScope` rename
 - `in-vitro-patching-reply-on-invalidation-scope-fields.md` (project `in-vitro-patching`) - patchrig's answers: the three measurement fields, separate `scorerVersions`, and attempts as separate groups
+- `in-vitro-patching-reply-on-measurement-scope-rename.md` (project `in-vitro-patching`) - the measurement's `scope` renamed to `claimScope` before the tag

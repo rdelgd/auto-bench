@@ -115,7 +115,7 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
             "larqlBinarySha256": STRING,
             "manipulationCheck": _ref("ManipulationCheck"),
             "tier": STRING,
-            "scope": STRING,
+            "claimScope": STRING,
             "controlsState": STRING,
             "measurements": JSON_OBJECT,
             "recordsDigest": STRING,

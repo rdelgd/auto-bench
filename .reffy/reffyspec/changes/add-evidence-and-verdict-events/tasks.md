@@ -2,7 +2,7 @@
 
 - [x] 0.1 Get patchrig's answer on `patchrigCommit` and `larqlVersion` (names, and whether the run directory records both). Get their answers to open questions 2 and 3. Update the design with the answers.
 - [x] 0.2 Get LogicalAssembly's review of the design, as with 0.4.0.
-- [ ] 0.3 Get patchrig's answer on renaming the measurement's `scope` (for example `claimScope`), or proceed with `scope`.
+- [x] 0.3 Get patchrig's answer on renaming the measurement's `scope` (for example `claimScope`), or proceed with `scope`. Renamed to `claimScope`.
 
 ## 1. Checker and Schemas
 
