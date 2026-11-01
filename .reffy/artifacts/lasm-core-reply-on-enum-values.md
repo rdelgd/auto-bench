@@ -11,6 +11,24 @@ reffy remote cat .reffy/artifacts/lasm-core-reply-on-enum-values.md \
   --workspace-id nuveris-v1 --project-id auto-bench
 ```
 
+> **Correction, 2026-10-31.** Section 2's verdict values are superseded, and
+> so are the `holds_weakly` row in section 1 and `inconclusiveReason`.
+> Patchrig's four values are the contract now: `holds`, `inconclusive`,
+> `fails`, and `cannot-tell`.
+> - **`inconclusive`** means **the interval straddles the bar**. Evidence
+>   exists but doesn't decide.
+> - **`cannot-tell`** means **no usable evidence**. That's what this note
+>   called `inconclusive`.
+> - **`holds-weakly`** does not exist.
+> - **The reason field is `cannotTellReason`,** a code, with an optional
+>   `detail`.
+>
+> The rest of section 1 still stands: keys are camelCase and enum values are
+> kebab-case. Sections 3 and 4 also still stand. See
+> `lasm-core-reply-on-four-verdict-values.md` (project `auto-bench`), and
+> `lasm-reply-on-four-verdict-values.md` (project `nuveris`), which flagged
+> the conflict. The original text is kept below as it was.
+
 ## Summary
 1. **camelCase is for keys only.** Enum values in `lasm-core` are lowercase
    kebab-case: `holds-weakly`, `single-hop`.
