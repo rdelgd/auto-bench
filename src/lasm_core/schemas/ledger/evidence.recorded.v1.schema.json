@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:evidence.recorded:v1",
+  "title": "Lasm evidence.recorded ledger event data, version 1",
+  "$defs": {
+    "EvidenceRecordedData": {
+      "type": "object",
+      "properties": {
+        "cellId": {
+          "type": "string"
+        },
+        "attempt": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "target": {
+          "$ref": "#/$defs/MeasurementTarget"
+        },
+        "vindexPin": {
+          "type": "string"
+        },
+        "patchDigest": {
+          "type": "string"
+        },
+        "patchrigCommit": {
+          "type": "string"
+        },
+        "larqlVersion": {
+          "type": "string"
+        },
+        "larqlBinarySha256": {
+          "type": "string"
+        },
+        "manipulationCheck": {
+          "$ref": "#/$defs/ManipulationCheck"
+        },
+        "tier": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "controlsState": {
+          "type": "string"
+        },
+        "measurements": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        "recordsDigest": {
+          "type": "string"
+        },
+        "environment": {
+          "$ref": "#/$defs/MeasurementEnvironment"
+        },
+        "shardIndex": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "shardCount": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "ledgerPosition": {
+          "$ref": "#/$defs/SafeInteger"
+        }
+      },
+      "required": [
+        "cellId",
+        "attempt",
+        "target",
+        "vindexPin",
+        "patchDigest",
+        "patchrigCommit",
+        "larqlVersion",
+        "larqlBinarySha256",
+        "manipulationCheck",
+        "tier",
+        "scope",
+        "controlsState",
+        "measurements",
+        "recordsDigest",
+        "environment"
+      ],
+      "additionalProperties": false
+    },
+    "JsonNumber": {
+      "description": "A finite JSON number; integer-valued numbers must be within the JavaScript safe-integer range.",
+      "type": "number",
+      "if": {
+        "type": "integer"
+      },
+      "then": {
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/JsonNumber"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "ManipulationCheck": {
+      "enum": [
+        "passed",
+        "failed",
+        "not-applicable"
+      ]
+    },
+    "MeasurementEnvironment": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "fingerprint": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "host",
+        "fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "MeasurementTarget": {
+      "type": "object",
+      "properties": {
+        "binding": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "binding",
+        "ref"
+      ],
+      "additionalProperties": false
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    }
+  },
+  "$ref": "#/$defs/EvidenceRecordedData"
+}

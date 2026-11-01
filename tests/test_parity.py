@@ -48,6 +48,7 @@ def test_corpus_covers_every_public_behavioral_export() -> None:
         "policy_stream_id",
         "project_decision_rules",
         "validate_ledger_event_data",
+        "project_verdicts",
     }
     assert public_callables - interchange - post_migration == {function.__name__ for function in FUNCTIONS.values()}
 

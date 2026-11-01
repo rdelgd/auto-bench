@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:verdict.invalidated:v1",
+  "title": "Lasm verdict.invalidated ledger event data, version 1",
+  "$defs": {
+    "InvalidationScope": {
+      "type": "object",
+      "properties": {
+        "patchrigCommits": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scorerVersions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vindexPins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "larqlVersions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "LedgerEventRef": {
+      "type": "object",
+      "properties": {
+        "streamId": {
+          "type": "string"
+        },
+        "streamVersion": {
+          "$ref": "#/$defs/SafeInteger"
+        }
+      },
+      "required": [
+        "streamId",
+        "streamVersion"
+      ],
+      "additionalProperties": false
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "VerdictInvalidatedData": {
+      "type": "object",
+      "properties": {
+        "instrument": {
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/InvalidationScope"
+        },
+        "cites": {
+          "$ref": "#/$defs/LedgerEventRef"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "instrument",
+        "scope",
+        "cites",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/VerdictInvalidatedData"
+}

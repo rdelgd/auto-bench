@@ -179,7 +179,7 @@ Event data is versioned per event type, independently of the version 1 interchan
 
 | Python | Representation | Purpose |
 | --- | --- | --- |
-| `LedgerEventType` | `Literal` | `policy.accepted`, `decision.made`, `application.removed`. |
+| `LedgerEventType` | `Literal` | `policy.accepted`, `decision.made`, `application.removed`; from `0.5.0` also `evidence.recorded`, `verdict.recorded`, `verdict.invalidated`, `invalidation.retracted`. |
 | `LEDGER_EVENT_TYPES` | `tuple[LedgerEventType, ...]` | The event types this release defines. |
 | `LEDGER_EVENT_SCHEMA_VERSIONS` | `Mapping[LedgerEventType, tuple[int, ...]]` | The data schema versions understood for each event type. |
 | `PolicyDecision` | `Literal` | `allow` or `deny`. |
@@ -201,6 +201,31 @@ Event data is versioned per event type, independently of the version 1 interchan
 | `validate_ledger_event_data` | function | Checks event data against its type and version schema; shape only. |
 | `decide_policy` | function | The policy aggregate: one `policy.accepted` event or every applicable rejection. |
 | `project_decision_rules` | function | Folds `policy.accepted` events into the current decision rules. |
+
+### Evidence and Verdict Events
+
+Added by the `add-evidence-and-verdict-events` change (`0.5.0`) in `lasm_core.verdict`, re-exported from `lasm_core`.
+Data schemas are in `lasm_core/schemas/ledger/` beside the governance events.
+
+| Python | Representation | Purpose |
+| --- | --- | --- |
+| `VerdictValue` | `Literal` | `holds`, `inconclusive`, `fails`, `cannot-tell`. |
+| `VERDICT_VALUES` | `tuple[VerdictValue, ...]` | The four verdict values. |
+| `CannotTellReason` | `Literal` | The closed set of reasons a `cannot-tell` verdict carries. |
+| `CANNOT_TELL_REASONS` | `tuple[CannotTellReason, ...]` | `no-probes`, `too-few-values`, `degenerate-stratum`, `instrument-gate-failed`, `no-eligible-chains`. |
+| `ManipulationCheck` | `Literal` | `passed`, `failed`, `not-applicable`. |
+| `MeasurementTarget` | `TypedDict` | What a measurement was taken of: `binding` and `ref`. |
+| `MeasurementEnvironment` | `TypedDict` | The host and fingerprint a measurement ran on. |
+| `EvidenceRecordedData` | `TypedDict` | `evidence.recorded` data: one verified measurement and its pins. |
+| `VerdictRecordedData` | `TypedDict` | `verdict.recorded` data: a judgement of one measurement under one pre-registration and scorer version. |
+| `InvalidationScope` | `TypedDict` | An invalidation's condition: `patchrigCommits`, `scorerVersions`, `vindexPins`, `larqlVersions`. |
+| `VerdictInvalidatedData` | `TypedDict` | `verdict.invalidated` data: a condition and one verdict known to be affected. |
+| `InvalidationRetractedData` | `TypedDict` | `invalidation.retracted` data: the invalidation stream withdrawn. |
+| `ProjectedVerdict` | `TypedDict` | A current verdict with its source event, measurement, and manipulation check. |
+| `CellVerdictStatus` | `Literal` | `current`, `invalidated`, `conflicting`, `unresolved`. |
+| `CellVerdict` | `TypedDict` | One (cell, attempt, pre-registration) group and its status. |
+| `VerdictProjection` | `TypedDict` | Projected `cells`, sorted, and `findings`. |
+| `project_verdicts` | function | Folds evidence and verdict events, in log order, into each group's current verdict. |
 
 ## Consumer Audit
 

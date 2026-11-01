@@ -13,10 +13,46 @@ strings remain for ``decide_policy`` to reject.
 from __future__ import annotations
 
 from ._json_schema import JsonSchema
-from ._schema_v1 import BOOLEAN, DEFINITIONS, DRAFT, STRING, _enum, _record, _ref
+from ._schema_v1 import BOOLEAN, DEFINITIONS, DRAFT, STRING, STRINGS, _enum, _record, _ref
 
 POLICY_DECISIONS = ("allow", "deny")
 DECISION_BASES = ("rule", "unknown-action", "unknown-application", "no-rule")
+VERDICT_VALUES = ("holds", "inconclusive", "fails", "cannot-tell")
+CANNOT_TELL_REASONS = (
+    "no-probes",
+    "too-few-values",
+    "degenerate-stratum",
+    "instrument-gate-failed",
+    "no-eligible-chains",
+)
+MANIPULATION_CHECKS = ("passed", "failed", "not-applicable")
+
+JSON_OBJECT: JsonSchema = {"type": "object", "additionalProperties": _ref("JsonValue")}
+
+
+def _verdict_recorded() -> JsonSchema:
+    schema = _record(
+        {
+            "cellId": STRING,
+            "attempt": _ref("SafeInteger"),
+            "cites": _ref("LedgerEventRef"),
+            "preregistration": STRING,
+            "scorerVersion": STRING,
+            "verdict": _ref("VerdictValue"),
+        },
+        {
+            "supersedes": STRING,
+            "cannotTellReason": _ref("CannotTellReason"),
+            "detail": STRING,
+            "policyEvent": _ref("LedgerEventRef"),
+        },
+    )
+    # A reason is required with cannot-tell and forbidden with every other verdict.
+    schema["if"] = {"properties": {"verdict": {"const": "cannot-tell"}}, "required": ["verdict"]}
+    schema["then"] = {"required": ["cannotTellReason"]}
+    schema["else"] = {"not": {"required": ["cannotTellReason"]}}
+    return schema
+
 
 LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
     "JsonNumber": DEFINITIONS["JsonNumber"],
@@ -41,7 +77,7 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
             "decisionId": STRING,
             "applicationId": STRING,
             "action": STRING,
-            "resource": {"type": "object", "additionalProperties": _ref("JsonValue")},
+            "resource": JSON_OBJECT,
             "requestedBy": STRING,
             "requestedAt": STRING,
             "decision": _ref("PolicyDecision"),
@@ -58,6 +94,47 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
         {"applicationId": STRING, "removedAt": STRING, "registered": BOOLEAN},
         {"removedBy": STRING, "approval": _ref("RemovalApproval")},
     ),
+    "VerdictValue": _enum(*VERDICT_VALUES),
+    "CannotTellReason": _enum(*CANNOT_TELL_REASONS),
+    "ManipulationCheck": _enum(*MANIPULATION_CHECKS),
+    "MeasurementTarget": _record({"binding": STRING, "ref": STRING}),
+    "MeasurementEnvironment": _record({"host": STRING, "fingerprint": STRING}),
+    "InvalidationScope": _record(
+        {},
+        {"patchrigCommits": STRINGS, "scorerVersions": STRINGS, "vindexPins": STRINGS, "larqlVersions": STRINGS},
+    ),
+    "EvidenceRecordedData": _record(
+        {
+            "cellId": STRING,
+            "attempt": _ref("SafeInteger"),
+            "target": _ref("MeasurementTarget"),
+            "vindexPin": STRING,
+            "patchDigest": STRING,
+            "patchrigCommit": STRING,
+            "larqlVersion": STRING,
+            "larqlBinarySha256": STRING,
+            "manipulationCheck": _ref("ManipulationCheck"),
+            "tier": STRING,
+            "scope": STRING,
+            "controlsState": STRING,
+            "measurements": JSON_OBJECT,
+            "recordsDigest": STRING,
+            "environment": _ref("MeasurementEnvironment"),
+        },
+        {
+            "shardIndex": _ref("SafeInteger"),
+            "shardCount": _ref("SafeInteger"),
+            "ledgerPosition": _ref("SafeInteger"),
+        },
+    ),
+    "VerdictRecordedData": _verdict_recorded(),
+    "VerdictInvalidatedData": _record({
+        "instrument": STRING,
+        "scope": _ref("InvalidationScope"),
+        "cites": _ref("LedgerEventRef"),
+        "reason": STRING,
+    }),
+    "InvalidationRetractedData": _record({"cites": STRING, "reason": STRING}),
 }
 
 # (event type, schema version) -> the definition describing that event's data.
@@ -65,6 +142,10 @@ EVENT_DATA_DEFINITIONS: dict[tuple[str, int], str] = {
     ("policy.accepted", 1): "PolicyAcceptedData",
     ("decision.made", 1): "DecisionMadeData",
     ("application.removed", 1): "ApplicationRemovedData",
+    ("evidence.recorded", 1): "EvidenceRecordedData",
+    ("verdict.recorded", 1): "VerdictRecordedData",
+    ("verdict.invalidated", 1): "VerdictInvalidatedData",
+    ("invalidation.retracted", 1): "InvalidationRetractedData",
 }
 
 

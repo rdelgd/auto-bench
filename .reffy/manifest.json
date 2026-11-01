@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-01T23:05:38.893Z",
+  "updated_at": "2026-11-01T23:16:14.669Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -414,6 +414,17 @@
       "tags": [],
       "created_at": "2026-11-01T23:04:35.674Z",
       "updated_at": "2026-11-01T23:04:35.674Z"
+    },
+    {
+      "id": "614b787b-6a62-4cd2-ad09-c3eb81990e24",
+      "name": "lasm core note on measurement scope rename",
+      "filename": "lasm-core-note-on-measurement-scope-rename.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 1698,
+      "tags": [],
+      "created_at": "2026-11-01T23:16:14.668Z",
+      "updated_at": "2026-11-01T23:16:14.668Z"
     }
   ]
 }

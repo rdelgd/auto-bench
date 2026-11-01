@@ -143,8 +143,12 @@ def check(
     if "type" in schema and not _type_matches(schema["type"], value):
         findings.append(finding("format.invalid_type", path, f"Expected {schema['type']} but found {describe(value)}."))
         return
-    if "if" in schema and _matches(schema["if"], value, definitions):
-        check(schema["then"], value, path, findings, definitions)
+    if "if" in schema:
+        branch = "then" if _matches(schema["if"], value, definitions) else "else"
+        if branch in schema:
+            check(schema[branch], value, path, findings, definitions)
+    if "not" in schema and _matches(schema["not"], value, definitions):
+        findings.append(finding("format.invalid_value", path, "Value matches a disallowed shape."))
     if _is_number(value):
         number: int | float = value  # type: ignore[assignment]
         if ("minimum" in schema and number < schema["minimum"]) or ("maximum" in schema and number > schema["maximum"]):

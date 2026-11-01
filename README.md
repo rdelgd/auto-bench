@@ -57,6 +57,7 @@ Lasm runtime evaluations and Auto Bench evaluation remain distinct. Runtime eval
 - a sales new-vehicle-units fixture in which a compiled weight patch drops a governed distinction and Auto Bench attributes the loss to the patch;
 - versioned JSON interchange documents and JSON Schemas for assemblies, cases, traces, and results.
 - world-ledger governance semantics: `policy.accepted`, `decision.made`, and `application.removed` event data with per-event-type JSON Schemas, the `decide_policy` aggregate, and the `project_decision_rules` projection.
+- evidence and verdict events for weight-patch experiments: `evidence.recorded`, `verdict.recorded`, `verdict.invalidated`, and `invalidation.retracted`, with the `project_verdicts` projection of each cell's current verdict.
 
 The package accepts materialized values and returns materialized results. It has no runtime dependencies and does not perform filesystem, network, database, environment, process, clock, persistence, runtime orchestration, or live MCP operations.
 
@@ -93,7 +94,7 @@ print(evaluation["conformant"])
 
 Records are plain dictionaries with the same camelCase keys as the JSON contract. Other languages exchange version 1 documents (`{"schemaVersion": 1, "kind": ..., "value": ...}`) through an adapter; `decode_document` and `encode_document` validate them without I/O.
 
-Ledger adapters pin a release tag as a git dependency, for example `lasm-core @ git+ssh://git@github.com/rdelgd/auto-bench.git@v0.4.0`.
+Ledger adapters pin a release tag as a git dependency, for example `lasm-core @ git+ssh://git@github.com/rdelgd/auto-bench.git@v0.5.0`.
 
 `lasm-core` replaced the private npm package `@lasm/core` without a compatibility wrapper. See the [migration guide](docs/migrating-from-npm.md) and the [API inventory](docs/api-inventory.md). The TypeScript implementation is retained in version control history, and its recorded outputs remain the [regression corpus](tests/corpus/PROVENANCE.md).
 

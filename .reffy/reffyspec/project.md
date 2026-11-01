@@ -36,7 +36,7 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 ### Code Style
 - Prefer explicit, serializable domain types over loosely shaped objects. Records are `TypedDict`s keyed by the camelCase wire names; functions and modules use snake_case.
 - Optional record fields are omitted rather than set to `None`; core functions never mutate caller inputs.
-- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, weight patch, evidence event, evaluation, finding, handoff, outcome, ledger event, aggregate, and rule projection.
+- Keep names domain-driven: LogicalAssembly, concept, relation, constraint, event, policy, projection, operational state, state transition, scenario, intent, harness, skill, MCP surface, weight patch, evidence event, evaluation, finding, handoff, outcome, ledger event, aggregate, rule projection, measurement, verdict, invalidation, and retraction.
 - Use small modules with clear boundaries.
 - Prefer deterministic functions that accept materialized values and return materialized values.
 - Avoid global state and implicit dependencies in the core library.
@@ -50,7 +50,7 @@ The reusable implementation is the Python distribution `lasm-core`, imported as 
 - Operational state and transitions are explicit conformance objects rather than facts inferred from task-completion claims.
 - Lasm runtime evaluations gate or check behavior against maintained meaning; Auto Bench evaluates the Lasm as a whole.
 - Evaluation produces structured findings with evidence, assembly-entry, transition, outcome, and attribution references.
-- `lasm_core.ledger` owns the meaning of world-ledger events: their data schemas, the aggregates that decide which events may be appended, and the projections folded from them. The ledger (rastro) owns order, durability, idempotency, attribution, and the envelope; adapters read events as `RecordedEvent` values, append what aggregates return, and handle stream-version conflicts.
+- `lasm_core.ledger` and `lasm_core.verdict` own the meaning of world-ledger events: their data schemas, the aggregates that decide which events may be appended, and the projections folded from them. Evidence is written once; verdicts are revised only by new streams (re-scores, invalidations, retractions), and projections read citations, never stream ids. The ledger (rastro) owns order, durability, idempotency, attribution, and the envelope; adapters read events as `RecordedEvent` values, append what aggregates return, and handle stream-version conflicts.
 - Dependency direction stays inward: UI, CLI, services, storage, ingestion, and runners depend on the library; the library does not depend on them.
 
 ### Testing Strategy

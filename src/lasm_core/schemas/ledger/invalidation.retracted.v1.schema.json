@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:invalidation.retracted:v1",
+  "title": "Lasm invalidation.retracted ledger event data, version 1",
+  "$defs": {
+    "InvalidationRetractedData": {
+      "type": "object",
+      "properties": {
+        "cites": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "cites",
+        "reason"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$ref": "#/$defs/InvalidationRetractedData"
+}

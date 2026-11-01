@@ -83,7 +83,15 @@ def test_schemas_are_valid_self_contained_draft_2020_12_documents() -> None:
 
 
 def test_schema_versions_match_the_schema_set() -> None:
-    assert set(LEDGER_EVENT_TYPES) == {"policy.accepted", "decision.made", "application.removed"}
+    assert set(LEDGER_EVENT_TYPES) == {
+        "policy.accepted",
+        "decision.made",
+        "application.removed",
+        "evidence.recorded",
+        "verdict.recorded",
+        "verdict.invalidated",
+        "invalidation.retracted",
+    }
     assert dict(LEDGER_EVENT_SCHEMA_VERSIONS) == {event_type: (1,) for event_type in LEDGER_EVENT_TYPES}
     assert {f"{event_type}.v1.schema.json" for event_type in LEDGER_EVENT_TYPES} == set(CHECKED_IN)
 

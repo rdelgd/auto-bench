@@ -16,7 +16,15 @@ from ._json_schema import finding, json_equal, shape_findings
 from ._schema_ledger import EVENT_DATA_DEFINITIONS, LEDGER_DEFINITIONS
 from .domain import JsonValue, ValidationFinding, ValidationResult, validation_result
 
-LedgerEventType: TypeAlias = Literal["policy.accepted", "decision.made", "application.removed"]
+LedgerEventType: TypeAlias = Literal[
+    "policy.accepted",
+    "decision.made",
+    "application.removed",
+    "evidence.recorded",
+    "verdict.recorded",
+    "verdict.invalidated",
+    "invalidation.retracted",
+]
 PolicyDecision: TypeAlias = Literal["allow", "deny"]
 DecisionBasis: TypeAlias = Literal["rule", "unknown-action", "unknown-application", "no-rule"]
 
@@ -146,7 +154,24 @@ def _data_findings(event_type: object, schema_version: object, data: object, pat
     definition = EVENT_DATA_DEFINITIONS.get((event_type, cast(int, schema_version)))
     if definition is None:
         return None
-    return shape_findings({"$ref": f"#/$defs/{definition}"}, data, path, LEDGER_DEFINITIONS)
+    findings = shape_findings({"$ref": f"#/$defs/{definition}"}, data, path, LEDGER_DEFINITIONS)
+    if event_type == "verdict.recorded" and isinstance(data, Mapping):
+        return _address_reason_findings(data, path, findings)
+    return findings
+
+
+def _address_reason_findings(data: Mapping[str, object], path: str, findings: list[ValidationFinding]) -> list[ValidationFinding]:
+    # The schema's if/then/else carries the reason rule; restate its findings at the reason itself.
+    reason_path = f"{path}.cannotTellReason"
+    addressed: list[ValidationFinding] = []
+    for item in findings:
+        if item["code"] == "format.missing_property" and item["path"] == reason_path:
+            addressed.append(finding("verdict.reason_required", reason_path, "A cannot-tell verdict requires a cannotTellReason."))
+        elif item["code"] == "format.invalid_value" and item["path"] == path and "cannotTellReason" in data and data.get("verdict") != "cannot-tell":
+            addressed.append(finding("verdict.reason_not_allowed", reason_path, "Only a cannot-tell verdict may carry a cannotTellReason."))
+        else:
+            addressed.append(item)
+    return addressed
 
 
 def _unsupported_message(event_type: object, schema_version: object) -> str:
@@ -231,6 +256,23 @@ def decide_policy(past_events: Sequence[RecordedEvent], command: AcceptPolicy) -
     }
 
 
+def _readable_event_data(event: RecordedEvent, index: int, findings: list[ValidationFinding]) -> bool:
+    """Whether a projection can read an event's data; reports why not under ``events[index]``."""
+    path = f"events[{index}]"
+    data_findings = _data_findings(event["type"], event["schemaVersion"], event["data"], f"{path}.data")
+    if data_findings is None:
+        findings.append(finding("ledger.unsupported_event", f"{path}.schemaVersion", _unsupported_message(event["type"], event["schemaVersion"])))
+        return False
+    if data_findings:
+        findings.append(finding(
+            "ledger.invalid_event_data",
+            f"{path}.data",
+            "; ".join(f"{item['path']}: {item['message']}" for item in data_findings),
+        ))
+        return False
+    return True
+
+
 def project_decision_rules(events: Sequence[RecordedEvent]) -> DecisionRuleProjection:
     """Fold ``policy.accepted`` events, in ledger order, into the current rule per (binding, action).
 
@@ -240,19 +282,7 @@ def project_decision_rules(events: Sequence[RecordedEvent]) -> DecisionRuleProje
     findings: list[ValidationFinding] = []
     rules: dict[tuple[str, str], DecisionRuleRecord] = {}
     for index, event in enumerate(events):
-        if event["type"] != "policy.accepted":
-            continue
-        path = f"events[{index}]"
-        data_findings = _data_findings(event["type"], event["schemaVersion"], event["data"], f"{path}.data")
-        if data_findings is None:
-            findings.append(finding("ledger.unsupported_event", f"{path}.schemaVersion", _unsupported_message(event["type"], event["schemaVersion"])))
-            continue
-        if data_findings:
-            findings.append(finding(
-                "ledger.invalid_event_data",
-                f"{path}.data",
-                "; ".join(f"{item['path']}: {item['message']}" for item in data_findings),
-            ))
+        if event["type"] != "policy.accepted" or not _readable_event_data(event, index, findings):
             continue
         data = cast(PolicyAcceptedData, event["data"])
         rule: DecisionRuleRecord = {

@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:verdict.recorded:v1",
+  "title": "Lasm verdict.recorded ledger event data, version 1",
+  "$defs": {
+    "CannotTellReason": {
+      "enum": [
+        "no-probes",
+        "too-few-values",
+        "degenerate-stratum",
+        "instrument-gate-failed",
+        "no-eligible-chains"
+      ]
+    },
+    "LedgerEventRef": {
+      "type": "object",
+      "properties": {
+        "streamId": {
+          "type": "string"
+        },
+        "streamVersion": {
+          "$ref": "#/$defs/SafeInteger"
+        }
+      },
+      "required": [
+        "streamId",
+        "streamVersion"
+      ],
+      "additionalProperties": false
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "VerdictRecordedData": {
+      "type": "object",
+      "properties": {
+        "cellId": {
+          "type": "string"
+        },
+        "attempt": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "cites": {
+          "$ref": "#/$defs/LedgerEventRef"
+        },
+        "preregistration": {
+          "type": "string"
+        },
+        "scorerVersion": {
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/VerdictValue"
+        },
+        "supersedes": {
+          "type": "string"
+        },
+        "cannotTellReason": {
+          "$ref": "#/$defs/CannotTellReason"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "policyEvent": {
+          "$ref": "#/$defs/LedgerEventRef"
+        }
+      },
+      "required": [
+        "cellId",
+        "attempt",
+        "cites",
+        "preregistration",
+        "scorerVersion",
+        "verdict"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "verdict": {
+            "const": "cannot-tell"
+          }
+        },
+        "required": [
+          "verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "cannotTellReason"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "cannotTellReason"
+          ]
+        }
+      }
+    },
+    "VerdictValue": {
+      "enum": [
+        "holds",
+        "inconclusive",
+        "fails",
+        "cannot-tell"
+      ]
+    }
+  },
+  "$ref": "#/$defs/VerdictRecordedData"
+}

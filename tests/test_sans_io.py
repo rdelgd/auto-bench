@@ -105,6 +105,43 @@ def test_ledger_calls_run_with_io_unavailable(io_unavailable: None) -> None:
     assert projection["findings"] == [] and len(projection["rules"]) == 1
 
 
+def test_verdict_projection_runs_with_io_unavailable(io_unavailable: None) -> None:
+    measured = {
+        "cellId": "fruitfly-1b.remove-exactness.single-hop",
+        "attempt": 1,
+        "target": {"binding": "weight-patch", "ref": "atlantis-capital"},
+        "vindexPin": "pin-1",
+        "patchDigest": "sha256:abc",
+        "patchrigCommit": "a" * 40,
+        "larqlVersion": "0.2.0",
+        "larqlBinarySha256": "f" * 64,
+        "manipulationCheck": "passed",
+        "tier": "Tier 1",
+        "scope": "Gemma 3 1B, N=10",
+        "controlsState": "passing",
+        "measurements": {"strength": 0.91},
+        "recordsDigest": "sha256:def",
+        "environment": {"host": "M5", "fingerprint": "m5"},
+    }
+    judged = {
+        "cellId": measured["cellId"],
+        "attempt": 1,
+        "cites": {"streamId": "experiment:cell@1", "streamVersion": 1},
+        "preregistration": "2026-11-05",
+        "scorerVersion": "a" * 40,
+        "verdict": "cannot-tell",
+        "cannotTellReason": "degenerate-stratum",
+    }
+    assert lasm_core.validate_ledger_event_data("verdict.recorded", 1, judged)["valid"]
+    events: list[lasm_core.RecordedEvent] = [
+        {"streamId": "experiment:cell@1", "streamVersion": 1, "type": "evidence.recorded", "schemaVersion": 1, "data": measured},
+        {"streamId": "judgement:cell@1", "streamVersion": 1, "type": "verdict.recorded", "schemaVersion": 1, "data": judged},
+    ]
+    projection = lasm_core.project_verdicts(events)
+    assert projection["findings"] == []
+    assert projection["cells"][0]["status"] == "current"
+
+
 def _run_python(code: str) -> dict[str, Any]:
     completed = subprocess.run(
         [sys.executable, "-I", "-c", code],
