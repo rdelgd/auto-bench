@@ -17,8 +17,8 @@ The contract has been negotiated across LogicalAssembly, patchrig, Rastro, and a
   - four verdict values: `holds`, `inconclusive`, `fails`, `cannot-tell`;
   - `cannotTellReason` from a closed set of five codes, required with `cannot-tell` and forbidden with any other verdict;
   - an optional free-text `detail`.
-- Add `patchrigCommit` and `larqlVersion` to `evidence.recorded`. Without them, an invalidation's scope (`patchrigCommits`, `larqlVersions`) can't be matched against verdicts. This is pending patchrig's confirmation.
-- Add `project_verdicts(events)`, a pure projection that follows the global log. It folds verdicts per (cell, pre-registration), applies `supersedes`, applies unretracted invalidations by condition and by citation, and reports conflicts and unreadable or dangling events as findings.
+- Add `patchrigCommit`, `larqlVersion`, and the descriptive `larqlBinarySha256` to `evidence.recorded`, and `scorerVersions` to an invalidation's scope, as agreed with patchrig. Without them, an invalidation's scope can't be matched against verdicts.
+- Add `project_verdicts(events)`, a pure projection that follows the global log. It folds verdicts per (cell, attempt, pre-registration), applies `supersedes`, then applies unretracted invalidations by condition and by citation. It gives every group one of four statuses, and reports conflicts, supersession cycles, and unreadable or dangling events as findings.
 - Extend the shared schema checker with `else` and `not`, which the conditional reason-code rule needs, kept in agreement with `jsonschema`.
 - Extend `LedgerEventType`, `LEDGER_EVENT_TYPES`, and `validate_ledger_event_data` to cover the new types.
 - Bump the package to `0.5.0`.
@@ -47,3 +47,5 @@ None
 - `lasm-core-reply-on-four-verdict-values.md` - patchrig's four verdict values, `cannotTellReason` as a closed set, and `detail`
 - `lasm-core-reply-on-cannot-tell-reasons.md` - the five reason codes and the two exclusions
 - `in-vitro-patching-step-1-fruitfly-compose-check.md` - confirmation that the event shapes stand, and that the change can start now
+- `lasm-review-evidence-and-verdict-events.md` (project `nuveris`) - LogicalAssembly's acceptance: the `unresolved` status, supersession cycles, superseded-then-invalidated, and the suggested `claimScope` rename
+- `in-vitro-patching-reply-on-invalidation-scope-fields.md` (project `in-vitro-patching`) - patchrig's answers: the three measurement fields, separate `scorerVersions`, and attempts as separate groups

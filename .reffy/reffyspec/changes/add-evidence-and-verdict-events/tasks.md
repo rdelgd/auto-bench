@@ -1,7 +1,8 @@
 ## 0. Before Implementation
 
-- [ ] 0.1 Get patchrig's answer on `patchrigCommit` and `larqlVersion` (names, and whether the run directory records both). Get their answers to open questions 2 and 3. Update the design with the answers.
-- [ ] 0.2 Get LogicalAssembly's review of the design, as with 0.4.0.
+- [x] 0.1 Get patchrig's answer on `patchrigCommit` and `larqlVersion` (names, and whether the run directory records both). Get their answers to open questions 2 and 3. Update the design with the answers.
+- [x] 0.2 Get LogicalAssembly's review of the design, as with 0.4.0.
+- [ ] 0.3 Get patchrig's answer on renaming the measurement's `scope` (for example `claimScope`), or proceed with `scope`.
 
 ## 1. Checker and Schemas
 
@@ -12,9 +13,10 @@
 ## 2. Projection
 
 - [ ] 2.1 Add `src/lasm_core/verdict.py`: the records and literals, `VERDICT_VALUES`, `CANNOT_TELL_REASONS`, and `project_verdicts`.
-- [ ] 2.2 Implement indexing, supersession, invalidation by citation and by condition, retraction, and the three statuses.
+- [ ] 2.2 Implement indexing per (`cellId`, `attempt`, `preregistration`), then permanent supersession, then invalidation by citation and by condition with four scope lists, then retraction, then the four statuses.
 - [ ] 2.3 Implement the findings:
   - `verdict.conflict`
+  - `verdict.supersedes_cycle`
   - `verdict.invalid_supersedes`
   - `verdict.unknown_measurement`
   - `invalidation.inconsistent_condition`
@@ -39,7 +41,11 @@
   - a re-score supersedes;
   - invalid supersession;
   - two unsuperseded verdicts conflict;
-  - separate pre-registrations never fold together;
+  - separate pre-registrations and separate attempts never fold together;
+  - a supersession cycle, including a self-supersession, is `unresolved` with a finding;
+  - only unknown measurements is `unresolved`;
+  - a superseded verdict stays gone when its replacement is invalidated, and the replacement returns on retraction;
+  - `scorerVersions` spares re-scored verdicts that `patchrigCommits` would remove;
   - invalidation by citation;
   - invalidation by condition, including a verdict written after the invalidation;
   - multi-list scope matching;

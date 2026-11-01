@@ -14,7 +14,7 @@ Every stream is written exactly once, with `expected_version: 0`. Rastro keeps o
 Goals:
 
 - Write the agreed contract as schemas, so the first verified cell validates the day it's sent.
-- Give LogicalAssembly one pure projection that answers "what is the current verdict for this cell and pre-registration, and why".
+- Give LogicalAssembly one pure projection that answers "what is the current verdict for this cell, attempt, and pre-registration, and why".
 - Make every rule the parties agreed checkable: the closed reason codes, reason if and only if `cannot-tell`, no stream parsing, and conflicts reported rather than resolved.
 
 Non-goals:
@@ -49,16 +49,17 @@ class MeasurementEnvironment(TypedDict):
     host: str
     fingerprint: str
 
-class EvidenceRecordedData(TypedDict):    # stream experiment:<cell-id>
-    cellId: str
+class EvidenceRecordedData(TypedDict):    # stream experiment:<cell-id>…
+    cellId: str                           # the cell, without the attempt
     attempt: int
     shardIndex: NotRequired[int]
     shardCount: NotRequired[int]
     target: MeasurementTarget
     vindexPin: str
     patchDigest: str
-    patchrigCommit: str                   # proposed; see decision 6
-    larqlVersion: str                     # proposed; see decision 6
+    patchrigCommit: str                   # full commit hash of the code that measured; clean tree only
+    larqlVersion: str                     # e.g. "0.2.0"
+    larqlBinarySha256: str                # descriptive: identifies the build, not a scope list
     manipulationCheck: ManipulationCheck
     tier: str
     scope: str
@@ -81,9 +82,10 @@ class VerdictRecordedData(TypedDict):     # stream judgement:<cell-id>@<prereg>@
     policyEvent: NotRequired[LedgerEventRef]
 
 class InvalidationScope(TypedDict):
-    patchrigCommits: NotRequired[Sequence[str]]
-    vindexPins: NotRequired[Sequence[str]]
-    larqlVersions: NotRequired[Sequence[str]]
+    patchrigCommits: NotRequired[Sequence[str]]   # matches the measurement's patchrigCommit
+    scorerVersions: NotRequired[Sequence[str]]    # matches the verdict's scorerVersion
+    vindexPins: NotRequired[Sequence[str]]        # matches the measurement's vindexPin
+    larqlVersions: NotRequired[Sequence[str]]     # matches the measurement's larqlVersion
 
 class VerdictInvalidatedData(TypedDict):  # stream judgement:invalidation@<instrument>@<date>
     instrument: str
@@ -137,39 +139,57 @@ class ProjectedVerdict(TypedDict):
 
 class CellVerdict(TypedDict):
     cellId: str
+    attempt: int
     preregistration: str
-    status: Literal["current", "invalidated", "conflicting"]
+    status: Literal["current", "invalidated", "conflicting", "unresolved"]
     current: NotRequired[ProjectedVerdict]          # status == "current"
     candidates: NotRequired[Sequence[LedgerEventRef]]  # status == "conflicting"
     invalidatedBy: NotRequired[Sequence[str]]       # invalidation streams that removed a verdict
 
 class VerdictProjection(TypedDict):
-    cells: Sequence[CellVerdict]          # sorted by (cellId, preregistration)
+    cells: Sequence[CellVerdict]          # sorted by (cellId, attempt, preregistration)
     findings: Sequence[ValidationFinding]
 
 def project_verdicts(events: Sequence[RecordedEvent]) -> VerdictProjection
 ```
 
-The projection takes events in global-log order and ignores types it doesn't own. It works in two passes:
+The projection takes events in global-log order and ignores types it doesn't own. A group is one (`cellId`, `attempt`, `preregistration`). Two attempts of one cell are separate measurements, a replication rather than a revision, so they never share a group. Combining attempts is a separate analysis, and the projection doesn't do it. It works in two passes:
 
 1. **Index.**
    - Measurements are indexed by (streamId, streamVersion).
-   - Verdicts are indexed by stream id, and grouped by (`cellId`, `preregistration`). Each stream holds one verdict.
+   - Verdicts are indexed by stream id, and grouped by (`cellId`, `attempt`, `preregistration`). Each stream holds one verdict.
    - Invalidations are indexed by stream id, keeping their condition and the verdicts each event cites.
    - Retractions are indexed by the stream they cite.
    - Unreadable events (an unsupported version, or data that fails validation) are skipped and reported as `ledger.unsupported_event` or `ledger.invalid_event_data`, exactly as `project_decision_rules` does.
-2. **Resolve each (cell, pre-registration):**
-   - **Supersession.** A verdict whose `supersedes` names a verdict stream in the same group removes that stream. A `supersedes` that names an unknown stream, or one in a different (cell, pre-registration), is reported as `verdict.invalid_supersedes` and ignored, so both verdicts stay candidates.
-   - **Invalidation.** An unretracted invalidation removes a candidate when either:
-     - the invalidation cites it; or
-     - its condition matches the measurement the candidate cites. For each scope list that is present and non-empty, the measurement's value must be in that list: `patchrigCommits` against `patchrigCommit` (and see open question 2), `vindexPins` against `vindexPin`, and `larqlVersions` against `larqlVersion`. Every present list must match.
+2. **Resolve each group, in this order:**
+   1. **Unverifiable verdicts.** A verdict citing a measurement that isn't in the log is reported as `verdict.unknown_measurement`. It is not a candidate, because its scope can't be checked.
+   2. **Supersession.** A verdict whose `supersedes` names a verdict stream in the same group removes that stream. Supersession is permanent: a superseded verdict never returns, even if the verdict that replaced it is later invalidated. Supersession problems:
+      - A `supersedes` naming an unknown stream, or a verdict in another group, is reported as `verdict.invalid_supersedes` and ignored, so both verdicts stay candidates.
+      - A chain that returns to its start (A supersedes B, B supersedes A, or a verdict superseding itself) is reported as `verdict.supersedes_cycle`, addressed to every verdict in the cycle. Every verdict in the cycle is removed.
+   3. **Invalidation.** An unretracted invalidation removes a remaining candidate when either:
+      - the invalidation cites it; or
+      - its condition matches the candidate. Each scope list that is present and non-empty must contain the matching value, and every present list must match:
 
-     The stream ids of the removing invalidations are recorded in `invalidatedBy`.
-   - **Result.**
-     - No candidates left, and at least one removed by invalidation: `status: invalidated`.
-     - Exactly one candidate: `status: current`.
-     - More than one: `status: conflicting`, with `candidates` and a `verdict.conflict` finding. The projection does not break the tie.
-   - **Unverifiable verdicts.** A verdict citing a measurement that isn't in the log is reported as `verdict.unknown_measurement`. It is not a candidate, because its scope can't be checked.
+        | Scope list | Matches |
+        | --- | --- |
+        | `patchrigCommits` | the cited measurement's `patchrigCommit` (the code that measured) |
+        | `scorerVersions` | the verdict's own `scorerVersion` (the code that scored) |
+        | `vindexPins` | the cited measurement's `vindexPin` |
+        | `larqlVersions` | the cited measurement's `larqlVersion` |
+
+        The commit lists are separate on purpose. A scorer bug at commit `X`, fixed at `Y`, is invalidated with `scorerVersions: [X]`. That leaves the re-scored verdicts intact, even though their measurements still carry `patchrigCommit: X`. Matching a commit against "either" field would wipe out the corrected verdicts too.
+
+      The stream ids of the removing invalidations are recorded in `invalidatedBy`.
+   4. **Result.** Exactly one status per group, and every group that has at least one readable verdict appears:
+
+      | Status | When |
+      | --- | --- |
+      | `current` | exactly one candidate remains |
+      | `conflicting` | more than one candidate remains. The projection lists them in `candidates`, reports `verdict.conflict`, and doesn't break the tie |
+      | `invalidated` | no candidates remain, and at least one verdict was removed by an invalidation in step 3 |
+      | `unresolved` | no candidates remain, and none was removed by an invalidation: every verdict cites an unknown measurement or sits in a supersession cycle. The findings from steps 1 and 2 explain why |
+
+      Because supersession comes before invalidation, B superseding A and then being invalidated leaves the group `invalidated`, with no current verdict. A was already judged worth replacing, and its replacement was found flawed. A retraction of B's invalidation makes B current again. A only comes back if a new verdict re-scores it.
 
 **Invalidation rules:**
 - Every event in one invalidation stream must state the same `instrument`, `scope`, and `reason`. A mismatch is reported as `invalidation.inconsistent_condition`, and the stream's first event's condition is used.
@@ -183,17 +203,25 @@ The projection takes events in global-log order and ignores types it doesn't own
 
 **What the projection doesn't do:**
 - It doesn't consult `manipulationCheck` to decide anything. It copies it onto the projected verdict, because whether a verdict counts with a failed manipulation check is LogicalAssembly's judgement.
+- It doesn't read `larqlBinarySha256`. That field is descriptive for now, and recorded from the first cell so that a later scope list over builds needs no backfill.
 - It is total, deterministic, and non-mutating, and reads no clock. Dates (`preregistration`, invalidation dates) are compared only for equality, never ordered.
 
-LogicalAssembly must not act on a (cell, pre-registration) that has a finding addressed to one of its events. The same stance as the rule projection: report rather than guess.
+LogicalAssembly must not act on a group that has a finding addressed to one of its events, or whose status is `conflicting` or `unresolved`. This is the same stance as the rule projection: report rather than guess.
 
 ### 5. Stream kinds aren't checked
 
 The projection reads only `type` and `data`. Rastro enforces that `evidence.recorded` sits on `experiment:` streams and verdict events on `judgement:` streams, through its authorization table. Checking stream-id prefixes here would be parsing stream ids, which every party agreed not to do.
 
-### 6. Fields this change proposes to patchrig
+### 6. Fields agreed with patchrig
 
-An invalidation's scope names `patchrigCommits` and `larqlVersions`, but the agreed `evidence.recorded` carries neither, so the condition can't be evaluated. This change adds `patchrigCommit` (the patchrig commit that ran the cell) and `larqlVersion` (the larql version used) to `evidence.recorded` as required fields. Patchrig is asked in `lasm-core-note-on-invalidation-scope-fields.md` to confirm or rename them before implementation starts. Their final names are a precondition for task 1.2.
+Patchrig confirmed the fields in `in-vitro-patching-reply-on-invalidation-scope-fields.md`:
+- **`patchrigCommit`:** the full commit hash of the code that measured. Patchrig refuses to produce a reportable cell from a dirty working tree, so the hash always means exactly the code that ran. The schema can rely on that without checking it.
+- **`larqlVersion`:** for example `0.2.0`.
+- **`larqlBinarySha256`:** added at patchrig's request, as a descriptive field. One version number can mean different builds. For example, LogicalAssembly's Graviton build of larql 0.2.0 needed different compiler flags from the release binaries.
+- **`scorerVersions`:** a fourth scope list, matching the verdict's `scorerVersion`. `patchrigCommits` matches only the measurement's `patchrigCommit`.
+- **`cellId`:** excludes the attempt, which is its own field. Stream names still include both.
+
+All three measurement fields are required. Patchrig doesn't record them yet, and will add them with its cell tooling before any cell is sent.
 
 ### 7. Package
 
@@ -210,9 +238,27 @@ They are added to the `POST_MIGRATION` allowlist and the API inventory. The whee
 - **The checker grows.** `else` and `not` are general keywords. The agreement tests with `jsonschema` must cover both, including nested use.
 - **Unordered dates.** Two invalidations of the same instrument on the same day collide in Rastro by design. The projection doesn't depend on ordering between invalidations.
 
+## Resolved Questions
+
+Patchrig (`in-vitro-patching-reply-on-invalidation-scope-fields.md`) and LogicalAssembly (`lasm-review-evidence-and-verdict-events.md`) answered the draft's questions and accepted its other decisions:
+
+1. **Field names:**
+   - `patchrigCommit` and `larqlVersion` are confirmed, plus `larqlBinarySha256`.
+   - None is recorded today. All three arrive with patchrig's cell tooling.
+2. **Which commit:** separate lists, not "either". `patchrigCommits` matches the measuring commit, and `scorerVersions` the scoring commit. "Either" would have invalidated corrected re-scores.
+3. **Attempts:**
+   - Separate groups, folded per (`cellId`, `attempt`, `preregistration`).
+   - A re-run is a replication, not a revision, so it never supersedes the earlier attempt.
+4. **Instrument narrowing:** both agree `instrument` stays descriptive until measurements list their instruments.
+
+LogicalAssembly's review also closed a gap in the draft:
+- a group with no candidates and no invalidation now has a status, `unresolved`;
+- supersession cycles are a finding;
+- superseded-then-invalidated leaves the group `invalidated`.
+
 ## Open Questions
 
-1. **Field names:** are `patchrigCommit` and `larqlVersion` the right names, and does the run directory record both? (Asked of patchrig.)
-2. **Which commit:** does `patchrigCommits` in a scope mean the commit that ran the measurement, the scorer commit (`scorerVersion`), or either? This design matches either, which over-invalidates rather than under-invalidates. (Asked of patchrig.)
-3. **Attempts:** a re-run of a cell is a new attempt, with a new measurement stream. Is its verdict in the same (cell, pre-registration) group, so it must name the earlier verdict in `supersedes` or it conflicts? This design keys on (`cellId`, `preregistration`) as the contract says, which gives that result. (Asked of patchrig.)
-4. **Instrument narrowing:** measurements don't record which instruments or controls they used, so `instrument` is descriptive and doesn't narrow the match. Should measurements list them? This design leaves that for a later version.
+1. **Two fields named `scope`:**
+   - On `evidence.recorded` it's a label ("Gemma 3 1B, N=10"). On `verdict.invalidated` it's a matching condition.
+   - LogicalAssembly suggested patchrig rename the measurement's field, for example to `claimScope`. It's patchrig's vocabulary, and patchrig hasn't answered yet.
+   - This design keeps `scope` until they do, and renaming before implementation costs nothing.

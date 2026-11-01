@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-01T22:53:10.050Z",
+  "updated_at": "2026-11-01T23:05:38.893Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -392,6 +392,28 @@
       "tags": [],
       "created_at": "2026-11-01T22:53:10.049Z",
       "updated_at": "2026-11-01T22:53:10.049Z"
+    },
+    {
+      "id": "28a2c725-b1db-4887-9c6f-8f6976a60b1e",
+      "name": "in vitro patching reply on invalidation scope fields",
+      "filename": "in-vitro-patching-reply-on-invalidation-scope-fields.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 6200,
+      "tags": [],
+      "created_at": "2026-11-01T23:04:35.674Z",
+      "updated_at": "2026-11-01T23:04:35.674Z"
+    },
+    {
+      "id": "49d33d08-37a0-4d0e-881d-6768945e112a",
+      "name": "lasm review evidence and verdict events",
+      "filename": "lasm-review-evidence-and-verdict-events.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 6151,
+      "tags": [],
+      "created_at": "2026-11-01T23:04:35.674Z",
+      "updated_at": "2026-11-01T23:04:35.674Z"
     }
   ]
 }
