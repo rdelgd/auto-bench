@@ -13,7 +13,7 @@ strings remain for ``decide_policy`` to reject.
 from __future__ import annotations
 
 from ._json_schema import JsonSchema
-from ._schema_v1 import BOOLEAN, DEFINITIONS, DRAFT, STRING, STRINGS, _enum, _record, _ref
+from ._schema_v1 import BOOLEAN, DEFINITIONS, DRAFT, STRING, STRINGS, _array, _enum, _record, _ref
 
 POLICY_DECISIONS = ("allow", "deny")
 DECISION_BASES = ("rule", "unknown-action", "unknown-application", "no-rule")
@@ -30,8 +30,24 @@ MANIPULATION_CHECKS = ("passed", "failed", "not-applicable")
 JSON_OBJECT: JsonSchema = {"type": "object", "additionalProperties": _ref("JsonValue")}
 
 
+def _with_reason_rule(schema: JsonSchema) -> JsonSchema:
+    # A reason is required with cannot-tell and forbidden with every other verdict.
+    schema["if"] = {"properties": {"verdict": {"const": "cannot-tell"}}, "required": ["verdict"]}
+    schema["then"] = {"required": ["cannotTellReason"]}
+    schema["else"] = {"not": {"required": ["cannotTellReason"]}}
+    return schema
+
+
+VERDICT_OPTIONAL: dict[str, JsonSchema] = {
+    "supersedes": STRING,
+    "cannotTellReason": _ref("CannotTellReason"),
+    "detail": STRING,
+    "policyEvent": _ref("LedgerEventRef"),
+}
+
+
 def _verdict_recorded() -> JsonSchema:
-    schema = _record(
+    return _with_reason_rule(_record(
         {
             "cellId": STRING,
             "attempt": _ref("SafeInteger"),
@@ -40,18 +56,24 @@ def _verdict_recorded() -> JsonSchema:
             "scorerVersion": STRING,
             "verdict": _ref("VerdictValue"),
         },
+        VERDICT_OPTIONAL,
+    ))
+
+
+def _verdict_recorded_v2() -> JsonSchema:
+    return _with_reason_rule(_record(
         {
-            "supersedes": STRING,
-            "cannotTellReason": _ref("CannotTellReason"),
-            "detail": STRING,
-            "policyEvent": _ref("LedgerEventRef"),
+            "runId": STRING,
+            "attempt": _ref("SafeInteger"),
+            "claimId": STRING,
+            "claim": STRING,
+            "cites": _ref("LedgerEventRef"),
+            "preregistration": STRING,
+            "scorerVersion": STRING,
+            "verdict": _ref("VerdictValue"),
         },
-    )
-    # A reason is required with cannot-tell and forbidden with every other verdict.
-    schema["if"] = {"properties": {"verdict": {"const": "cannot-tell"}}, "required": ["verdict"]}
-    schema["then"] = {"required": ["cannotTellReason"]}
-    schema["else"] = {"not": {"required": ["cannotTellReason"]}}
-    return schema
+        {**VERDICT_OPTIONAL, "predicted": _array(_ref("VerdictValue")), "statistics": JSON_OBJECT},
+    ))
 
 
 LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
@@ -99,9 +121,16 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
     "ManipulationCheck": _enum(*MANIPULATION_CHECKS),
     "MeasurementTarget": _record({"binding": STRING, "ref": STRING}),
     "MeasurementEnvironment": _record({"host": STRING, "fingerprint": STRING}),
+    "AdapterMatch": _record({"model": STRING, "host": STRING}, {"kind": STRING, "route": STRING, "served": STRING}),
     "InvalidationScope": _record(
         {},
-        {"patchrigCommits": STRINGS, "scorerVersions": STRINGS, "vindexPins": STRINGS, "larqlVersions": STRINGS},
+        {
+            "patchrigCommits": STRINGS,
+            "scorerVersions": STRINGS,
+            "vindexPins": STRINGS,
+            "larqlVersions": STRINGS,
+            "adapters": _array(_ref("AdapterMatch")),
+        },
     ),
     "EvidenceRecordedData": _record(
         {
@@ -128,6 +157,33 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
         },
     ),
     "VerdictRecordedData": _verdict_recorded(),
+    "AdapterIdentity": _record({"kind": STRING, "model": STRING, "host": STRING, "served": STRING}, {"route": STRING}),
+    "RunInput": _record({"role": STRING, "runId": STRING, "recordsDigest": STRING}, {"seeds": STRING}),
+    # Named keys are typed; any other key is free-form, so scorers can add numbers without a version.
+    "MeasurementItem": {
+        "type": "object",
+        "properties": {"carrier": STRING, "tunedThreshold": _ref("JsonNumber")},
+        "additionalProperties": _ref("JsonValue"),
+    },
+    "EvidenceRecordedDataV2": _record(
+        {
+            "runId": STRING,
+            "attempt": _ref("SafeInteger"),
+            "runKind": STRING,
+            "recordsDigest": STRING,
+            "patchrigCommit": STRING,
+            "claimScope": STRING,
+            "adapter": _ref("AdapterIdentity"),
+            "measurements": _array(_ref("MeasurementItem")),
+        },
+        {
+            "inputs": _array(_ref("RunInput")),
+            "fixture": JSON_OBJECT,
+            "preregistration": STRING,
+            "tier": STRING,
+        },
+    ),
+    "VerdictRecordedDataV2": _verdict_recorded_v2(),
     "VerdictInvalidatedData": _record({
         "instrument": STRING,
         "scope": _ref("InvalidationScope"),
@@ -146,6 +202,8 @@ EVENT_DATA_DEFINITIONS: dict[tuple[str, int], str] = {
     ("verdict.recorded", 1): "VerdictRecordedData",
     ("verdict.invalidated", 1): "VerdictInvalidatedData",
     ("invalidation.retracted", 1): "InvalidationRetractedData",
+    ("evidence.recorded", 2): "EvidenceRecordedDataV2",
+    ("verdict.recorded", 2): "VerdictRecordedDataV2",
 }
 
 

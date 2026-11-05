@@ -142,6 +142,40 @@ def test_verdict_projection_runs_with_io_unavailable(io_unavailable: None) -> No
     assert projection["cells"][0]["status"] == "current"
 
 
+def test_version_2_findings_project_with_io_unavailable(io_unavailable: None) -> None:
+    commit = "ec8e708727c6760577e8ae1cceed0adce450528a"
+    measured = {
+        "runId": "two-step-20261104-092458",
+        "attempt": 1,
+        "runKind": "two-step",
+        "recordsDigest": "sha256:fad5",
+        "patchrigCommit": commit,
+        "claimScope": "the two-step observer on gpt-6-luna",
+        "adapter": {"kind": "decisions", "model": "gpt-6-luna", "host": "api.openai.com", "served": "2026-11-04"},
+        "measurements": [{"carrier": "chart", "tunedThreshold": 0.02, "gain": 0.2427}],
+    }
+    judged = {
+        "runId": measured["runId"],
+        "attempt": 1,
+        "claimId": "two-step/gpt-6-luna/chart",
+        "claim": "the two-step rule beats the model's own choice by at least 0.10",
+        "cites": {"streamId": "experiment:run@1", "streamVersion": 1},
+        "preregistration": "2026-11-03",
+        "scorerVersion": commit,
+        "verdict": "holds",
+        "predicted": ["holds"],
+    }
+    assert lasm_core.validate_ledger_event_data("evidence.recorded", 2, measured)["valid"]
+    assert lasm_core.validate_ledger_event_data("verdict.recorded", 2, judged)["valid"]
+    events: list[lasm_core.RecordedEvent] = [
+        {"streamId": "experiment:run@1", "streamVersion": 1, "type": "evidence.recorded", "schemaVersion": 2, "data": measured},
+        {"streamId": "judgement:run/chart", "streamVersion": 1, "type": "verdict.recorded", "schemaVersion": 2, "data": judged},
+    ]
+    projection = lasm_core.project_verdicts(events)
+    assert projection["findings"] == [] and projection["cells"] == []
+    assert projection["runs"][0]["status"] == "current"
+
+
 def _run_python(code: str) -> dict[str, Any]:
     completed = subprocess.run(
         [sys.executable, "-I", "-c", code],

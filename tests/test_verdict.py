@@ -300,7 +300,7 @@ def test_unreadable_and_foreign_events() -> None:
     m = measurement()
     v = verdict("v", of=m)
     bad_reason = verdict("bad", "holds", of=m, cannotTellReason="no-probes")
-    future: RecordedEvent = {**v, "streamId": "judgement:future", "schemaVersion": 2}
+    future: RecordedEvent = {**v, "streamId": "judgement:future", "schemaVersion": 3}
     foreign: RecordedEvent = {"streamId": "policy:x", "streamVersion": 1, "type": "policy.accepted", "schemaVersion": 1, "data": {}}
     projection = project_verdicts([foreign, m, v, bad_reason, future])
     assert only_cell(projection)["status"] == "current"
@@ -320,4 +320,4 @@ def test_projection_is_deterministic_sorted_and_non_mutating() -> None:
     assert json.dumps(project_verdicts(copy.deepcopy(events))) == json.dumps(first)
     assert events == snapshot
     assert [cell["cellId"] for cell in first["cells"]] == ["a-cell", "z-cell"]
-    assert project_verdicts([]) == {"cells": [], "findings": []}
+    assert project_verdicts([]) == {"cells": [], "runs": [], "findings": []}

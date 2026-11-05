@@ -41,7 +41,7 @@ class AdapterIdentity(TypedDict):
     model: str                # e.g. "gpt-6-luna"
     host: str                 # e.g. "api.openai.com"
     route: NotRequired[str]   # a gateway's resolved provider
-    served: str               # the date the model was served, as patchrig writes it
+    served: str               # UTC start date of the run, YYYY-MM-DD; one date per run
 
 class RunInput(TypedDict):    # descriptive; never read by the projection
     role: str                 # e.g. "tune", "confirm"
@@ -203,6 +203,23 @@ They go in the API inventory. No new callables are added.
 - **Short hashes slip through.** The schema can't reject them (decision 5). An invalidation naming a full hash would then miss them. The writer-side rule, and the reply to patchrig, are the guard.
 - **`served` is a string.** Two spellings of one date (`2026-11-04` and `2026-11-4`) don't match. Patchrig writes `YYYY-MM-DD`, and the reply asks it to keep that form.
 
+## Resolved Questions
+
+Patchrig agreed to all five adjustments in `in-vitro-patching-reply-agreeing-to-findings-adjustments.md`:
+
+1. **Commit hashes:** full 40-character hashes, unprefixed in `scorerVersion`. The two-step finding's commit is `ec8e708727c6760577e8ae1cceed0adce450528a`.
+2. **`cites`:** an event reference, with the run id in `runId`.
+3. **`predicted`:** a list. The four verdicts carry `["holds"]`, `["holds"]`, `["inconclusive", "fails"]`, and `["fails"]`.
+4. **Numbers:** the scorer's numbers go in `statistics`. `claim`, `claimId`, and `tunedThreshold` stay named.
+5. **Adapter scopes:** equality, with one entry per served date.
+
+**`served` defined:**
+- It's the UTC date the run started, written `YYYY-MM-DD`.
+- A run that crosses midnight carries its start date, so every event from one run matches the same scope entry.
+- Patchrig defines it in its `observer/1` change. For the two-step finding, it's `2026-11-04` for both runs.
+
+**`preregistration` spelling:** patchrig writes it from one constant, so its spelling is identical on every verdict.
+
 ## Open Questions
 
-None yet. Points 1 to 5 of the reply to patchrig (`lasm-core-reply-on-findings-event-data.md`) may change field names before implementation.
+None.

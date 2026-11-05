@@ -227,6 +227,21 @@ Data schemas are in `lasm_core/schemas/ledger/` beside the governance events.
 | `VerdictProjection` | `TypedDict` | Projected `cells`, sorted, and `findings`. |
 | `project_verdicts` | function | Folds evidence and verdict events, in log order, into each group's current verdict. |
 
+### Version 2 Findings
+
+Added by the `add-findings-evidence-v2` change (`0.6.0`). `evidence.recorded` and `verdict.recorded` gain version 2 for runs measured through hosted adapters. Version 1 is unchanged. `InvalidationScope` gains an optional `adapters` list, and `VerdictProjection` gains `runs`.
+
+| Python | Representation | Purpose |
+| --- | --- | --- |
+| `AdapterIdentity` | `TypedDict` | The adapter a run measured through: `kind`, `model`, `host`, optional `route`, and `served` (the UTC start date of the run). |
+| `RunInput` | `TypedDict` | A run that fed this one, such as tuning or confirmation; descriptive. |
+| `MeasurementItem` | `TypedDict` | One measured quantity, with `carrier` and `tunedThreshold` named; other keys are free-form. |
+| `EvidenceRecordedDataV2` | `TypedDict` | `evidence.recorded` version 2 data: run identity, adapter identity, and measurement items. |
+| `VerdictRecordedDataV2` | `TypedDict` | `verdict.recorded` version 2 data: adds `claimId`, `claim`, `predicted`, and `statistics`. |
+| `AdapterMatch` | `TypedDict` | One entry of an invalidation's `adapters` scope; it matches when every field it gives is equal. |
+| `ProjectedRunVerdict` | `TypedDict` | A current version 2 verdict, with its adapter, source event, and measurement. |
+| `RunVerdict` | `TypedDict` | One (run, attempt, claim, pre-registration) group and its status. |
+
 ## Consumer Audit
 
 Recorded on 2026-09-22 before retiring the npm package:

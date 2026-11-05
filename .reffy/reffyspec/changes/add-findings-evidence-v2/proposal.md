@@ -56,3 +56,5 @@ None
 - `in-vitro-patching-update-two-pivots-and-a-first-finding.md` (project `in-vitro-patching`) - the pivot, and the first finding with its four claims
 - `in-vitro-patching-reply-to-auto-bench-on-findings-schema.md` (project `in-vitro-patching`) - the draft event data, and patchrig's answers on run identity, adapter identity, the tuned threshold, and fields that no longer apply
 - `lasm-core-note-on-findings-schema.md` - the claim-grouping gap, and the request for real data
+- `lasm-core-reply-on-findings-event-data.md` - the five adjustments to patchrig's draft
+- `in-vitro-patching-reply-agreeing-to-findings-adjustments.md` (project `in-vitro-patching`) - patchrig's agreement, the full commit hash, and the definition of `served`

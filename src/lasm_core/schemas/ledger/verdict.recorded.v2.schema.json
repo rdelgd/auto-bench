@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lasm-core:ledger:verdict.recorded:v2",
+  "title": "Lasm verdict.recorded ledger event data, version 2",
+  "$defs": {
+    "CannotTellReason": {
+      "enum": [
+        "no-probes",
+        "too-few-values",
+        "degenerate-stratum",
+        "instrument-gate-failed",
+        "no-eligible-chains"
+      ]
+    },
+    "JsonNumber": {
+      "description": "A finite JSON number; integer-valued numbers must be within the JavaScript safe-integer range.",
+      "type": "number",
+      "if": {
+        "type": "integer"
+      },
+      "then": {
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "JsonValue": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/$defs/JsonNumber"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      ]
+    },
+    "LedgerEventRef": {
+      "type": "object",
+      "properties": {
+        "streamId": {
+          "type": "string"
+        },
+        "streamVersion": {
+          "$ref": "#/$defs/SafeInteger"
+        }
+      },
+      "required": [
+        "streamId",
+        "streamVersion"
+      ],
+      "additionalProperties": false
+    },
+    "SafeInteger": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "VerdictRecordedDataV2": {
+      "type": "object",
+      "properties": {
+        "runId": {
+          "type": "string"
+        },
+        "attempt": {
+          "$ref": "#/$defs/SafeInteger"
+        },
+        "claimId": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        },
+        "cites": {
+          "$ref": "#/$defs/LedgerEventRef"
+        },
+        "preregistration": {
+          "type": "string"
+        },
+        "scorerVersion": {
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/VerdictValue"
+        },
+        "supersedes": {
+          "type": "string"
+        },
+        "cannotTellReason": {
+          "$ref": "#/$defs/CannotTellReason"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "policyEvent": {
+          "$ref": "#/$defs/LedgerEventRef"
+        },
+        "predicted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/VerdictValue"
+          }
+        },
+        "statistics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          }
+        }
+      },
+      "required": [
+        "runId",
+        "attempt",
+        "claimId",
+        "claim",
+        "cites",
+        "preregistration",
+        "scorerVersion",
+        "verdict"
+      ],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "verdict": {
+            "const": "cannot-tell"
+          }
+        },
+        "required": [
+          "verdict"
+        ]
+      },
+      "then": {
+        "required": [
+          "cannotTellReason"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "cannotTellReason"
+          ]
+        }
+      }
+    },
+    "VerdictValue": {
+      "enum": [
+        "holds",
+        "inconclusive",
+        "fails",
+        "cannot-tell"
+      ]
+    }
+  },
+  "$ref": "#/$defs/VerdictRecordedDataV2"
+}

@@ -3,6 +3,31 @@
   "$id": "urn:lasm-core:ledger:verdict.invalidated:v1",
   "title": "Lasm verdict.invalidated ledger event data, version 1",
   "$defs": {
+    "AdapterMatch": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "route": {
+          "type": "string"
+        },
+        "served": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "model",
+        "host"
+      ],
+      "additionalProperties": false
+    },
     "InvalidationScope": {
       "type": "object",
       "properties": {
@@ -28,6 +53,12 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "adapters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AdapterMatch"
           }
         }
       },

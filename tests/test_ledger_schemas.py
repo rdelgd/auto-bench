@@ -78,8 +78,8 @@ def test_checked_in_schemas_are_rendered_from_the_python_definitions() -> None:
 def test_schemas_are_valid_self_contained_draft_2020_12_documents() -> None:
     for name, schema in CHECKED_IN.items():
         Draft202012Validator.check_schema(schema)
-        event_type = name.removesuffix(".v1.schema.json")
-        assert schema["$id"] == f"urn:lasm-core:ledger:{event_type}:v1"
+        event_type, version = name.removesuffix(".schema.json").rsplit(".v", 1)
+        assert schema["$id"] == f"urn:lasm-core:ledger:{event_type}:v{version}"
 
 
 def test_schema_versions_match_the_schema_set() -> None:
@@ -92,8 +92,15 @@ def test_schema_versions_match_the_schema_set() -> None:
         "verdict.invalidated",
         "invalidation.retracted",
     }
-    assert dict(LEDGER_EVENT_SCHEMA_VERSIONS) == {event_type: (1,) for event_type in LEDGER_EVENT_TYPES}
-    assert {f"{event_type}.v1.schema.json" for event_type in LEDGER_EVENT_TYPES} == set(CHECKED_IN)
+    two_versions = {"evidence.recorded", "verdict.recorded"}
+    assert dict(LEDGER_EVENT_SCHEMA_VERSIONS) == {
+        event_type: (1, 2) if event_type in two_versions else (1,) for event_type in LEDGER_EVENT_TYPES
+    }
+    assert {
+        f"{event_type}.v{version}.schema.json"
+        for event_type, versions in LEDGER_EVENT_SCHEMA_VERSIONS.items()
+        for version in versions
+    } == set(CHECKED_IN)
 
 
 ACCEPTED_CASES = [
