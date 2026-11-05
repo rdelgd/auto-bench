@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-05T07:22:29.645Z",
+  "updated_at": "2026-11-05T07:33:29.544Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -457,7 +457,87 @@
       "size_bytes": 4664,
       "tags": [],
       "created_at": "2026-11-05T07:22:29.645Z",
-      "updated_at": "2026-11-05T07:22:29.645Z"
+      "updated_at": "2026-11-05T07:31:40.099Z",
+      "related_changes": [
+        "add-findings-evidence-v2"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+      ]
+    },
+    {
+      "id": "a3499916-6155-4d03-81b4-58c65c400b4e",
+      "name": "in vitro patching reply to auto bench on findings schema",
+      "filename": "in-vitro-patching-reply-to-auto-bench-on-findings-schema.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 10544,
+      "tags": [],
+      "created_at": "2026-11-05T07:31:40.009Z",
+      "updated_at": "2026-11-05T07:31:40.099Z",
+      "related_changes": [
+        "add-findings-evidence-v2"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+      ]
+    },
+    {
+      "id": "f56fc4ac-546c-4a2a-bc01-a82b83b269d5",
+      "name": "in vitro patching update two pivots and a first finding",
+      "filename": "in-vitro-patching-update-two-pivots-and-a-first-finding.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 7500,
+      "tags": [],
+      "created_at": "2026-11-05T07:31:40.009Z",
+      "updated_at": "2026-11-05T07:31:40.099Z",
+      "related_changes": [
+        "add-findings-evidence-v2"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+      ]
+    },
+    {
+      "id": "586b09fe-0fdd-44be-9851-7691c99d40d1",
+      "name": "lasm reply to patchrig pivots and first finding",
+      "filename": "lasm-reply-to-patchrig-pivots-and-first-finding.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 6263,
+      "tags": [],
+      "created_at": "2026-11-05T07:31:40.009Z",
+      "updated_at": "2026-11-05T07:31:40.099Z",
+      "related_changes": [
+        "add-findings-evidence-v2"
+      ],
+      "derived_outputs": [
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+      ]
+    },
+    {
+      "id": "b56459ca-d6b1-40b9-b0df-274fceb4e466",
+      "name": "lasm core reply on findings event data",
+      "filename": "lasm-core-reply-on-findings-event-data.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 4838,
+      "tags": [],
+      "created_at": "2026-11-05T07:33:29.543Z",
+      "updated_at": "2026-11-05T07:33:29.543Z"
     }
   ]
 }
