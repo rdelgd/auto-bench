@@ -155,6 +155,12 @@ ELSE_NOT: list[tuple[dict[str, Any], Any]] = [
     ({"type": "object", "properties": {"a": {"if": {"type": "integer"}, "then": {"minimum": 0}, "else": {"not": {"type": "null"}}}}}, {"a": -1}),
     ({"type": "object", "properties": {"a": {"if": {"type": "integer"}, "then": {"minimum": 0}, "else": {"not": {"type": "null"}}}}}, {"a": None}),
     ({"type": "object", "properties": {"a": {"if": {"type": "integer"}, "then": {"minimum": 0}, "else": {"not": {"type": "null"}}}}}, {"a": "s"}),
+    ({"type": "string", "minLength": 3, "maxLength": 3}, "abc"),
+    ({"type": "string", "minLength": 3, "maxLength": 3}, "ab"),
+    ({"type": "string", "minLength": 3, "maxLength": 3}, "abcd"),
+    ({"type": "string", "minLength": 2}, "é—"),
+    ({"type": "string", "maxLength": 1}, "—"),
+    ({"minLength": 5}, 3),
 ]
 
 

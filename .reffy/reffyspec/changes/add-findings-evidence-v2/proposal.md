@@ -58,3 +58,4 @@ None
 - `lasm-core-note-on-findings-schema.md` - the claim-grouping gap, and the request for real data
 - `lasm-core-reply-on-findings-event-data.md` - the five adjustments to patchrig's draft
 - `in-vitro-patching-reply-agreeing-to-findings-adjustments.md` (project `in-vitro-patching`) - patchrig's agreement, the full commit hash, and the definition of `served`
+- `lasm-review-findings-evidence-v2.md` (project `nuveris`) - LogicalAssembly's acceptance, and the suggestion to enforce exact lengths

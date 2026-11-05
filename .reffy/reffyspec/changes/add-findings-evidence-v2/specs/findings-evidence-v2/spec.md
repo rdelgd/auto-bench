@@ -16,7 +16,7 @@ Version 2 `verdict.recorded` SHALL carry:
 - a citation of one measurement event, a pre-registration, a scorer version, and a verdict;
 - optionally: a superseded verdict stream, a cannot-tell reason, detail, predicted verdict values, free-form statistics, and a policy event citation.
 
-The four verdict values and the rule that a `cannotTellReason` is required with `cannot-tell` and forbidden otherwise SHALL apply to version 2 as to version 1. The `verdict.invalidated` scope SHALL accept an optional `adapters` list within version 1. The checked-in schemas, the pure validator, and `jsonschema` SHALL agree.
+The four verdict values and the rule that a `cannotTellReason` is required with `cannot-tell` and forbidden otherwise SHALL apply to version 2 as to version 1. In version 2, `patchrigCommit` and `scorerVersion` SHALL be exactly 40 characters long, and every `served` date exactly 10, in both the adapter identity and adapter scope entries. The `verdict.invalidated` scope SHALL accept an optional `adapters` list within version 1. The checked-in schemas, the pure validator, and `jsonschema` SHALL agree.
 
 #### Scenario: Validate the two-step finding
 
@@ -24,6 +24,13 @@ The four verdict values and the rule that a `cannotTellReason` is required with 
 - **WHEN** each is validated as version 2 data
 - **THEN** every event is valid
 - **AND** the same data is rejected as version 1
+
+#### Scenario: Reject short hashes and unpadded dates
+
+- **GIVEN** version 2 data with a 12-character `patchrigCommit`, a `scorerVersion` of `two-step@ec8e708727c6`, or a `served` date of `2026-11-4`
+- **WHEN** it is validated
+- **THEN** it is rejected with a structured finding at that field
+- **AND** version 1 data with a short `scorerVersion` is still accepted, as in 0.5.0
 
 #### Scenario: Keep named fields strict and free-form fields open
 

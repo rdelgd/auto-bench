@@ -28,6 +28,10 @@ CANNOT_TELL_REASONS = (
 MANIPULATION_CHECKS = ("passed", "failed", "not-applicable")
 
 JSON_OBJECT: JsonSchema = {"type": "object", "additionalProperties": _ref("JsonValue")}
+# Exact lengths catch the likeliest slips, a short commit hash or an unpadded date, which
+# would otherwise make exact-match invalidations silently miss. Used by version 2 fields only.
+COMMIT_HASH: JsonSchema = {"type": "string", "minLength": 40, "maxLength": 40}
+SERVED_DATE: JsonSchema = {"type": "string", "minLength": 10, "maxLength": 10}
 
 
 def _with_reason_rule(schema: JsonSchema) -> JsonSchema:
@@ -69,7 +73,7 @@ def _verdict_recorded_v2() -> JsonSchema:
             "claim": STRING,
             "cites": _ref("LedgerEventRef"),
             "preregistration": STRING,
-            "scorerVersion": STRING,
+            "scorerVersion": COMMIT_HASH,
             "verdict": _ref("VerdictValue"),
         },
         {**VERDICT_OPTIONAL, "predicted": _array(_ref("VerdictValue")), "statistics": JSON_OBJECT},
@@ -121,7 +125,7 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
     "ManipulationCheck": _enum(*MANIPULATION_CHECKS),
     "MeasurementTarget": _record({"binding": STRING, "ref": STRING}),
     "MeasurementEnvironment": _record({"host": STRING, "fingerprint": STRING}),
-    "AdapterMatch": _record({"model": STRING, "host": STRING}, {"kind": STRING, "route": STRING, "served": STRING}),
+    "AdapterMatch": _record({"model": STRING, "host": STRING}, {"kind": STRING, "route": STRING, "served": SERVED_DATE}),
     "InvalidationScope": _record(
         {},
         {
@@ -157,7 +161,7 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
         },
     ),
     "VerdictRecordedData": _verdict_recorded(),
-    "AdapterIdentity": _record({"kind": STRING, "model": STRING, "host": STRING, "served": STRING}, {"route": STRING}),
+    "AdapterIdentity": _record({"kind": STRING, "model": STRING, "host": STRING, "served": SERVED_DATE}, {"route": STRING}),
     "RunInput": _record({"role": STRING, "runId": STRING, "recordsDigest": STRING}, {"seeds": STRING}),
     # Named keys are typed; any other key is free-form, so scorers can add numbers without a version.
     "MeasurementItem": {
@@ -171,7 +175,7 @@ LEDGER_DEFINITIONS: dict[str, JsonSchema] = {
             "attempt": _ref("SafeInteger"),
             "runKind": STRING,
             "recordsDigest": STRING,
-            "patchrigCommit": STRING,
+            "patchrigCommit": COMMIT_HASH,
             "claimScope": STRING,
             "adapter": _ref("AdapterIdentity"),
             "measurements": _array(_ref("MeasurementItem")),

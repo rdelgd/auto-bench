@@ -19,7 +19,9 @@
           "type": "string"
         },
         "served": {
-          "type": "string"
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10
         }
       },
       "required": [

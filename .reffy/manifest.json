@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-05T07:47:59.178Z",
+  "updated_at": "2026-11-05T07:58:55.690Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -560,6 +560,28 @@
       "tags": [],
       "created_at": "2026-11-05T07:47:59.178Z",
       "updated_at": "2026-11-05T07:47:59.178Z"
+    },
+    {
+      "id": "05463d62-ae36-480d-989e-2d866aa2fda5",
+      "name": "lasm review findings evidence v2",
+      "filename": "lasm-review-findings-evidence-v2.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 4213,
+      "tags": [],
+      "created_at": "2026-11-05T07:58:35.676Z",
+      "updated_at": "2026-11-05T07:58:35.676Z"
+    },
+    {
+      "id": "2c69f584-65ca-4688-90d9-841ebe70f789",
+      "name": "lasm core 0.6.0 released",
+      "filename": "lasm-core-0.6.0-released.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 3417,
+      "tags": [],
+      "created_at": "2026-11-05T07:58:55.690Z",
+      "updated_at": "2026-11-05T07:58:55.690Z"
     }
   ]
 }

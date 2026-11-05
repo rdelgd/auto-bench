@@ -6,7 +6,7 @@
   - `predicted` as a list;
   - the verdict's numbers in `statistics`;
   - adapter matching by equality.
-- [ ] 0.2 Get LogicalAssembly's review of the design.
+- [x] 0.2 Get LogicalAssembly's review of the design. Accepted; exact lengths adopted from its suggestion.
 
 ## 1. Schemas
 
@@ -44,6 +44,6 @@
 - [x] 4.1 Export the new records, and bump to `0.6.0`. Confirm the wheel includes the new schema files.
 - [x] 4.2 Update `docs/api-inventory.md`, `README.md`, and `.reffy/reffyspec/project.md`.
 - [x] 4.3 Run `uv run pytest` on both interpreters, `uv run mypy`, `scripts/write_schemas.py --check`, and a wheel build.
-- [ ] 4.4 Run `reffy plan validate add-findings-evidence-v2` and `reffy validate`.
-- [ ] 4.5 Tag `v0.6.0`, and tell LogicalAssembly, patchrig, and Rastro.
+- [x] 4.4 Run `reffy plan validate add-findings-evidence-v2` and `reffy validate`.
+- [x] 4.5 Tag `v0.6.0`, and tell LogicalAssembly, patchrig, and Rastro.
 - [ ] 4.6 Archive the change.

@@ -16,7 +16,9 @@
           "type": "string"
         },
         "served": {
-          "type": "string"
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10
         },
         "route": {
           "type": "string"
@@ -46,7 +48,9 @@
           "type": "string"
         },
         "patchrigCommit": {
-          "type": "string"
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 40
         },
         "claimScope": {
           "type": "string"

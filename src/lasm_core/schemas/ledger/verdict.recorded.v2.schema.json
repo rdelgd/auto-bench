@@ -94,7 +94,9 @@
           "type": "string"
         },
         "scorerVersion": {
-          "type": "string"
+          "type": "string",
+          "minLength": 40,
+          "maxLength": 40
         },
         "verdict": {
           "$ref": "#/$defs/VerdictValue"

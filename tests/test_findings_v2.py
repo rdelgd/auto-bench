@@ -139,6 +139,10 @@ INVALID = [
     ("verdict.recorded", with_value(VERDICT, "cites", {"runId": LUNA_RUN}), "format.missing_property", "data.cites.streamId"),
     ("verdict.recorded", {**VERDICT, "verdict": "cannot-tell"}, "verdict.reason_required", "data.cannotTellReason"),
     ("verdict.recorded", {**VERDICT, "cannotTellReason": "no-probes"}, "verdict.reason_not_allowed", "data.cannotTellReason"),
+    ("evidence.recorded", with_value(MEASUREMENT, "patchrigCommit", "ec8e708727c6"), "format.invalid_value", "data.patchrigCommit"),
+    ("evidence.recorded", with_value(MEASUREMENT, "patchrigCommit", COMMIT + "0"), "format.invalid_value", "data.patchrigCommit"),
+    ("verdict.recorded", with_value(VERDICT, "scorerVersion", "two-step@ec8e708727c6"), "format.invalid_value", "data.scorerVersion"),
+    ("evidence.recorded", with_value(MEASUREMENT, "adapter", {**LUNA, "served": "2026-11-4"}), "format.invalid_value", "data.adapter.served"),
 ]
 
 
@@ -164,6 +168,16 @@ def test_invalidation_scope_accepts_adapters_within_version_1() -> None:
     bad = copy.deepcopy(data)
     bad["scope"]["adapters"][0] = {"model": "typesafe-ai/jev"}
     assert [item["path"] for item in validate_ledger_event_data("verdict.invalidated", 1, bad)["findings"]] == ["data.scope.adapters[0].host"]
+    unpadded = copy.deepcopy(data)
+    unpadded["scope"]["adapters"][1]["served"] = "2026-11-4"
+    assert [item["path"] for item in validate_ledger_event_data("verdict.invalidated", 1, unpadded)["findings"]] == ["data.scope.adapters[1].served"]
+
+
+def test_version_1_keeps_accepting_any_commit_spelling() -> None:
+    # Length rules are version 2 only; version 1 stays exactly as released in 0.5.0.
+    verdict = cell_log()[1]
+    short = {**dict(verdict["data"]), "scorerVersion": "ec8e708727c6"}  # type: ignore[arg-type]
+    assert validate_ledger_event_data("verdict.recorded", 1, short)["valid"]
 
 
 # Projection ----------------------------------------------------------------

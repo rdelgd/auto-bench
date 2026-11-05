@@ -149,6 +149,8 @@ def check(
             check(schema[branch], value, path, findings, definitions)
     if "not" in schema and _matches(schema["not"], value, definitions):
         findings.append(finding("format.invalid_value", path, "Value matches a disallowed shape."))
+    if isinstance(value, str) and (len(value) < schema.get("minLength", 0) or len(value) > schema.get("maxLength", len(value))):
+        findings.append(finding("format.invalid_value", path, "String length is outside the supported range."))
     if _is_number(value):
         number: int | float = value  # type: ignore[assignment]
         if ("minimum" in schema and number < schema["minimum"]) or ("maximum" in schema and number > schema["maximum"]):

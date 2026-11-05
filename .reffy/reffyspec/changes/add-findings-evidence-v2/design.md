@@ -141,7 +141,13 @@ So an invalidation of a larql version can't reach a hosted finding, and an adapt
 
 **What version 2 asks for:** the full 40-character hash in both fields, with `scorerVersion` as the plain commit. The run kind is already in `runKind`.
 
-**What the schema can't do:** the checker has no `pattern` support, so length isn't enforced. Adding regular expressions to the checker, and keeping them in agreement with `jsonschema`'s dialect, isn't worth it for one field. This is stated in the reply to patchrig, and is a writer-side rule.
+**What the schema enforces:** exact lengths, at LogicalAssembly's suggestion in `lasm-review-findings-evidence-v2.md`:
+- 40 characters for `patchrigCommit` and `scorerVersion`;
+- 10 characters for `served`, in both `AdapterIdentity` and `AdapterMatch`.
+
+The shared checker gains `minLength` and `maxLength` for this, kept in agreement with `jsonschema`, which also counts code points. It isn't full validation, since a 40-character non-hex string passes, but it turns the two likeliest mistakes (a short hash, and an unpadded date) into rejected events, instead of invalidations that silently miss. `pattern` stays unsupported, because regular-expression dialects differ between the checker and `jsonschema`.
+
+The rule applies to version 2 fields only. Version 1 stays exactly as released in 0.5.0.
 
 ### 6. The projection
 
@@ -200,8 +206,7 @@ They go in the API inventory. No new callables are added.
 ## Risks
 
 - **Free-form objects hide drift.** Anything in `statistics`, `measurements` items, or `fixture` can change shape without a schema version. That's intended, because only named fields are contracts. The remedy, if a reader comes to depend on a free-form key, is to name it in a later version.
-- **Short hashes slip through.** The schema can't reject them (decision 5). An invalidation naming a full hash would then miss them. The writer-side rule, and the reply to patchrig, are the guard.
-- **`served` is a string.** Two spellings of one date (`2026-11-04` and `2026-11-4`) don't match. Patchrig writes `YYYY-MM-DD`, and the reply asks it to keep that form.
+- **Length is not format.** A 40-character string that isn't a hash, or a 10-character string that isn't a date, still passes (decision 5). Patchrig's writer-side rules cover the rest.
 
 ## Resolved Questions
 
@@ -219,6 +224,8 @@ Patchrig agreed to all five adjustments in `in-vitro-patching-reply-agreeing-to-
 - Patchrig defines it in its `observer/1` change. For the two-step finding, it's `2026-11-04` for both runs.
 
 **`preregistration` spelling:** patchrig writes it from one constant, so its spelling is identical on every verdict.
+
+LogicalAssembly accepted the design in `lasm-review-findings-evidence-v2.md`. It suggested exact lengths for commits and `served`, which decision 5 adopts, and extended its gate to `runs`.
 
 ## Open Questions
 
