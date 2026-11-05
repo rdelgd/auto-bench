@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-01T23:23:45.417Z",
+  "updated_at": "2026-11-05T07:22:29.645Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -447,6 +447,17 @@
       "tags": [],
       "created_at": "2026-11-01T23:23:45.416Z",
       "updated_at": "2026-11-01T23:23:45.416Z"
+    },
+    {
+      "id": "207a36fc-8b62-42af-a306-73ecf8d91c0f",
+      "name": "lasm core note on findings schema",
+      "filename": "lasm-core-note-on-findings-schema.md",
+      "kind": "note",
+      "mime_type": "text/markdown",
+      "size_bytes": 4664,
+      "tags": [],
+      "created_at": "2026-11-05T07:22:29.645Z",
+      "updated_at": "2026-11-05T07:22:29.645Z"
     }
   ]
 }
