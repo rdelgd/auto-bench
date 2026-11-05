@@ -46,4 +46,4 @@
 - [x] 4.3 Run `uv run pytest` on both interpreters, `uv run mypy`, `scripts/write_schemas.py --check`, and a wheel build.
 - [x] 4.4 Run `reffy plan validate add-findings-evidence-v2` and `reffy validate`.
 - [x] 4.5 Tag `v0.6.0`, and tell LogicalAssembly, patchrig, and Rastro.
-- [ ] 4.6 Archive the change.
+- [x] 4.6 Archive the change.

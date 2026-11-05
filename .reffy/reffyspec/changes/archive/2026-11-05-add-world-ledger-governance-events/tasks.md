@@ -25,5 +25,5 @@
 - [x] 4.3 Update `README.md` and `.reffy/reffyspec/project.md`: ledger semantics, the separate schema line, and the git-tag distribution for LogicalAssembly.
 - [x] 4.4 Run `uv run pytest`, `uv run mypy`, `uv run python scripts/write_schemas.py --check`, and a wheel build.
 - [x] 4.5 Run `reffy plan validate add-world-ledger-governance-events` and `reffy validate`.
-- [ ] 4.6 Tag `v0.4.0` and reply to LogicalAssembly with the pin and the answers to their four questions.
-- [ ] 4.7 Archive the change.
+- [x] 4.6 Tag `v0.4.0` and reply to LogicalAssembly with the pin and the answers to their four questions.
+- [x] 4.7 Archive the change.

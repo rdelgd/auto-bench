@@ -1,7 +1,7 @@
 {
   "version": 1,
   "created_at": "2026-07-14T21:52:14.063Z",
-  "updated_at": "2026-11-05T07:58:55.690Z",
+  "updated_at": "2026-11-05T08:01:14.124Z",
   "project_id": "auto-bench",
   "workspace_ids": [
     "lasm-v1",
@@ -238,15 +238,15 @@
       "size_bytes": 7704,
       "tags": [],
       "created_at": "2026-10-30T20:28:13.276Z",
-      "updated_at": "2026-10-30T20:28:13.442Z",
+      "updated_at": "2026-11-05T08:01:13.788Z",
       "related_changes": [
         "add-world-ledger-governance-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-world-ledger-governance-events/proposal.md",
-        ".reffy/reffyspec/changes/add-world-ledger-governance-events/tasks.md",
-        ".reffy/reffyspec/changes/add-world-ledger-governance-events/design.md",
-        ".reffy/reffyspec/changes/add-world-ledger-governance-events/specs/world-ledger-governance-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-world-ledger-governance-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-world-ledger-governance-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-world-ledger-governance-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-world-ledger-governance-events/specs/world-ledger-governance-events/spec.md"
       ]
     },
     {
@@ -280,15 +280,15 @@
       "size_bytes": 4768,
       "tags": [],
       "created_at": "2026-10-31T23:49:59.137Z",
-      "updated_at": "2026-11-01T22:51:09.272Z",
+      "updated_at": "2026-11-05T08:01:13.963Z",
       "related_changes": [
         "add-evidence-and-verdict-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/proposal.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/tasks.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/design.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
       ]
     },
     {
@@ -311,15 +311,15 @@
       "size_bytes": 4115,
       "tags": [],
       "created_at": "2026-11-01T00:26:31.480Z",
-      "updated_at": "2026-11-01T22:51:09.272Z",
+      "updated_at": "2026-11-05T08:01:13.963Z",
       "related_changes": [
         "add-evidence-and-verdict-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/proposal.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/tasks.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/design.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
       ]
     },
     {
@@ -331,15 +331,15 @@
       "size_bytes": 3230,
       "tags": [],
       "created_at": "2026-11-01T00:39:50.832Z",
-      "updated_at": "2026-11-01T22:51:09.272Z",
+      "updated_at": "2026-11-05T08:01:13.963Z",
       "related_changes": [
         "add-evidence-and-verdict-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/proposal.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/tasks.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/design.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
       ]
     },
     {
@@ -351,15 +351,15 @@
       "size_bytes": 7262,
       "tags": [],
       "created_at": "2026-11-01T22:51:09.195Z",
-      "updated_at": "2026-11-01T22:51:09.272Z",
+      "updated_at": "2026-11-05T08:01:13.963Z",
       "related_changes": [
         "add-evidence-and-verdict-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/proposal.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/tasks.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/design.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
       ]
     },
     {
@@ -371,15 +371,15 @@
       "size_bytes": 27869,
       "tags": [],
       "created_at": "2026-11-01T22:51:09.195Z",
-      "updated_at": "2026-11-01T22:51:09.272Z",
+      "updated_at": "2026-11-05T08:01:13.963Z",
       "related_changes": [
         "add-evidence-and-verdict-events"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/proposal.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/tasks.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/design.md",
-        ".reffy/reffyspec/changes/add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-evidence-and-verdict-events/specs/evidence-and-verdict-events/spec.md"
       ]
     },
     {
@@ -457,15 +457,15 @@
       "size_bytes": 4664,
       "tags": [],
       "created_at": "2026-11-05T07:22:29.645Z",
-      "updated_at": "2026-11-05T07:31:40.099Z",
+      "updated_at": "2026-11-05T08:01:14.124Z",
       "related_changes": [
         "add-findings-evidence-v2"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
       ]
     },
     {
@@ -477,15 +477,15 @@
       "size_bytes": 10544,
       "tags": [],
       "created_at": "2026-11-05T07:31:40.009Z",
-      "updated_at": "2026-11-05T07:31:40.099Z",
+      "updated_at": "2026-11-05T08:01:14.124Z",
       "related_changes": [
         "add-findings-evidence-v2"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
       ]
     },
     {
@@ -497,15 +497,15 @@
       "size_bytes": 7500,
       "tags": [],
       "created_at": "2026-11-05T07:31:40.009Z",
-      "updated_at": "2026-11-05T07:31:40.099Z",
+      "updated_at": "2026-11-05T08:01:14.124Z",
       "related_changes": [
         "add-findings-evidence-v2"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
       ]
     },
     {
@@ -517,15 +517,15 @@
       "size_bytes": 6263,
       "tags": [],
       "created_at": "2026-11-05T07:31:40.009Z",
-      "updated_at": "2026-11-05T07:31:40.099Z",
+      "updated_at": "2026-11-05T08:01:14.124Z",
       "related_changes": [
         "add-findings-evidence-v2"
       ],
       "derived_outputs": [
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/proposal.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/tasks.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/design.md",
-        ".reffy/reffyspec/changes/add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/proposal.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/tasks.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/design.md",
+        ".reffy/reffyspec/changes/archive/2026-11-05-add-findings-evidence-v2/specs/findings-evidence-v2/spec.md"
       ]
     },
     {

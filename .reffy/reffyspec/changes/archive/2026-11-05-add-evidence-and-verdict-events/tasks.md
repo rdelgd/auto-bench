@@ -66,5 +66,5 @@
 - [x] 4.2 Update `docs/api-inventory.md`, `README.md`, and `.reffy/reffyspec/project.md`.
 - [x] 4.3 Run `uv run pytest` on the development and minimum interpreters, `uv run mypy`, `scripts/write_schemas.py --check`, and a wheel build.
 - [x] 4.4 Run `reffy plan validate add-evidence-and-verdict-events` and `reffy validate`.
-- [ ] 4.5 Tag `v0.5.0`, and tell LogicalAssembly, patchrig, and Rastro.
-- [ ] 4.6 Archive the change.
+- [x] 4.5 Tag `v0.5.0`, and tell LogicalAssembly, patchrig, and Rastro.
+- [x] 4.6 Archive the change.
